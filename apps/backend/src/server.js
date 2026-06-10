@@ -32,9 +32,30 @@ const app = express();
 app.use(helmet());
 
 // CORS
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://agriproject-frontend.vercel.app',
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+
+      const origins = [...allowedOrigins];
+      if (process.env.CLIENT_URL) {
+        const urls = process.env.CLIENT_URL.split(',').map((url) => url.trim());
+        origins.push(...urls);
+      }
+
+      if (origins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
     credentials: true,
   })
 );
