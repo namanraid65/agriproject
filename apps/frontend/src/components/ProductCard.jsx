@@ -1,0 +1,261 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useMarket } from '../hooks/useMarket.js';
+import {
+  ShoppingCart, FileText, Star, Package,
+  Tag, Award, Truck, CheckCircle2, AlertTriangle
+} from 'lucide-react';
+
+/* ─── Shared star rating ─────────────────────────────────── */
+export function StarRating({ rating = 0, count, size = 'sm' }) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5;
+  const px   = size === 'sm' ? 12 : 15;
+
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <span style={{ fontSize: px, lineHeight: 1, letterSpacing: '0.5px' }}>
+        {[1,2,3,4,5].map(i => (
+          <span key={i} style={{ color: i <= full ? '#c8860a' : (i === full + 1 && half ? '#c8860a' : '#d4d4d4') }}>
+            {i <= full ? '★' : (i === full + 1 && half ? '⯨' : '☆')}
+          </span>
+        ))}
+      </span>
+      {count !== undefined && (
+        <span className="text-stone-400" style={{ fontSize: px - 1 }}>({count.toLocaleString()})</span>
+      )}
+    </span>
+  );
+}
+
+/* ─── Stock pill ─────────────────────────────────────────── */
+function StockBadge({ stock }) {
+  if (stock === 0)
+    return <span className="inline-flex items-center gap-1 text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full"><AlertTriangle className="h-3 w-3" />Out of Stock</span>;
+  if (stock <= 20)
+    return <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full"><Package className="h-3 w-3" />Only {stock} left</span>;
+  return <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full"><CheckCircle2 className="h-3 w-3" />In Stock</span>;
+}
+
+/* ─── Mode badge ─────────────────────────────────────────── */
+function ModeBadge({ isB2B }) {
+  return isB2B
+    ? <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200"><Truck className="h-3 w-3" />Wholesale</span>
+    : <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200"><ShoppingCart className="h-3 w-3" />Retail</span>;
+}
+
+/* ─── ProductCard (list view variant) ───────────────────── */
+function ProductCardList({ product, isB2B, onAddToCart }) {
+  const img = product.primaryImage || product.images?.[0];
+  const catName = typeof product.category === 'object' ? product.category?.name : product.category;
+
+  return (
+    <div className="flex gap-5 bg-white border border-stone-200 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group">
+      {/* Image */}
+      <Link to={`/products/${product._id}`} className="flex-shrink-0 w-44 relative overflow-hidden bg-stone-50">
+        {img?.url ? (
+          <img src={img.url} alt={img.altText || product.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={e => { e.currentTarget.src = `https://placehold.co/400x300/e7f3e0/2d6a4f?text=${encodeURIComponent(product.name.slice(0,12))}`; }}
+          />
+        ) : (
+          <div className={`w-full h-full min-h-[140px] flex items-center justify-center text-5xl ${isB2B ? 'bg-amber-50' : 'bg-emerald-50'}`}>🌾</div>
+        )}
+        {product.featured && (
+          <span className="absolute top-2 left-2 inline-flex items-center gap-1 text-[9px] font-black text-yellow-800 bg-yellow-300 px-1.5 py-0.5 rounded uppercase tracking-wide">
+            <Award className="h-2.5 w-2.5" />Featured
+          </span>
+        )}
+      </Link>
+
+      {/* Body */}
+      <div className="flex-1 py-4 pr-5 flex flex-col justify-between">
+        <div>
+          {catName && <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">{catName}</p>}
+          <Link to={`/products/${product._id}`} className="hover:underline">
+            <h3 className="font-bold text-stone-800 text-lg leading-snug">{product.name}</h3>
+          </Link>
+          <p className="text-sm text-stone-500 mt-1.5 line-clamp-2 leading-relaxed">{product.description}</p>
+
+          <div className="flex items-center gap-4 mt-2.5 flex-wrap">
+            <StarRating rating={4.8} count={213} />
+            <StockBadge stock={product.stock} />
+            <ModeBadge isB2B={isB2B} />
+          </div>
+        </div>
+
+        {/* Price + CTA row */}
+        <div className="flex items-end justify-between mt-4 pt-3 border-t border-stone-100">
+          {isB2B ? (
+            <div>
+              <span className="text-xs text-stone-400 block">Wholesale (MOQ-based)</span>
+              <span className="text-xl font-black text-amber-700">₹{product.retailPrice?.toLocaleString()}</span>
+              <span className="text-xs text-stone-400">  /unit — volume discounts apply</span>
+            </div>
+          ) : (
+            <div>
+              <span className="text-xs text-stone-400 block">Retail Price</span>
+              <span className="text-2xl font-black text-emerald-700">₹{product.retailPrice?.toLocaleString()}</span>
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <Link to={`/products/${product._id}`}
+              className="text-sm font-semibold px-4 py-2 rounded-xl border-2 border-stone-200 text-stone-600 hover:border-stone-400 transition-colors">
+              View Details
+            </Link>
+            {isB2B ? (
+              <Link to={`/products/${product._id}`}
+                className={`text-sm font-bold px-5 py-2 rounded-xl flex items-center gap-2 transition-all duration-200 ${
+                  product.stock === 0 ? 'bg-stone-100 text-stone-400 cursor-not-allowed pointer-events-none' :
+                          'bg-amber-600 hover:bg-amber-700 text-white shadow-md shadow-amber-200 hover:-translate-y-px'
+                }`}
+              >
+                <FileText className="h-4 w-4" />
+                {product.stock === 0 ? 'Unavailable' : 'Request Quote'}
+              </Link>
+            ) : (
+              <button
+                onClick={() => onAddToCart(product)}
+                disabled={product.stock === 0}
+                className={`text-sm font-bold px-5 py-2 rounded-xl flex items-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  product.stock === 0 ? 'bg-stone-100 text-stone-400' :
+                          'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-200 hover:-translate-y-px'
+                }`}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                {product.stock === 0 ? 'Unavailable' : 'Add to Cart'}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══ PRIMARY EXPORT: ProductCard (grid variant) ════════════ */
+export function ProductCard({ product, onAddToCart, viewMode = 'grid' }) {
+  const { isB2B } = useMarket();
+
+  if (viewMode === 'list') {
+    return <ProductCardList product={product} isB2B={isB2B} onAddToCart={onAddToCart} />;
+  }
+
+  const img    = product.primaryImage || product.images?.[0];
+  const catName = typeof product.category === 'object' ? product.category?.name : product.category;
+
+  return (
+    <div className="flex flex-col bg-white rounded-2xl border border-stone-200 overflow-hidden group hover:-translate-y-1.5 hover:shadow-xl hover:shadow-stone-200/80 transition-all duration-250">
+      {/* ── Image ── */}
+      <Link to={`/products/${product._id}`} className="relative block overflow-hidden h-52 flex-shrink-0 bg-stone-50">
+        {img?.url ? (
+          <img src={img.url} alt={img.altText || product.name}
+            className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+            onError={e => { e.currentTarget.src = `https://placehold.co/400x300/e7f3e0/2d6a4f?text=${encodeURIComponent(product.name.slice(0,12))}`; }}
+          />
+        ) : (
+          <div className={`w-full h-full flex items-center justify-center text-6xl ${isB2B ? 'bg-amber-50' : 'bg-emerald-50'}`}>🌾</div>
+        )}
+
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        {/* Badges overlay */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          {catName && (
+            <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${isB2B ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'}`}>
+              {catName}
+            </span>
+          )}
+          {product.featured && (
+            <span className="inline-flex items-center gap-0.5 text-[9px] font-black text-yellow-900 bg-yellow-300 px-1.5 py-0.5 rounded uppercase">
+              <Star className="h-2.5 w-2.5 fill-current" />Featured
+            </span>
+          )}
+        </div>
+
+        {/* Wishlist */}
+        <button className="absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur rounded-lg flex items-center justify-center text-stone-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-white hover:scale-110">
+          🤍
+        </button>
+
+        {/* OOS overlay */}
+        {product.stock === 0 && (
+          <div className="absolute inset-0 bg-stone-900/60 flex items-center justify-center">
+            <span className="bg-white text-stone-700 text-xs font-black px-3 py-1.5 rounded-full uppercase tracking-wide">Out of Stock</span>
+          </div>
+        )}
+      </Link>
+
+      {/* ── Body ── */}
+      <div className="flex flex-col flex-1 p-4">
+        <div className="flex-1">
+          <h3 className="font-bold text-stone-800 text-base leading-snug mb-1 line-clamp-2 group-hover:text-stone-900">
+            {product.name}
+          </h3>
+          <p className="text-xs text-stone-500 line-clamp-2 leading-relaxed mb-2.5">{product.description}</p>
+
+          <div className="flex items-center gap-2 flex-wrap mb-2">
+            <StarRating rating={4.8} count={213} />
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap mb-1">
+            <StockBadge stock={product.stock} />
+          </div>
+        </div>
+
+        {/* ── Mode-aware Pricing + CTA ── */}
+        <div className="mt-4 pt-3.5 border-t border-stone-100 space-y-3">
+          {isB2B ? (
+            /* B2B Pricing Block */
+            <div className="bg-amber-50 border border-amber-200/70 rounded-xl p-3 space-y-1">
+              <div className="flex justify-between items-baseline">
+                <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1">
+                  <Tag className="h-3 w-3" />Wholesale Price
+                </span>
+                <span className="text-lg font-black text-amber-700">₹{product.retailPrice?.toLocaleString()}</span>
+              </div>
+              <p className="text-[10px] text-amber-700/80 font-medium">Volume tiers &amp; MOQ available — request quote for bulk pricing</p>
+            </div>
+          ) : (
+            /* B2C Pricing Block */
+            <div className="flex items-baseline gap-1">
+              <span className="text-2xl font-black text-emerald-700 tracking-tight">₹{product.retailPrice?.toLocaleString()}</span>
+              <span className="text-xs text-stone-400 font-medium">/ unit</span>
+            </div>
+          )}
+
+          {isB2B ? (
+            <Link
+              to={`/products/${product._id}`}
+              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95 text-center ${
+                product.stock === 0
+                  ? 'bg-stone-100 text-stone-400 cursor-not-allowed pointer-events-none'
+                  : 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-md shadow-amber-200 hover:shadow-lg hover:-translate-y-px'
+              }`}
+            >
+              <FileText className="h-4 w-4" />
+              {product.stock === 0 ? 'Out of Stock' : 'Request Quote'}
+            </Link>
+          ) : (
+            <button
+              id={`add-to-cart-${product._id}`}
+              onClick={() => onAddToCart(product)}
+              disabled={product.stock === 0}
+              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
+                product.stock === 0 ? 'bg-stone-100 text-stone-400' :
+                'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-md shadow-emerald-200 hover:shadow-lg hover:-translate-y-px'
+              }`}
+            >
+              <ShoppingCart className="h-4 w-4" />
+              {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ProductCard;

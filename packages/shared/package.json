@@ -1,0 +1,11 @@
+{
+  "name": "@open-agri/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "echo 'No compilation needed for shared JS module'",
+    "dev": "echo 'No dev server needed for shared'"
+  }
+}

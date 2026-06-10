@@ -1,0 +1,23 @@
+{
+  "name": "open-agri-mern",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "npm@10.8.2",
+  "description": "Agricultural E-commerce platform with B2B/B2C switching",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "dev:frontend": "npm run dev --workspace=apps/frontend",
+    "dev:backend": "npm run dev --workspace=apps/backend",
+    "build:frontend": "npm run build --workspace=apps/frontend",
+    "build:backend": "npm run build --workspace=apps/backend"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  }
+}
