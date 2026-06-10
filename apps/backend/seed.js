@@ -26,7 +26,19 @@ const seedDatabase = async () => {
     await User.deleteMany({});
     await Category.deleteMany({});
     await Product.deleteMany({});
+    try {
+      await Product.collection.dropIndex('sku_1');
+      console.log('Dropped legacy sku_1 index.');
+    } catch (e) {
+      // Ignore if index does not exist
+    }
     await CMS.deleteMany({});
+    try {
+      await CMS.collection.dropIndex('page_1');
+      console.log('Dropped legacy page_1 index.');
+    } catch (e) {
+      // Ignore if index does not exist
+    }
     await Enquiry.deleteMany({});
     await Order.deleteMany({});
     await Settings.deleteMany({});
