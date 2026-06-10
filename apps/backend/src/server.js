@@ -54,6 +54,13 @@ const __dirname = path.dirname(__filename);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Routes mounting
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Open Agri Backend Running Successfully'
+  });
+});
+
 app.use('/api', apiRoutes);
 
 // Health Check Endpoint
