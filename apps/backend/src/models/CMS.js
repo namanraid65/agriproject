@@ -3,46 +3,64 @@ import mongoose from "mongoose";
 
 const { Schema, model, models } = mongoose;
 
+const cmsImageSchema = new Schema(
+  {
+    url: {
+      type: String,
+      get: function(url) {
+        if (url && url.startsWith('/uploads/')) {
+          const baseUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+          return `${baseUrl}${url}`;
+        }
+        return url;
+      }
+    },
+    publicId: String,
+    altText: String
+  },
+  { _id: false, toJSON: { getters: true }, toObject: { getters: true } }
+);
+
 // ── Sub-schemas ──────────────────────────────────────────
 const sectionSchema = new Schema(
   {
     title:    { type: String, trim: true },
     subtitle: { type: String, trim: true },
     content:  { type: String },
-    image:    { url: String, publicId: String, altText: String },
+    image:    { type: cmsImageSchema },
     cta:      { label: String, href: String },
     order:    { type: Number, default: 0 },
     isVisible:{ type: Boolean, default: true },
   },
-  { _id: true }
+  { _id: true, toJSON: { getters: true }, toObject: { getters: true } }
 );
 
 const bannerSchema = new Schema(
   {
     title:      { type: String, trim: true },
     subtitle:   { type: String, trim: true },
-    image:      { url: { type: String, required: true }, publicId: String, altText: String },
-    mobileImage:{ url: String, publicId: String },  // Optional separate mobile crop
+    image:      { type: cmsImageSchema, required: true },
+    mobileImage:{ type: cmsImageSchema },  // Optional separate mobile crop
     link:       { type: String },
     order:      { type: Number, default: 0 },
     isActive:   { type: Boolean, default: true },
     startsAt:   { type: Date },  // Optional scheduling
     endsAt:     { type: Date  },
   },
-  { _id: true }
+  { _id: true, toJSON: { getters: true }, toObject: { getters: true } }
 );
 
 const testimonialSchema = new Schema(
   {
     authorName:    { type: String, required: true, trim: true },
     authorRole:    { type: String, trim: true },    // e.g. "CEO, Acme Corp"
-    authorImage:   { url: String, publicId: String },
+    authorImage:   { type: cmsImageSchema },
     rating:        { type: Number, min: 1, max: 5 },
     content:       { type: String, required: true },
     isVisible:     { type: Boolean, default: true },
     displayOrder:  { type: Number, default: 0 },
   },
-  { _id: true }
+  { _id: true, toJSON: { getters: true }, toObject: { getters: true } }
 );
 
 // ── Main CMS Schema ──────────────────────────────────────
@@ -61,11 +79,7 @@ const cmsSchema = new Schema(
     metaTitle:   { type: String, trim: true, maxlength: 70 },   // SEO
     metaDescription: { type: String, trim: true, maxlength: 160 }, // SEO
     content:     { type: String }, // Rich text / markdown body
-    heroImage: {
-      url:      { type: String },
-      publicId: { type: String },
-      altText:  { type: String },
-    },
+    heroImage:   { type: cmsImageSchema },
     sections:     { type: [sectionSchema],    default: [] },
     banners:      { type: [bannerSchema],     default: [] },
     testimonials: { type: [testimonialSchema],default: [] },
@@ -75,8 +89,8 @@ const cmsSchema = new Schema(
   },
   {
     timestamps: true,
-    toJSON:     { virtuals: true },
-    toObject:   { virtuals: true },
+    toJSON:     { virtuals: true, getters: true },
+    toObject:   { virtuals: true, getters: true },
   }
 );
 

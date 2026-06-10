@@ -4,21 +4,47 @@ import { body, validationResult } from 'express-validator';
 import multer from 'multer';
 import path from 'path';
 import crypto from 'crypto';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { getAll, getOne, create, update, deleteProduct } from '../controllers/product.controller.js';
 import { protect, adminOnly } from '../middleware/auth.middleware.js';
 import AppError from '../utils/AppError.js';
 
 // ── Multer Storage Setup ──────────────────────────────────
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const randomHex = crypto.randomBytes(16).toString('hex');
-    const ext = path.extname(file.originalname);
-    cb(null, `${randomHex}${ext}`);
-  }
-});
+let storage;
+
+if (
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET
+) {
+  // Configure Cloudinary
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+
+  storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'agriproject/products',
+      allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+    },
+  });
+} else {
+  // Fallback to local disk storage
+  storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+      const randomHex = crypto.randomBytes(16).toString('hex');
+      const ext = path.extname(file.originalname);
+      cb(null, `${randomHex}${ext}`);
+    }
+  });
+}
 
 const fileFilter = (req, file, cb) => {
   const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];

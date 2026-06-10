@@ -18,3 +18,11 @@ services:
         sync: false   # Set this manually in Render dashboard
       - key: JWT_EXPIRES_IN
         value: 7d
+      - key: BACKEND_URL
+        sync: false   # Set manually to your Render backend URL (e.g. https://agriproject-1j5a.onrender.com)
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false   # Set manually for persistent Cloudinary image storage
+      - key: CLOUDINARY_API_KEY
+        sync: false   # Set manually
+      - key: CLOUDINARY_API_SECRET
+        sync: false   # Set manually

@@ -6,12 +6,22 @@ const { Schema, model, models } = mongoose;
 
 const imageSchema = new Schema(
   {
-    url:      { type: String, required: true },
+    url:      { 
+      type: String, 
+      required: true,
+      get: function(url) {
+        if (url && url.startsWith('/uploads/')) {
+          const baseUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+          return `${baseUrl}${url}`;
+        }
+        return url;
+      }
+    },
     publicId: { type: String }, // Cloudinary / S3 key for deletion
     isPrimary: { type: Boolean, default: false },
     altText:  { type: String, trim: true },
   },
-  { _id: true }
+  { _id: true, toJSON: { getters: true }, toObject: { getters: true } }
 );
 
 const productSchema = new Schema(
@@ -108,8 +118,8 @@ const productSchema = new Schema(
   },
   {
     timestamps: true,
-    toJSON:     { virtuals: true },
-    toObject:   { virtuals: true },
+    toJSON:     { virtuals: true, getters: true },
+    toObject:   { virtuals: true, getters: true },
   }
 );
 

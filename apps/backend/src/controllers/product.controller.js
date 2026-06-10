@@ -176,9 +176,10 @@ export const create = async (req, res, next) => {
     const images = [];
     if (req.files && req.files.length > 0) {
       req.files.forEach((file, index) => {
+        const isCloudinary = file.path && (file.path.startsWith('http://') || file.path.startsWith('https://'));
         images.push({
-          url: `/uploads/${file.filename}`,
-          publicId: file.filename,
+          url: isCloudinary ? file.path : `/uploads/${file.filename}`,
+          publicId: file.filename || file.public_id,
           isPrimary: index === 0, // First image uploaded is set as primary
           altText: `${name} Image ${index + 1}`
         });
@@ -266,9 +267,10 @@ export const update = async (req, res, next) => {
     if (req.files && req.files.length > 0) {
       const hasPrimary = product.images.some(img => img.isPrimary);
       req.files.forEach((file, index) => {
+        const isCloudinary = file.path && (file.path.startsWith('http://') || file.path.startsWith('https://'));
         product.images.push({
-          url: `/uploads/${file.filename}`,
-          publicId: file.filename,
+          url: isCloudinary ? file.path : `/uploads/${file.filename}`,
+          publicId: file.filename || file.public_id,
           isPrimary: !hasPrimary && index === 0, // Make primary if none exists
           altText: `${product.name} Image`
         });
