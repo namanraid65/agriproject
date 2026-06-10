@@ -1,61 +1,120 @@
-# OpenAgri — Agricultural B2B/B2C Marketplace
+# AgriProject — MERN Full-Stack Agri Marketplace
 
-## Project Structure
-- apps/frontend — React + Vite + Tailwind customer-facing site and admin panel
-- apps/backend — Node.js + Express REST API
-- packages/shared — Shared constants (UserRoles, MarketModes, RFQStatus)
+A full-stack B2B/B2C agricultural marketplace built with MongoDB, Express, React, and Node.js.
 
-## Prerequisites
+## Features
+- B2C retail shopping + B2B wholesale portal
+- Product catalog with filters, search, pagination
+- User auth (JWT) with role-based access
+- Admin dashboard (products, categories, orders, CMS)
+- RFQ (Request for Quote) system for wholesale buyers
+- MongoDB Atlas cloud database
+
+---
+
+## Tech Stack
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, Vite, TailwindCSS |
+| Backend | Node.js, Express.js |
+| Database | MongoDB Atlas |
+| Auth | JWT + HTTP-only cookies |
+| Monorepo | Turborepo |
+
+---
+
+## Local Development
+
+### Prerequisites
 - Node.js 18+
-- MongoDB Atlas account (or local MongoDB)
-- npm 10+
+- npm 9+
 
-## Setup
+### Setup
 
-### 1. Clone and install
+```bash
+# Clone the repo
+git clone https://github.com/namanraid65/agriproject.git
+cd agriproject
+
+# Install all dependencies
 npm install
 
-### 2. Configure environment variables
+# Create env file
+cp .env.example .env
+# Edit .env and add your MONGODB_URI and JWT_SECRET
 
-Copy and fill in:
-- apps/backend/.env (see .env.example)
-- apps/frontend/.env (see .env.example)
+# Seed the database (first time only)
+npm run seed --workspace=apps/backend
 
-### 3. Seed the database
-cd apps/backend
-node seed.js
-
-### 4. Run in development
-From root:
+# Start development servers (frontend + backend together)
 npm run dev
+```
 
-Frontend runs on http://localhost:5173
-Backend runs on http://localhost:5000
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000/api
 
-## Admin credentials (after seeding)
-Email: admin@openagri.com
-Password: password123
+---
 
-## Environment variables
+## Deployment
 
-### Backend
-| Variable | Description |
-|---|---|
-| PORT | Server port (default 5000) |
-| MONGODB_URI | MongoDB connection string |
-| JWT_SECRET | Secret key for JWT signing |
-| JWT_EXPIRES_IN | Token expiry (e.g. 7d) |
-| CLIENT_URL | Frontend URL for CORS |
-| NODE_ENV | development or production |
+### Backend → Render.com (Free)
+1. Go to [render.com](https://render.com) → New → Web Service
+2. Connect this GitHub repo
+3. Settings:
+   - **Root Directory:** `apps/backend`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+4. Add Environment Variables:
+   ```
+   MONGODB_URI  = mongodb+srv://user:pass@cluster.mongodb.net/agriproject
+   JWT_SECRET   = your_strong_secret
+   NODE_ENV     = production
+   PORT         = 5000
+   JWT_EXPIRES_IN = 7d
+   ```
 
-### Frontend
-| Variable | Description |
-|---|---|
-| VITE_API_URL | Backend API base URL |
+### Frontend → Vercel (Free)
+1. Go to [vercel.com](https://vercel.com) → New Project
+2. Import this GitHub repo
+3. Settings:
+   - **Root Directory:** `apps/frontend`
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+4. Add Environment Variable:
+   ```
+   VITE_API_URL = https://your-render-backend.onrender.com/api
+   ```
 
-## Key features
-- B2B/B2C mode switch with localStorage persistence
-- Wholesale tier pricing with MOQ enforcement
-- CMS-driven homepage, about, and policy pages
-- Admin panel: products, categories, orders, enquiries, CMS, settings
-- JWT auth with httpOnly cookie + Bearer token support
+### MongoDB Atlas
+Already configured. Ensure your Atlas cluster has:
+- **Network Access** → Allow from anywhere (`0.0.0.0/0`)
+- **Database Access** → A user with read/write access
+
+---
+
+## Admin Access
+After seeding, login with:
+- **Email:** admin@openagri.com
+- **Password:** password123
+
+---
+
+## Project Structure
+```
+open-agri-mern/
+├── apps/
+│   ├── backend/          # Express API
+│   │   ├── src/
+│   │   │   ├── controllers/
+│   │   │   ├── models/
+│   │   │   ├── routes/
+│   │   │   └── server.js
+│   │   └── seed.js       # Database seeder
+│   └── frontend/         # React + Vite
+│       └── src/
+│           ├── pages/
+│           ├── components/
+│           └── context/
+└── packages/
+    └── shared/           # Shared utilities
+```
