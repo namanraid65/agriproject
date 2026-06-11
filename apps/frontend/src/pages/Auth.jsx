@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useMarket } from '../hooks/useMarket.js';
 import { UserRoles } from '@open-agri/shared';
 import { ShieldCheck, Sparkles } from 'lucide-react';
@@ -80,7 +80,7 @@ export const Auth = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-stone-50 py-12 px-6">
+    <div className="min-h-screen flex items-center justify-center bg-stone-50 py-12 px-6">
       <div className="max-w-md w-full bg-white rounded-3xl border border-stone-200/80 shadow-xl overflow-hidden">
         {/* Header Block */}
         <div className={`p-8 text-center text-white transition-all duration-500 ${isB2B ? 'bg-stone-900' : 'bg-emerald-950'}`}>
@@ -195,17 +195,27 @@ export const Auth = () => {
             {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
           </button>
 
-          <div className="text-center pt-2">
+          <div className="text-center pt-2 space-y-4">
             <button
               type="button"
               onClick={() => {
                 setIsLogin(!isLogin);
                 setError(null);
               }}
-              className="text-xs text-stone-500 hover:text-stone-700 font-bold"
+              className="text-xs text-stone-500 hover:text-stone-700 font-bold block mx-auto"
             >
               {isLogin ? "Don't have an account? Sign Up" : 'Already have an account? Sign In'}
             </button>
+            <div className="pt-4 border-t border-stone-100">
+              <Link
+                to="/"
+                className={`text-xs font-bold transition-colors ${
+                  isB2B ? 'text-amber-700 hover:text-amber-900' : 'text-emerald-700 hover:text-emerald-950'
+                }`}
+              >
+                ← Back to Marketplace
+              </Link>
+            </div>
           </div>
         </form>
       </div>

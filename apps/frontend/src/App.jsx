@@ -136,7 +136,7 @@ function App() {
 
             {/* ── Auth ── */}
             <Route path="/auth" element={
-              <AppShell><Auth /></AppShell>
+              <Auth />
             } />
 
             {/* ── Cart ── */}
