@@ -522,6 +522,10 @@ export default function AgriHomepage() {
 
   const handleAddToCart = (p) => {
     if (p.isDbProduct) {
+      if (p.rawProduct.stock <= 0) {
+        alert("This product is currently out of stock!");
+        return;
+      }
       addToCart(p.rawProduct, 1);
     } else {
       const productObj = {
@@ -1220,6 +1224,26 @@ export default function AgriHomepage() {
                             }}
                           >+</button>
                         </div>
+                      ) : (p.isDbProduct && p.rawProduct.stock <= 0) ? (
+                        <button
+                          className="ag-add-btn"
+                          disabled
+                          style={{
+                            background: "#f5f5f5",
+                            color: "#9e9e9e",
+                            border: "1.5px solid #e0e0e0",
+                            borderRadius: 10,
+                            padding: "10px 18px",
+                            cursor: "not-allowed",
+                            fontWeight: 800,
+                            fontSize: 13,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          Out of Stock
+                        </button>
                       ) : (
                         <button
                           className="ag-add-btn"
