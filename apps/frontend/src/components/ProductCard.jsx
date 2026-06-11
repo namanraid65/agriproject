@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useMarket } from '../hooks/useMarket.js';
 import { useCart } from '../hooks/useCart.js';
+import { QuantityInput } from './QuantityInput.jsx';
 import {
   ShoppingCart, FileText, Star, Package,
   Tag, Award, Truck, CheckCircle2, AlertTriangle
@@ -141,9 +142,14 @@ function ProductCardList({ product, isB2B, onAddToCart }) {
                 >
                   -
                 </button>
-                <span className="px-3 font-bold text-stone-800 text-xs text-center min-w-[70px]">
-                  {cartQty} in Cart
-                </span>
+                <QuantityInput
+                  value={cartQty}
+                  max={product.stock}
+                  onChange={(val) => {
+                    updateQty(product._id, val);
+                  }}
+                  className="w-12 text-center text-xs font-bold text-stone-800 bg-transparent outline-none"
+                />
                 <button
                   onClick={() => {
                     if (cartQty >= product.stock) {
@@ -351,9 +357,14 @@ export function ProductCard({ product, onAddToCart, viewMode = 'grid' }) {
               >
                 -
               </button>
-              <span className="flex-1 font-bold text-stone-850 text-xs text-center">
-                {cartQty} in Cart
-              </span>
+              <QuantityInput
+                value={cartQty}
+                max={product.stock}
+                onChange={(val) => {
+                  updateQty(product._id, val);
+                }}
+                className="w-12 text-center text-xs font-bold text-stone-850 bg-transparent outline-none flex-1"
+              />
               <button
                 onClick={() => {
                   if (cartQty >= product.stock) {

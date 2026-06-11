@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../hooks/useCart.js';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ArrowLeft } from 'lucide-react';
+import QuantityInput from '../components/QuantityInput.jsx';
 
 export const Cart = () => {
   const {
@@ -111,9 +112,14 @@ export const Cart = () => {
                           >
                             <Minus className="h-3.5 w-3.5" />
                           </button>
-                          <span className="px-4 py-1 font-bold text-stone-800 text-sm min-w-[36px] text-center">
-                            {item.quantity}
-                          </span>
+                          <QuantityInput
+                            value={item.quantity}
+                            max={product.stock || 999}
+                            onChange={(val) => {
+                              updateQty(product._id, val);
+                            }}
+                            className="w-12 text-center font-bold text-stone-800 text-sm bg-transparent outline-none"
+                          />
                           <button
                             onClick={() => updateQty(product._id, item.quantity + 1)}
                             disabled={item.quantity >= (product.stock || 999)}

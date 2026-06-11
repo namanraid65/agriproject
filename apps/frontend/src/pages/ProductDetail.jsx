@@ -5,6 +5,7 @@ import { useCart } from '../hooks/useCart.js';
 import { StarRating } from '../components/ProductCard.jsx';
 import EnquiryForm from '../components/EnquiryForm.jsx';
 import api from '../services/api.js';
+import QuantityInput from '../components/QuantityInput.jsx';
 import {
   ChevronRight, ChevronLeft, ChevronDown,
   ShoppingCart, FileText, Heart, Share2,
@@ -491,7 +492,14 @@ export default function ProductDetail() {
                       className="px-3.5 py-2 text-stone-500 hover:bg-stone-100 disabled:opacity-40 transition-colors border-r border-stone-200">
                       <Minus className="h-4 w-4" />
                     </button>
-                    <span className="px-5 py-2 font-bold text-stone-800 text-sm min-w-[48px] text-center">{qty}</span>
+                    <QuantityInput
+                      value={qty}
+                      max={product?.stock}
+                      onChange={(val) => {
+                        setQty(val);
+                      }}
+                      className="w-12 text-center font-bold text-stone-800 text-sm bg-transparent outline-none"
+                    />
                     <button onClick={() => changeQty(1)} disabled={qty >= product?.stock}
                       className="px-3.5 py-2 text-stone-500 hover:bg-stone-100 disabled:opacity-40 transition-colors border-l border-stone-200">
                       <Plus className="h-4 w-4" />

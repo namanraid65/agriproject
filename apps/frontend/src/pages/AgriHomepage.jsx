@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../hooks/useCart.js";
 import { useMarket } from "../hooks/useMarket.js";
 import api from "../services/api.js";
+import QuantityInput from "../components/QuantityInput.jsx";
 
 /* ═══════════════════════════════════════════════════════════
    MOCK API — swap every function body with real fetch() calls
@@ -1192,14 +1193,23 @@ export default function AgriHomepage() {
                               borderRight: "1px solid #c8e6c9"
                             }}
                           >-</button>
-                          <span className="ag-qty-span" style={{
-                            padding: "0 10px",
-                            fontWeight: 800,
-                            fontSize: 12,
-                            color: C.text,
-                            minWidth: 80,
-                            textAlign: "center"
-                          }}>{cartQty} in Cart</span>
+                          <QuantityInput
+                            value={cartQty}
+                            max={p.isDbProduct ? (p.rawProduct.stock ?? 50) : 50}
+                            onChange={(val) => {
+                              updateQty(p.id.toString(), val);
+                            }}
+                            style={{
+                              border: "none",
+                              background: "transparent",
+                              width: 60,
+                              textAlign: "center",
+                              fontWeight: 800,
+                              fontSize: 12,
+                              color: C.text,
+                              outline: "none"
+                            }}
+                          />
                           <button
                             type="button"
                             className="ag-qty-btn"
