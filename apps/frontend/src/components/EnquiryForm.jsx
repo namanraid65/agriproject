@@ -119,11 +119,13 @@ export const EnquiryForm = ({ type = 'general', product = null, onSuccess }) => 
       {/* Form Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="sm:col-span-2">
-          <label className="block text-xs font-bold text-stone-550 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+          <label htmlFor="enquiry-contact-person" className="block text-xs font-bold text-stone-550 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
             <ShieldCheck className="h-3.5 w-3.5 text-stone-400" />
             Contact Person Name
           </label>
           <input
+            id="enquiry-contact-person"
+            name="contactPerson"
             type="text"
             required
             value={contactPerson}
@@ -134,11 +136,13 @@ export const EnquiryForm = ({ type = 'general', product = null, onSuccess }) => 
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-stone-550 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+          <label htmlFor="enquiry-email" className="block text-xs font-bold text-stone-550 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
             <Mail className="h-3.5 w-3.5 text-stone-400" />
             Email Address
           </label>
           <input
+            id="enquiry-email"
+            name="email"
             type="email"
             required
             value={email}
@@ -149,11 +153,13 @@ export const EnquiryForm = ({ type = 'general', product = null, onSuccess }) => 
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-stone-555 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+          <label htmlFor="enquiry-phone" className="block text-xs font-bold text-stone-555 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
             <Phone className="h-3.5 w-3.5 text-stone-400" />
             Phone Number
           </label>
           <input
+            id="enquiry-phone"
+            name="phone"
             type="tel"
             required
             value={phone}
@@ -164,11 +170,13 @@ export const EnquiryForm = ({ type = 'general', product = null, onSuccess }) => 
         </div>
 
         <div className={type === 'bulk' ? 'sm:col-span-1' : 'sm:col-span-2'}>
-          <label className="block text-xs font-bold text-stone-555 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+          <label htmlFor="enquiry-company-name" className="block text-xs font-bold text-stone-555 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
             <Building className="h-3.5 w-3.5 text-stone-400" />
             Company / Farm Name {type !== 'bulk' && <span className="text-stone-400 font-normal lowercase">(optional)</span>}
           </label>
           <input
+            id="enquiry-company-name"
+            name="companyName"
             type="text"
             required={type === 'bulk'}
             value={companyName}
@@ -180,11 +188,13 @@ export const EnquiryForm = ({ type = 'general', product = null, onSuccess }) => 
 
         {['product', 'bulk'].includes(type) && (
           <div>
-            <label className="block text-xs font-bold text-stone-555 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+            <label htmlFor="enquiry-quantity" className="block text-xs font-bold text-stone-555 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
               <Tag className="h-3.5 w-3.5 text-stone-400" />
               Required Quantity (units)
             </label>
             <input
+              id="enquiry-quantity"
+              name="quantity"
               type="number"
               required
               value={quantity}
@@ -197,11 +207,13 @@ export const EnquiryForm = ({ type = 'general', product = null, onSuccess }) => 
         )}
 
         <div className="sm:col-span-2">
-          <label className="block text-xs font-bold text-stone-555 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+          <label htmlFor="enquiry-message" className="block text-xs font-bold text-stone-555 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
             <MessageSquare className="h-3.5 w-3.5 text-stone-400" />
             Enquiry Message / Special Specifications
           </label>
           <textarea
+            id="enquiry-message"
+            name="message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={4}

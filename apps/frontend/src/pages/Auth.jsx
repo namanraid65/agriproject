@@ -84,8 +84,10 @@ export const Auth = () => {
 
           {!isLogin && (
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Full Name</label>
+              <label htmlFor="auth-name" className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Full Name</label>
               <input
+                id="auth-name"
+                name="name"
                 type="text"
                 required
                 value={name}
@@ -97,8 +99,10 @@ export const Auth = () => {
           )}
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Email Address</label>
+            <label htmlFor="auth-email" className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Email Address</label>
             <input
+              id="auth-email"
+              name="email"
               type="email"
               required
               value={email}
@@ -109,8 +113,10 @@ export const Auth = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Password</label>
+            <label htmlFor="auth-password" className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Password</label>
             <input
+              id="auth-password"
+              name="password"
               type="password"
               required
               value={password}
@@ -123,8 +129,10 @@ export const Auth = () => {
           {!isLogin && (
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Account Role</label>
+                <label htmlFor="auth-role" className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Account Role</label>
                 <select
+                  id="auth-role"
+                  name="role"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   className={`w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 ${styles.focusRing}`}
@@ -144,8 +152,10 @@ export const Auth = () => {
                     <span>Business Verification Details</span>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-stone-500 mb-1">Company/Farm Name</label>
+                    <label htmlFor="auth-company-name" className="block text-xs font-semibold text-stone-500 mb-1">Company/Farm Name</label>
                     <input
+                      id="auth-company-name"
+                      name="companyName"
                       type="text"
                       required
                       value={companyName}
@@ -155,8 +165,10 @@ export const Auth = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-stone-500 mb-1">Tax ID / License Number</label>
+                    <label htmlFor="auth-tax-id" className="block text-xs font-semibold text-stone-500 mb-1">Tax ID / License Number</label>
                     <input
+                      id="auth-tax-id"
+                      name="taxId"
                       type="text"
                       required
                       value={taxId}
