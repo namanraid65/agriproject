@@ -74,6 +74,25 @@ export const AdminOrders = () => {
     }
   };
 
+  const handlePaymentStatusChange = async (orderId, newPaymentStatus) => {
+    setUpdatingStatus(true);
+    try {
+      await api.patch(`/orders/admin/${orderId}/status`, { paymentStatus: newPaymentStatus });
+      
+      // Update selected order in state if open
+      if (selectedOrder && selectedOrder._id === orderId) {
+        setSelectedOrder(prev => ({ ...prev, paymentStatus: newPaymentStatus }));
+      }
+      
+      fetchOrders();
+    } catch (err) {
+      console.error('Failed to update payment status:', err);
+      alert(err.response?.data?.message || 'Failed to update payment status.');
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
   if (!user || user.role !== 'admin') {
     return null;
   }
@@ -146,23 +165,43 @@ export const AdminOrders = () => {
               {/* Scrollable details */}
               <div className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-thin">
                 
-                {/* Workflow Status Dropdown */}
-                <div className="bg-stone-50 border border-stone-200 rounded-xl p-4 space-y-2.5">
-                  <h4 className="text-[10px] font-black uppercase tracking-wider text-stone-400 flex items-center gap-1.5"><Truck className="h-3 w-3" /> Update Shipping Status</h4>
-                  <div className="flex gap-2">
-                    <select
-                      value={selectedOrder.status}
-                      disabled={updatingStatus}
-                      onChange={(e) => handleStatusChange(selectedOrder._id, e.target.value)}
-                      className="flex-1 px-3 py-1.5 border border-stone-200 rounded-lg text-xs bg-white font-semibold focus:outline-none"
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="confirmed">Confirmed</option>
-                      <option value="processing">Processing</option>
-                      <option value="shipped">Shipped</option>
-                      <option value="delivered">Delivered</option>
-                    </select>
-                    {updatingStatus && <Loader2 className="h-4 w-4 animate-spin text-emerald-600 self-center" />}
+                {/* Status Update Selectors */}
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Workflow Status Dropdown */}
+                  <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-2">
+                    <h4 className="text-[9px] font-black uppercase tracking-wider text-stone-400 flex items-center gap-1"><Truck className="h-3 w-3" /> Order Status</h4>
+                    <div className="flex gap-2">
+                      <select
+                        value={selectedOrder.status}
+                        disabled={updatingStatus}
+                        onChange={(e) => handleStatusChange(selectedOrder._id, e.target.value)}
+                        className="flex-1 px-2 py-1.5 border border-stone-200 rounded-lg text-[11px] bg-white font-bold text-stone-705 focus:outline-none"
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Payment Status Dropdown */}
+                  <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-2">
+                    <h4 className="text-[9px] font-black uppercase tracking-wider text-stone-400 flex items-center gap-1"><Shield className="h-3 w-3" /> Payment Status</h4>
+                    <div className="flex gap-2">
+                      <select
+                        value={selectedOrder.paymentStatus}
+                        disabled={updatingStatus}
+                        onChange={(e) => handlePaymentStatusChange(selectedOrder._id, e.target.value)}
+                        className="flex-1 px-2 py-1.5 border border-stone-200 rounded-lg text-[11px] bg-white font-bold text-stone-705 focus:outline-none"
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="paid">Paid</option>
+                        <option value="failed">Failed</option>
+                        <option value="refunded">Refunded</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
 

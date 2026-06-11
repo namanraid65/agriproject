@@ -163,12 +163,13 @@ export const getAllOrders = async (req, res, next) => {
 // PATCH /api/orders/:id/status — Admin: update order status
 export const updateOrderStatus = async (req, res, next) => {
   try {
-    const { status, trackingNumber, carrier } = req.body;
+    const { status, trackingNumber, carrier, paymentStatus } = req.body;
     const order = await Order.findById(req.params.id);
     if (!order) return next(new AppError('Order not found.', 404));
     if (status) order.status = status;
     if (trackingNumber) order.trackingNumber = trackingNumber;
     if (carrier) order.carrier = carrier;
+    if (paymentStatus) order.paymentStatus = paymentStatus;
     const updated = await order.save();
     res.status(200).json({ status: 'success', data: { order: updated } });
   } catch (err) { next(err); }
