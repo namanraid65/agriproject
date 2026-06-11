@@ -11,22 +11,40 @@ export const MarketProvider = ({ children }) => {
   
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
+    if (savedUser) {
+      const parsed = JSON.parse(savedUser);
+      if (parsed && parsed.role && parsed.role.toUpperCase() === 'ADMIN') {
+        parsed.role = 'admin';
+      }
+      return parsed;
+    }
+    return null;
   });
 
   const [token, setToken] = useState(() => {
     return localStorage.getItem('token') || null;
   });
 
+  const [settings, setSettings] = useState(null);
+
+  const fetchSettings = async () => {
+    try {
+      const response = await axios.get('/api/settings');
+      setSettings(response.data?.data?.settings || null);
+    } catch (error) {
+      console.error('Failed to load global settings:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
   useEffect(() => {
     localStorage.setItem('marketMode', marketMode);
   }, [marketMode]);
 
   const toggleMarketMode = () => {
-    if (user && user.role === 'CUSTOMER') {
-      alert('Wholesale B2B features are only available for business accounts. Please sign in with a B2B business account (Farmer, Distributor, or Wholesaler) to access wholesale pricing.');
-      return;
-    }
     setMarketMode((prev) => (prev === MarketModes.B2C ? MarketModes.B2B : MarketModes.B2C));
   };
 
@@ -36,6 +54,10 @@ export const MarketProvider = ({ children }) => {
       // API response shape: { status, token, data: { user } }
       const userToken = response.data.token;
       const userData  = response.data.data?.user || response.data.data || {};
+
+      if (userData.role && userData.role.toUpperCase() === 'ADMIN') {
+        userData.role = 'admin';
+      }
 
       setUser(userData);
       setToken(userToken);
@@ -62,6 +84,10 @@ export const MarketProvider = ({ children }) => {
       // API response shape: { status, token, data: { user } }
       const userToken = response.data.token;
       const userData  = response.data.data?.user || response.data.data || {};
+
+      if (userData.role && userData.role.toUpperCase() === 'ADMIN') {
+        userData.role = 'admin';
+      }
 
       setUser(userData);
       setToken(userToken);
@@ -116,7 +142,9 @@ export const MarketProvider = ({ children }) => {
       register,
       logout,
       isB2B,
-      styles
+      styles,
+      settings,
+      fetchSettings
     }}>
       {children}
     </MarketContext.Provider>

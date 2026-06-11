@@ -223,7 +223,7 @@ function Carousel({ items }) {
   return (
     <div style={{ position: "relative", maxWidth: 700, margin: "0 auto" }}>
       {/* Card */}
-      <div style={{
+      <div className="ag-testimonial-card" style={{
         background: "#fff",
         borderRadius: 24,
         padding: "2.75rem",
@@ -273,7 +273,7 @@ function Carousel({ items }) {
 
       {/* Arrows */}
       {[["left", -1], ["right", 1]].map(([side, dir]) => (
-        <button key={side} onClick={() => go(dir)} style={{
+        <button key={side} className="ag-carousel-arrow" onClick={() => go(dir)} style={{
           position: "absolute", top: "50%",
           [side]: -58, transform: "translateY(-50%)",
           width: 44, height: 44, borderRadius: "50%",
@@ -335,10 +335,33 @@ export default function AgriHomepage() {
   const [cmsData,      setCmsData]      = useState(null);
   const [cmsLoading,   setCmsLoading]   = useState(true);
   const [dismissedBanners, setDismissedBanners] = useState(new Set());
+  const [wishlist, setWishlist] = useState(new Set());
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("agri-wishlist") || "[]");
+      setWishlist(new Set(stored));
+    } catch (e) {
+      console.error("Failed to load wishlist:", e);
+    }
+  }, []);
+
+  const toggleWishlist = (productId) => {
+    setWishlist(prev => {
+      const next = new Set(prev);
+      if (next.has(productId)) {
+        next.delete(productId);
+      } else {
+        next.add(productId);
+      }
+      localStorage.setItem("agri-wishlist", JSON.stringify(Array.from(next)));
+      return next;
+    });
+  };
 
   const dismissBanner = (idx) => setDismissedBanners(prev => new Set([...prev, idx]));
 
-  const { cartCount, addToCart } = useCart();
+  const { cartCount, addToCart, cart, updateQty, remove } = useCart();
   const { isB2B } = useMarket();
   const navigate = useNavigate();
 
@@ -641,6 +664,10 @@ export default function AgriHomepage() {
         @keyframes ag-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
         @keyframes ag-spin-slow { to{transform:rotate(360deg)} }
         @keyframes ag-pulse-ring { 0%,100%{opacity:.35;transform:scale(1)} 50%{opacity:.15;transform:scale(1.06)} }
+        @keyframes ag-ticker {
+          0% { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-33.33%, 0, 0); }
+        }
         #agri-homepage * { box-sizing:border-box; }
         .ag-cat-card { transition:transform .22s,box-shadow .22s !important; cursor:pointer; }
         .ag-cat-card:hover { transform:translateY(-6px) !important; box-shadow:0 16px 48px rgba(26,61,43,.15) !important; }
@@ -654,6 +681,154 @@ export default function AgriHomepage() {
         .ag-cta1:hover { background:#e0a030 !important; transform:translateY(-1px) !important; }
         .ag-cta2 { transition:all .2s !important; }
         .ag-cta2:hover { background:rgba(255,255,255,.12) !important; border-color: ${isB2B ? '#ffd166' : '#a8d5b5'} !important; }
+
+        /* ═══ MOBILE RESPONSIVE STYLES ═══ */
+        .ag-hero-trust {
+          color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        @media (max-width: 991px) {
+          .ag-hero-grid {
+            grid-template-columns: 1fr !important;
+            gap: 3rem !important;
+            text-align: center !important;
+            padding: 4rem 1.5rem !important;
+          }
+          .ag-hero-ctas {
+            justify-content: center !important;
+          }
+          .ag-hero-subheadline {
+            margin: 0 auto 2.25rem !important;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .ag-hero-title {
+            font-size: 2.2rem !important;
+          }
+          .ag-hero-badge {
+            font-size: 11px !important;
+            padding: 6px 14px !important;
+            margin-bottom: 1.25rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            max-width: 90% !important;
+          }
+          .ag-hero-badge span {
+            font-size: 11px !important;
+          }
+          .ag-hero-ctas {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 12px !important;
+            width: 100% !important;
+            max-width: 320px !important;
+            margin: 0 auto !important;
+          }
+          .ag-cta1, .ag-cta2 {
+            width: 100% !important;
+            justify-content: center !important;
+            text-align: center !important;
+          }
+          .ag-hero-trust {
+            justify-content: center !important;
+          }
+          .ag-section-header {
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center !important;
+            gap: 12px !important;
+            margin-bottom: 2rem !important;
+          }
+          .ag-categories-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 12px !important;
+          }
+          .ag-products-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 14px !important;
+          }
+          .ag-prod-desc {
+            display: none !important;
+          }
+          .ag-prod-details {
+            padding: 12px !important;
+          }
+          .ag-prod-details h3 {
+            font-size: 14px !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+          }
+          .ag-prod-details p {
+            display: none !important;
+          }
+          .ag-qty-control {
+            height: 32px !important;
+          }
+          .ag-qty-btn {
+            padding: 0 8px !important;
+            font-size: 14px !important;
+          }
+          .ag-qty-span {
+            min-width: 50px !important;
+            padding: 0 4px !important;
+            font-size: 11px !important;
+          }
+          .ag-add-btn {
+            padding: 8px 12px !important;
+            font-size: 11px !important;
+          }
+          .ag-add-btn svg {
+            margin-right: 3px !important;
+            width: 12px !important;
+            height: 12px !important;
+          }
+          .ag-why-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+          .ag-why-card {
+            padding: 1.75rem 1.25rem !important;
+          }
+          .ag-farmers-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px !important;
+          }
+          .ag-testimonials-container {
+            padding: 0 1.5rem !important;
+          }
+          .ag-testimonial-card {
+            padding: 1.75rem !important;
+          }
+          .ag-carousel-arrow {
+            display: none !important;
+          }
+          .ag-newsletter-form {
+            flex-direction: column !important;
+            gap: 12px !important;
+          }
+          .ag-newsletter-form input,
+          .ag-newsletter-form button {
+            width: 100% !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .ag-categories-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+          .ag-hero-stats-card {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 1rem !important;
+            padding: 1.5rem 1rem !important;
+          }
+          .ag-farmers-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
       `}</style>
 
       {/* ═══ HERO ═══ */}
@@ -690,7 +865,7 @@ export default function AgriHomepage() {
           }} />
         ))}
 
-        <div style={{
+        <div className="ag-hero-grid" style={{
           maxWidth: 1280, margin: "0 auto", padding: "5rem 2rem",
           display: "grid", gridTemplateColumns: "1.1fr 0.9fr",
           gap: "4rem", alignItems: "center", width: "100%",
@@ -703,17 +878,17 @@ export default function AgriHomepage() {
             {displayHero ? (
               <>
                 {/* Badge pill */}
-                <div style={{
+                <div className="ag-hero-badge" style={{
                   display: "inline-flex", alignItems: "center", gap: 8,
                   background: `${C.gold}22`, border: `1px solid ${C.gold}55`,
                   borderRadius: 30, padding: "6px 16px", marginBottom: "1.75rem",
                 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.gold, display: "inline-block", boxShadow: `0 0 8px ${C.gold}` }} />
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.gold, display: "inline-block", boxShadow: `0 0 8px ${C.gold}`, flexShrink: 0 }} />
                   <span style={{ fontSize: 13, color: "#ffd166", fontWeight: 600 }}>{displayHero.badge}</span>
                 </div>
 
                 {/* Headline */}
-                <h1 style={{
+                <h1 className="ag-hero-title" style={{
                   fontSize: "clamp(2.6rem, 5vw, 4rem)", fontWeight: 900,
                   color: "#fff", lineHeight: 1.1, margin: "0 0 1.5rem",
                   letterSpacing: "-2px",
@@ -723,7 +898,7 @@ export default function AgriHomepage() {
                   <br />{displayHero.headline[2]}
                 </h1>
 
-                <p style={{
+                <p className="ag-hero-subheadline" style={{
                   fontSize: "1.05rem", color: isB2B ? "#e5c583" : "#a8d5b5", lineHeight: 1.8,
                   margin: "0 0 2.25rem", maxWidth: 480,
                 }}>
@@ -731,7 +906,7 @@ export default function AgriHomepage() {
                 </p>
 
                 {/* CTAs */}
-                <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+                <div className="ag-hero-ctas" style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
                   <Link to={displayHero.cta1.href} className="ag-cta1" style={{
                     background: C.gold, color: "#fff", textDecoration: "none",
                     borderRadius: 12, padding: "14px 34px",
@@ -763,7 +938,7 @@ export default function AgriHomepage() {
                 </div>
 
                 {/* Trust line */}
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 28, color: isB2B ? "#b08846" : "#52796f", fontSize: 13 }}>
+                <div className="ag-hero-trust" style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 28, color: isB2B ? "#b08846" : "#52796f", fontSize: 13 }}>
                   <span>✓</span>
                   <span>Trusted by 50,000+ families &amp; agri-businesses across India</span>
                 </div>
@@ -787,7 +962,7 @@ export default function AgriHomepage() {
           {/* ── Right: stats + badge panel ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {/* Stats glass card */}
-            <div style={{
+            <div className="ag-hero-stats-card" style={{
               background: "rgba(255,255,255,.07)", backdropFilter: "blur(20px)",
               border: "1px solid rgba(255,255,255,.12)", borderRadius: 24,
               padding: "2rem 1.5rem",
@@ -844,7 +1019,7 @@ export default function AgriHomepage() {
       <div style={{ background: C.gold, padding: "10px 0", overflow: "hidden", whiteSpace: "nowrap" }}>
         <div style={{
           display: "inline-flex", gap: "3rem",
-          animation: "ag-spin-slow 20s linear infinite",
+          animation: "ag-ticker 25s linear infinite",
           animationTimingFunction: "linear",
         }}>
           {Array(3).fill(["Heritage Tomatoes", "Alphonso Mangoes", "Basmati Rice", "Cold-Press Oil", "Raw Forest Honey", "Organic Broccoli", "Nashik Onions", "Moringa Leaves"]).flat().map((item, i) => (
@@ -855,7 +1030,7 @@ export default function AgriHomepage() {
 
       {/* ═══ CATEGORIES ═══ */}
       <section id="categories" style={{ maxWidth: 1280, margin: "0 auto", padding: "6rem 2rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem" }}>
+        <div className="ag-section-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem" }}>
           <div>
             <SectionLabel text="Browse by Category" />
             <h2 style={{ fontSize: "clamp(1.8rem,3vw,2.5rem)", fontWeight: 900, color: C.text, margin: 0, letterSpacing: "-1px" }}>
@@ -867,7 +1042,7 @@ export default function AgriHomepage() {
           </Link>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(175px,1fr))", gap: 18 }}>
+        <div className="ag-categories-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(175px,1fr))", gap: 18 }}>
           {categories.length > 0 ? categories.map((cat) => (
             <button key={cat.id} className="ag-cat-card" onClick={() => navigate(`/products?category=${cat.id || cat._id}`)} style={{
               background: cat.bg, border: `2px solid ${cat.color}20`,
@@ -893,7 +1068,7 @@ export default function AgriHomepage() {
       {/* ═══ FEATURED PRODUCTS ═══ */}
       <section id="products" style={{ background: C.surface, padding: "6rem 0" }}>
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 2rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem" }}>
+          <div className="ag-section-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "3rem" }}>
             <div>
               <SectionLabel text="Hand-Picked for You" />
               <h2 style={{ fontSize: "clamp(1.8rem,3vw,2.5rem)", fontWeight: 900, color: C.text, margin: 0, letterSpacing: "-1px" }}>
@@ -905,74 +1080,174 @@ export default function AgriHomepage() {
             </Link>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))", gap: 22 }}>
-            {products.length > 0 ? products.map((p) => (
-              <div key={p.id} className="ag-prod-card" style={{
-                background: C.cream, borderRadius: 20,
-                border: isB2B ? "1.5px solid #ffe0b2" : "1.5px solid #c8e6c9",
-                overflow: "hidden",
-                boxShadow: "0 2px 12px rgba(26,61,43,.06)",
-              }}>
-                {/* Image area */}
-                <div style={{ background: p.bg, padding: "2rem 1.5rem", textAlign: "center", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", height: 160 }}>
-                  {(typeof p.img === 'string' && (p.img.startsWith('http') || p.img.startsWith('/'))) ? (
-                    <img src={p.img} alt={p.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 8 }} />
-                  ) : (
-                    <img src={`https://placehold.co/280x140/e7f3e0/2d6a4f?text=${encodeURIComponent(p.name)}`} alt={p.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 8 }} />
-                  )}
-                  <div style={{
-                    position: "absolute", top: 14, left: 14,
-                    background: p.badgeColor, color: "#fff",
-                    fontSize: 10, fontWeight: 800, letterSpacing: "0.5px",
-                    padding: "4px 12px", borderRadius: 20, textTransform: "uppercase",
-                  }}>{p.badge}</div>
-                  <button style={{
-                    position: "absolute", top: 12, right: 12,
-                    background: "rgba(255,255,255,.8)", border: "none",
-                    borderRadius: 8, width: 32, height: 32, cursor: "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                  </button>
-                </div>
-
-                {/* Details */}
-                <div style={{ padding: "1.25rem 1.25rem 1.5rem" }}>
-                  <div style={{ fontSize: 12, color: C.muted, marginBottom: 5, fontWeight: 600 }}>{p.farm}</div>
-                  <h3 style={{ fontWeight: 800, fontSize: 17, margin: "0 0 5px", color: C.text, letterSpacing: "-0.3px" }}>{p.name}</h3>
-                  <p style={{ fontSize: 13, color: C.muted, margin: "0 0 10px", lineHeight: 1.55 }}>{p.desc}</p>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
-                    <Stars rating={p.rating} />
-                    <span style={{ fontSize: 12, color: C.muted, fontWeight: 600 }}>{p.rating} ({p.reviews.toLocaleString()})</span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <div>
-                      <span style={{ fontSize: 11, color: C.muted, display: "block", marginBottom: 2 }}>
-                        {isB2B ? "Wholesale Est." : `Price per ${p.unit}`}
-                      </span>
-                      <span style={{ fontSize: 22, fontWeight: 900, color: C.forest, letterSpacing: "-0.5px" }}>₹{p.price}</span>
-                      <span style={{ fontSize: 12, color: C.muted }}>/{p.unit}</span>
-                    </div>
-                    {isB2B ? (
-                      <Link to="/rfq" className="ag-add-btn" style={{
-                        background: "#fff3e0", color: C.forest,
-                        border: "1.5px solid #ffe0b2",
-                        borderRadius: 10, padding: "10px 18px",
-                        cursor: "pointer", fontWeight: 800, fontSize: 13,
-                        textDecoration: "none", display: "inline-block"
-                      }}>Request Quote</Link>
+          <div className="ag-products-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))", gap: 22 }}>
+            {products.length > 0 ? products.map((p) => {
+              const cartItem = cart?.find(item => item.product._id === p.id.toString());
+              const cartQty = cartItem ? cartItem.quantity : 0;
+              return (
+                <div key={p.id} className="ag-prod-card" style={{
+                  background: C.cream, borderRadius: 20,
+                  border: isB2B ? "1.5px solid #ffe0b2" : "1.5px solid #c8e6c9",
+                  overflow: "hidden",
+                  boxShadow: "0 2px 12px rgba(26,61,43,.06)",
+                }}>
+                  {/* Image area */}
+                  <div style={{ background: p.bg, padding: "2rem 1.5rem", textAlign: "center", position: "relative", display: "flex", alignItems: "center", justifyContent: "center", height: 160 }}>
+                    {(typeof p.img === 'string' && (p.img.startsWith('http') || p.img.startsWith('/'))) ? (
+                      <img src={p.img} alt={p.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 8 }} />
                     ) : (
-                      <button className="ag-add-btn" id={`add-to-cart-${p.id}`} onClick={() => handleAddToCart(p)} style={{
-                        background: "#e8f5e9", color: C.forest,
-                        border: "1.5px solid #a5d6a7",
-                        borderRadius: 10, padding: "10px 18px",
-                        cursor: "pointer", fontWeight: 800, fontSize: 13,
-                      }}>+ Add</button>
+                      <img src={`https://placehold.co/280x140/e7f3e0/2d6a4f?text=${encodeURIComponent(p.name)}`} alt={p.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: 8 }} />
                     )}
+                    <div style={{
+                      position: "absolute", top: 14, left: 14,
+                      background: p.badgeColor, color: "#fff",
+                      fontSize: 10, fontWeight: 800, letterSpacing: "0.5px",
+                      padding: "4px 12px", borderRadius: 20, textTransform: "uppercase",
+                    }}>{p.badge}</div>
+                    <button 
+                      onClick={() => toggleWishlist(p.id.toString())}
+                      aria-label={wishlist.has(p.id.toString()) ? "Remove from wishlist" : "Add to wishlist"}
+                      style={{
+                        position: "absolute", top: 12, right: 12,
+                        background: "rgba(255,255,255,.9)", border: "none",
+                        borderRadius: 8, width: 32, height: 32, cursor: "pointer",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                        transition: "all 0.2s",
+                      }}
+                    >
+                      <svg 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill={wishlist.has(p.id.toString()) ? "#e76f51" : "none"} 
+                        stroke={wishlist.has(p.id.toString()) ? "#e76f51" : "#888"} 
+                        strokeWidth="2.5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      >
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* Details */}
+                  <div className="ag-prod-details" style={{ padding: "1.25rem 1.25rem 1.5rem" }}>
+                    <div style={{ fontSize: 12, color: C.muted, marginBottom: 5, fontWeight: 600 }}>{p.farm}</div>
+                    <h3 style={{ fontWeight: 800, fontSize: 17, margin: "0 0 5px", color: C.text, letterSpacing: "-0.3px" }}>{p.name}</h3>
+                    <p className="ag-prod-desc" style={{ fontSize: 13, color: C.muted, margin: "0 0 10px", lineHeight: 1.55 }}>{p.desc}</p>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
+                      <Stars rating={p.rating} />
+                      <span style={{ fontSize: 12, color: C.muted, fontWeight: 600 }}>{p.rating} ({p.reviews.toLocaleString()})</span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div>
+                        <span style={{ fontSize: 11, color: C.muted, display: "block", marginBottom: 2 }}>
+                          {isB2B ? "Wholesale Est." : `Price per ${p.unit}`}
+                        </span>
+                        <span style={{ fontSize: 22, fontWeight: 900, color: C.forest, letterSpacing: "-0.5px" }}>₹{p.price}</span>
+                        <span style={{ fontSize: 12, color: C.muted }}>/{p.unit}</span>
+                      </div>
+                      {isB2B ? (
+                        <Link to="/rfq" className="ag-add-btn" style={{
+                          background: "#fff3e0", color: C.forest,
+                          border: "1.5px solid #ffe0b2",
+                          borderRadius: 10, padding: "10px 18px",
+                          cursor: "pointer", fontWeight: 800, fontSize: 13,
+                          textDecoration: "none", display: "inline-block"
+                        }}>Request Quote</Link>
+                      ) : cartQty > 0 ? (
+                        <div className="ag-qty-control" style={{
+                          display: "flex",
+                          alignItems: "center",
+                          border: "1.5px solid #a5d6a7",
+                          borderRadius: 10,
+                          background: "#fff",
+                          height: 38,
+                          overflow: "hidden"
+                        }}>
+                          <button
+                            type="button"
+                            className="ag-qty-btn"
+                            onClick={() => {
+                              if (cartQty === 1) {
+                                remove(p.id.toString());
+                              } else {
+                                updateQty(p.id.toString(), cartQty - 1);
+                              }
+                            }}
+                            style={{
+                              border: "none",
+                              background: "transparent",
+                              padding: "0 12px",
+                              color: C.forest,
+                              fontWeight: 800,
+                              fontSize: 16,
+                              cursor: "pointer",
+                              height: "100%",
+                              borderRight: "1px solid #c8e6c9"
+                            }}
+                          >-</button>
+                          <span className="ag-qty-span" style={{
+                            padding: "0 10px",
+                            fontWeight: 800,
+                            fontSize: 12,
+                            color: C.text,
+                            minWidth: 80,
+                            textAlign: "center"
+                          }}>{cartQty} in Cart</span>
+                          <button
+                            type="button"
+                            className="ag-qty-btn"
+                            onClick={() => {
+                              const stockLimit = p.isDbProduct ? (p.rawProduct.stock ?? 50) : 50;
+                              if (cartQty >= stockLimit) {
+                                alert(`Only ${stockLimit} units available in stock.`);
+                              } else {
+                                updateQty(p.id.toString(), cartQty + 1);
+                              }
+                            }}
+                            style={{
+                              border: "none",
+                              background: "transparent",
+                              padding: "0 12px",
+                              color: C.forest,
+                              fontWeight: 800,
+                              fontSize: 16,
+                              cursor: "pointer",
+                              height: "100%",
+                              borderLeft: "1px solid #c8e6c9"
+                            }}
+                          >+</button>
+                        </div>
+                      ) : (
+                        <button
+                          className="ag-add-btn"
+                          id={`add-to-cart-${p.id}`}
+                          onClick={() => handleAddToCart(p)}
+                          style={{
+                            background: "#e8f5e9",
+                            color: C.forest,
+                            border: "1.5px solid #a5d6a7",
+                            borderRadius: 10,
+                            padding: "10px 18px",
+                            cursor: "pointer",
+                            fontWeight: 800,
+                            fontSize: 13,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6 }}><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                          Add to Cart
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )) : Array(8).fill(0).map((_, i) => (
+              );
+            }) : Array(8).fill(0).map((_, i) => (
               <div key={i} style={{ background: C.cream, borderRadius: 20, overflow: "hidden", border: "1.5px solid #c8e6c9" }}>
                 <div style={{ height: 150, background: "#e8f5e9" }} />
                 <div style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: 10 }}>
@@ -1015,7 +1290,7 @@ export default function AgriHomepage() {
             </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))", gap: 20 }}>
+          <div className="ag-why-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))", gap: 20 }}>
             {displayWhyUs.length > 0 ? displayWhyUs.map((item) => (
               <div key={item.title} className="ag-why-card" style={{
                 background: "rgba(255,255,255,.06)",
@@ -1056,7 +1331,7 @@ export default function AgriHomepage() {
 
       {/* ═══ TESTIMONIALS ═══ */}
       <section id="testimonials" style={{ padding: "6rem 0", background: "#f0f7f0" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 5rem" }}>
+        <div className="ag-testimonials-container" style={{ maxWidth: 860, margin: "0 auto", padding: "0 5rem" }}>
           <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
             <SectionLabel text="Real Stories" />
             <h2 style={{ fontSize: "clamp(1.8rem,3vw,2.5rem)", fontWeight: 900, color: C.text, margin: "0 0 10px", letterSpacing: "-1px" }}>
@@ -1094,7 +1369,7 @@ export default function AgriHomepage() {
               Meet the Farmers
             </h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 20 }}>
+          <div className="ag-farmers-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 20 }}>
             {[
               { name: "Ravi Kumar", region: "Punjab, India", crop: "Basmati & Wheat", avatar: "RK", years: 22, bg: "#e8f5e9" },
               { name: "Meera Devi", region: "Nashik, Maharashtra", crop: "Onion & Grapes", avatar: "MD", years: 16, bg: "#fff8e1" },
@@ -1148,7 +1423,7 @@ export default function AgriHomepage() {
               You're subscribed! Welcome to the KisanMart family.
             </div>
           ) : (
-            <form onSubmit={handleSubscribe} style={{ display: "flex", gap: 10, maxWidth: 460, margin: "0 auto" }}>
+            <form onSubmit={handleSubscribe} className="ag-newsletter-form" style={{ display: "flex", gap: 10, maxWidth: 460, margin: "0 auto" }}>
               <input
                 id="newsletter-email"
                 type="email" value={email} onChange={(e) => setEmail(e.target.value)}

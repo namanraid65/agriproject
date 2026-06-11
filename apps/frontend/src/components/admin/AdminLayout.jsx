@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useMarket } from "../../hooks/useMarket.js";
+import api from "../../services/api.js";
 
 /**
  * AdminLayout
@@ -18,13 +20,17 @@ const DEFAULT_NAV = [
   { section: "Main" },
   { label: "Dashboard", icon: "ti-layout-dashboard", href: "/admin" },
   { label: "Orders",    icon: "ti-shopping-bag",       href: "/admin/orders" },
-  { label: "Enquiries", icon: "ti-message",           href: "/admin/enquiries" },
-  { section: "Manage" },
-  { label: "Products",  icon: "ti-tag",               href: "/admin/products" },
-  { label: "Categories", icon: "ti-category",          href: "/admin/categories" },
-  { label: "CMS Pages",  icon: "ti-file-text",         href: "/admin/cms" },
+  { label: "Enquiries", icon: "ti-message",            href: "/admin/enquiries" },
+  { section: "Manage Content" },
+  { label: "Banners",     icon: "ti-image",            href: "/admin/banners" },
+  { label: "Testimonials",icon: "ti-star",             href: "/admin/testimonials" },
+  { label: "CMS Pages",   icon: "ti-file-text",        href: "/admin/cms" },
+  { section: "Manage Store" },
+  { label: "Products",    icon: "ti-tag",              href: "/admin/products" },
+  { label: "Categories",  icon: "ti-category",         href: "/admin/categories" },
   { section: "System" },
-  { label: "Settings",  icon: "ti-settings",          href: "/admin/settings" },
+  { label: "Settings",    icon: "ti-settings",         href: "/admin/settings" },
+  { label: "Users/Admins",icon: "ti-users",            href: "/admin/users" }
 ];
 
 export default function AdminLayout({
@@ -41,6 +47,128 @@ export default function AdminLayout({
   const activeHref = location.pathname;
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchVal, setSearchVal] = useState("");
+  const { logout } = useMarket();
+  const navigate = useNavigate();
+
+  // Notifications state
+  const [notifs, setNotifs] = useState([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+
+  // Load and fetch notifications
+  useEffect(() => {
+    // 1. Initial load from localStorage
+    const saved = localStorage.getItem("admin_notifications");
+    if (saved) {
+      try {
+        setNotifs(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved notifications:", e);
+      }
+    }
+
+    // 2. Fetch fresh dynamic data from DB
+    const fetchDynamic = async () => {
+      try {
+        const [enquiriesRes, ordersRes, productsRes] = await Promise.all([
+          api.get('/enquiries').catch(() => ({ data: { data: { enquiries: [] } } })),
+          api.get('/orders/admin/all').catch(() => ({ data: { data: { orders: [] } } })),
+          api.get('/products?adminView=true&limit=100').catch(() => ({ data: { data: { products: [] } } }))
+        ]);
+
+        const enquiries = enquiriesRes.data?.data?.enquiries || [];
+        const orders = ordersRes.data?.data?.orders || [];
+        const products = productsRes.data?.data?.products || [];
+
+        const dynamicNotifs = [];
+
+        // Add pending enquiries
+        enquiries.filter(e => e.status === 'pending').forEach(e => {
+          dynamicNotifs.push({
+            id: `enq-${e._id}`,
+            text: `New RFQ Enquiry from ${e.companyName || e.buyerName || 'Client'} for ${e.product?.name || 'product'}`,
+            time: new Date(e.createdAt).toLocaleDateString(),
+            link: '/admin/enquiries',
+            read: false
+          });
+        });
+
+        // Add pending/processing orders
+        orders.filter(o => o.status === 'pending' || o.status === 'processing').forEach(o => {
+          const orderNum = o.orderNumber || o._id.slice(-6).toUpperCase();
+          dynamicNotifs.push({
+            id: `ord-${o._id}`,
+            text: `Order #${orderNum} is ${o.status} (₹${o.totalAmount?.toLocaleString()})`,
+            time: new Date(o.createdAt).toLocaleDateString(),
+            link: '/admin/orders',
+            read: false
+          });
+        });
+
+        // Add low stock products (stock < 50)
+        products.filter(p => p.stock < 50).forEach(p => {
+          dynamicNotifs.push({
+            id: `stock-${p._id}`,
+            text: `Low stock alert: ${p.name} (${p.stock} units left)`,
+            time: 'Stock Alert',
+            link: '/admin/products',
+            read: false
+          });
+        });
+
+        // Load latest saved status to preserve read indicators
+        const latestSaved = JSON.parse(localStorage.getItem("admin_notifications") || "[]");
+
+        let merged;
+        if (dynamicNotifs.length > 0) {
+          merged = dynamicNotifs.map(dn => {
+            const matched = latestSaved.find(sn => sn.id === dn.id);
+            return matched ? { ...dn, read: matched.read } : dn;
+          });
+        } else {
+          // If no dynamic alerts, use fallback mocks
+          const fallbackMocks = [
+            { id: 'mock-1', text: "New RFQ Quote Request for Alphonso Mangoes", time: "5 mins ago", link: "/admin/enquiries", read: false },
+            { id: 'mock-2', text: "New Customer Registration: Rajesh Patil", time: "1 hour ago", link: "/admin/users", read: false },
+            { id: 'mock-3', text: "Low stock alert: Nasik Onions (< 20kg)", time: "2 hours ago", link: "/admin/products", read: false }
+          ];
+          merged = fallbackMocks.map(mn => {
+            const matched = latestSaved.find(sn => sn.id === mn.id);
+            return matched ? { ...mn, read: matched.read } : mn;
+          });
+        }
+
+        setNotifs(merged);
+        localStorage.setItem("admin_notifications", JSON.stringify(merged));
+      } catch (err) {
+        console.error("Error loading dynamic notifications:", err);
+      }
+    };
+
+    fetchDynamic();
+  }, []);
+
+  const unreadCount = notifs.filter(n => !n.read).length;
+
+  const toggleRead = (id) => {
+    setNotifs(prev => {
+      const updated = prev.map(n => n.id === id ? { ...n, read: true } : n);
+      localStorage.setItem("admin_notifications", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const markAllRead = () => {
+    setNotifs(prev => {
+      const updated = prev.map(n => ({ ...n, read: true }));
+      localStorage.setItem("admin_notifications", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/auth');
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -115,8 +243,8 @@ export default function AdminLayout({
         </nav>
 
         {/* User footer */}
-        <div className="px-2.5 py-3 border-t border-white/10">
-          <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg hover:bg-white/8 transition-colors">
+        <div className="px-2.5 py-3 border-t border-white/10 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-[30px] h-[30px] rounded-full bg-[#5a9e30] flex items-center justify-center text-[11px] font-medium text-white shrink-0">
               {user.initials}
             </div>
@@ -124,7 +252,13 @@ export default function AdminLayout({
               <div className="text-[12px] text-white/85 font-medium truncate">{user.name}</div>
               <div className="text-[10px] text-white/40">{user.role}</div>
             </div>
-            <i className="ti ti-dots-vertical text-white/35 text-sm ml-auto" aria-hidden />
+          </div>
+          <button
+            onClick={handleLogout}
+            className="w-7 h-7 rounded-md hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors"
+            title="Logout"
+          >
+            <i className="ti ti-logout text-base" aria-hidden />
           </button>
         </div>
       </aside>
@@ -142,7 +276,7 @@ export default function AdminLayout({
             <i className="ti ti-menu-2 text-base" aria-hidden />
           </button>
 
-          <span className="text-[15px] font-medium text-stone-800 flex-1">{pageTitle}</span>
+          <span className="text-[15px] font-medium text-stone-800 flex-1 truncate min-w-0">{pageTitle}</span>
 
           {/* Search */}
           <form onSubmit={handleSearch} className="hidden sm:flex items-center gap-1.5 bg-stone-50 border border-stone-200 rounded-lg px-3 py-1.5">
@@ -158,28 +292,76 @@ export default function AdminLayout({
 
           {/* Action icons */}
           <div className="flex items-center gap-1.5">
-            <button
-              className="relative w-8 h-8 rounded-lg border border-stone-200 bg-white flex items-center justify-center text-stone-500 hover:bg-stone-50 transition-colors"
-              aria-label={`Notifications${notifCount > 0 ? `, ${notifCount} unread` : ""}`}
-            >
-              <i className="ti ti-bell text-base" aria-hidden />
-              {notifCount > 0 && (
-                <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-white" />
+            <div className="relative">
+              <button
+                onClick={() => setNotifOpen(!notifOpen)}
+                className="relative w-8 h-8 rounded-lg border border-stone-200 bg-white flex items-center justify-center text-stone-500 hover:bg-stone-50 transition-colors"
+                aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
+              >
+                <i className="ti ti-bell text-base" aria-hidden />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-white" />
+                )}
+              </button>
+              {notifOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
+                  <div className="absolute right-[-110px] sm:right-0 top-10 w-72 sm:w-80 bg-white rounded-xl border border-stone-200 shadow-xl py-3 z-50 text-left">
+                    <div className="flex justify-between items-center px-4 pb-2 border-b border-stone-100">
+                      <span className="text-xs font-bold text-stone-700">Notifications</span>
+                      {unreadCount > 0 && (
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            markAllRead();
+                          }} 
+                          className="text-[10px] text-[#3b6d11] hover:underline font-bold"
+                        >
+                          Mark all read
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-60 overflow-y-auto pt-1.5">
+                      {notifs.length === 0 ? (
+                        <p className="text-stone-400 text-xs text-center py-6">No new notifications</p>
+                      ) : (
+                        notifs.map(n => (
+                          <div 
+                            key={n.id} 
+                            onClick={() => {
+                              toggleRead(n.id);
+                              if (n.link) navigate(n.link);
+                              setNotifOpen(false);
+                            }}
+                            className={`px-4 py-2.5 hover:bg-stone-50 cursor-pointer flex flex-col gap-1 border-b border-stone-50/50 last:border-b-0 ${
+                              !n.read ? 'bg-stone-50/20 font-semibold border-l-4 border-l-[#3b6d11]' : ''
+                            }`}
+                          >
+                            <p className="text-[12px] text-stone-700 leading-normal">{n.text}</p>
+                            <span className="text-[9px] text-stone-400">{n.time}</span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </>
               )}
-            </button>
+            </div>
             <button
               className="w-8 h-8 rounded-lg border border-stone-200 bg-white flex items-center justify-center text-stone-500 hover:bg-stone-50 transition-colors"
               aria-label="Help"
             >
               <i className="ti ti-help text-base" aria-hidden />
             </button>
-            <button
-              onClick={onNewClick}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#3b6d11] hover:bg-[#27500a] text-white text-[13px] font-medium rounded-lg transition-colors"
-            >
-              <i className="ti ti-plus text-sm" aria-hidden />
-              New
-            </button>
+            {onNewClick && (
+              <button
+                onClick={onNewClick}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#3b6d11] hover:bg-[#27500a] text-white text-[13px] font-medium rounded-lg transition-colors"
+              >
+                <i className="ti ti-plus text-sm" aria-hidden />
+                New
+              </button>
+            )}
           </div>
         </header>
 

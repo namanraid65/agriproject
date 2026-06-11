@@ -74,6 +74,20 @@ const settingsSchema = new Schema(
     },
     socialLinks: { type: socialLinksSchema, default: () => ({}) },
 
+    // ── Enquiry settings ──────────────────────────────────
+    enquirySettings: {
+      enableGeneralEnquiry: { type: Boolean, default: true },
+      enableBulkRFQ:        { type: Boolean, default: true },
+      alertEmail:           { type: String, trim: true },
+    },
+
+    // ── Retail Order settings ─────────────────────────────
+    retailOrderSettings: {
+      minimumOrderValue:    { type: Number, default: 0 },
+      shippingCharge:       { type: Number, default: 49 },
+      freeShippingThreshold:{ type: Number, default: 499 },
+    },
+
     // ── SEO defaults ──────────────────────────────────────
     seoDefaults: {
       metaTitle:       { type: String, trim: true, maxlength: 70  },

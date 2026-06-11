@@ -741,7 +741,7 @@ const seedDatabase = async () => {
 
     await CMS.create({
       pageType: 'about',
-      title: 'About OpenAgri',
+      title: 'About Us',
       metaTitle: 'About Us | OpenAgri Marketplace',
       metaDescription: 'OpenAgri bridges farmers, distributors, and consumers with a transparent agricultural marketplace.',
       content: 'OpenAgri was founded with a mission to bring transparency, fair pricing, and direct access to quality agricultural inputs for every farmer in India. We connect seed producers, fertilizer manufacturers, and equipment suppliers directly with buyers — both retail and wholesale.',
@@ -749,16 +749,65 @@ const seedDatabase = async () => {
     });
 
     await CMS.create({
+      pageType: 'contact',
+      title: 'Contact Us',
+      metaTitle: 'Contact Us | Get in Touch with OpenAgri',
+      metaDescription: 'Get in touch with OpenAgri for customer support, B2B wholesale enquiries, or vendor partnerships.',
+      content: 'We are here to help you. If you have any inquiries regarding retail orders, bulk sourcing, or seed/fertilizer distribution partnerships, please fill out the form below or contact our headquarters directly.\n\nAddress: 401 Agri Tower, Shivajinagar, Pune, Maharashtra - 411005\nPhone: +91-20-84394022\nEmail: contact@openagri.com',
+      isPublished: true
+    });
+
+    await CMS.create({
+      pageType: 'privacy',
+      title: 'Privacy Policy',
+      metaTitle: 'Privacy Policy | OpenAgri',
+      metaDescription: 'Read the Privacy Policy of OpenAgri to understand how we protect and manage your personal details.',
+      content: 'We collect only the information necessary to process your orders and enquiries. Your data is never sold to third parties. We use industry-standard encryption to protect your transaction details and credentials.',
+      isPublished: true
+    });
+
+    await CMS.create({
+      pageType: 'terms',
+      title: 'Terms & Conditions',
+      metaTitle: 'Terms & Conditions | OpenAgri',
+      metaDescription: 'Review the Terms & Conditions governing your use of the OpenAgri agricultural marketplace.',
+      content: 'By using OpenAgri, you agree to purchase products only for lawful agricultural purposes. All catalog sales are subject to availability. Reselling wholesale supplies obtained through B2B channels requires appropriate local licenses.',
+      isPublished: true
+    });
+
+    await CMS.create({
+      pageType: 'shipping',
+      title: 'Shipping Policy',
+      metaTitle: 'Shipping & Delivery Policy | OpenAgri',
+      metaDescription: 'Details on shipping costs, delivery times, and logistics for retail and bulk orders.',
+      content: 'Retail orders are processed within 24 hours. Orders above the free shipping threshold ship free of cost; otherwise, a flat shipping fee is charged. Standard delivery takes 3–7 business days. Bulk B2B orders are dispatched via partner freight networks and have custom delivery timelines.',
+      isPublished: true
+    });
+
+    await CMS.create({
+      pageType: 'returns',
+      title: 'Return & Refund Policy',
+      metaTitle: 'Returns & Refunds | OpenAgri',
+      metaDescription: 'Learn about our policy on product returns, replacements, and refund timelines.',
+      content: 'Perishable agricultural products, opened seed packets, and customized tool kits are non-returnable. Sealed, unopened items can be returned within 7 days of delivery for a full refund or replacement. Refunds are credited back to the original payment source within 5–7 business days.',
+      isPublished: true
+    });
+
+    await CMS.create({
+      pageType: 'faq',
+      title: 'Frequently Asked Questions (FAQ)',
+      metaTitle: 'FAQs | OpenAgri Support',
+      metaDescription: 'Find answers to common questions about shopping, wholesale quotes, products, and shipping.',
+      content: '### 1. How do I switch to B2B Wholesale mode?\nYou can use the mode toggle in the navbar to switch between Retail (B2C) and Wholesale (B2B) modes. Wholesale pricing requires logging in with a B2B role account (Farmer, Wholesaler, or Distributor).\n\n### 2. What is the minimum order value for retail orders?\nThe minimum order value is set dynamically by website administrators. If your cart total is below the threshold, checkout will be disabled.\n\n### 3. How do I track my shipment?\nOnce your order is processed and shipped, tracking number and carrier details will be updated by administrators. You can view these details in your orders dashboard.',
+      isPublished: true
+    });
+
+    await CMS.create({
       pageType: 'policy',
-      title: 'Policies',
-      metaTitle: 'Privacy & Terms | OpenAgri',
+      title: 'Policies Summary',
+      metaTitle: 'Policies | OpenAgri',
       metaDescription: 'Read our privacy policy, terms of service, shipping and return policies.',
-      sections: [
-        { title: 'Privacy Policy', content: 'We collect only the information necessary to process your orders and enquiries. Your data is never sold to third parties.', order: 1, isVisible: true },
-        { title: 'Terms & Conditions', content: 'By using OpenAgri, you agree to purchase products only for lawful agricultural purposes. All sales are subject to availability.', order: 2, isVisible: true },
-        { title: 'Shipping Policy', content: 'Orders above ₹499 ship free. Standard delivery is 3–7 business days. Bulk B2B orders may have extended lead times depending on location.', order: 3, isVisible: true },
-        { title: 'Return & Refund Policy', content: 'Perishable agricultural products are non-returnable. Sealed products may be returned within 7 days of delivery if unopened. Refunds are processed within 5–7 business days.', order: 4, isVisible: true }
-      ],
+      content: 'Summary of company policies regarding customer privacy, terms of usage, shipping charges, and returns of agricultural items.',
       isPublished: true
     });
 
@@ -887,6 +936,16 @@ const seedDatabase = async () => {
       socialLinks: {
         facebook: 'https://facebook.com/openagri',
         whatsapp: 'https://wa.me/919876543210'
+      },
+      enquirySettings: {
+        enableGeneralEnquiry: true,
+        enableBulkRFQ: true,
+        alertEmail: 'admin@openagri.com'
+      },
+      retailOrderSettings: {
+        minimumOrderValue: 0,
+        shippingCharge: 49,
+        freeShippingThreshold: 499
       },
       features: {
         enableB2B: true,

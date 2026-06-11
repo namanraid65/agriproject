@@ -4,7 +4,7 @@ import { useMarket } from '../hooks/useMarket.js';
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { isB2B } = useMarket();
+  const { isB2B, settings } = useMarket();
   const [items, setItems] = useState(() => {
     try {
       const savedCart = localStorage.getItem('cart');
@@ -101,7 +101,12 @@ export const CartProvider = ({ children }) => {
   // Derived state calculations
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const cartSubtotal = items.reduce((sum, item) => sum + (item.product.retailPrice || 0) * item.quantity, 0);
-  const shippingCost = items.length === 0 ? 0 : (cartSubtotal > 499 ? 0 : 49);
+  
+  // Dynamic shipping cost calculation based on DB settings
+  const freeShippingThreshold = settings?.retailOrderSettings?.freeShippingThreshold ?? 499;
+  const flatShippingCharge = settings?.retailOrderSettings?.shippingCharge ?? 49;
+  
+  const shippingCost = items.length === 0 ? 0 : (cartSubtotal > freeShippingThreshold ? 0 : flatShippingCharge);
   const cartTotal = cartSubtotal + shippingCost;
   const isEmpty = items.length === 0;
 

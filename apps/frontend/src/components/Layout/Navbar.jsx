@@ -4,7 +4,7 @@ import { useMarket } from '../../hooks/useMarket.js';
 import { useCart } from '../../hooks/useCart.js';
 import {
   Sprout, ShoppingCart, User as UserIcon, LogOut,
-  Tractor, Leaf, Menu, X as XIcon, ChevronDown
+  Tractor, Leaf, Menu, X as XIcon, ChevronDown, Heart
 } from 'lucide-react';
 
 const NAV_LINKS = [
@@ -36,7 +36,7 @@ const MarketToggle = ({ isB2B, onToggle }) => (
   >
     {/* Left label: B2C */}
     <span className={`
-      flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide
+      flex items-center gap-1 px-2 py-1.5 sm:px-2.5 sm:py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide
       transition-all duration-300 z-10
       ${!isB2B
         ? 'bg-emerald-600 text-white shadow-md shadow-emerald-200'
@@ -44,12 +44,12 @@ const MarketToggle = ({ isB2B, onToggle }) => (
       }
     `}>
       <Leaf className="h-3 w-3" />
-      Retail
+      <span className="hidden sm:inline">Retail</span>
     </span>
 
     {/* Right label: B2B */}
     <span className={`
-      flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide
+      flex items-center gap-1 px-2 py-1.5 sm:px-2.5 sm:py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide
       transition-all duration-300 z-10
       ${isB2B
         ? 'bg-amber-600 text-white shadow-md shadow-amber-200'
@@ -57,12 +57,12 @@ const MarketToggle = ({ isB2B, onToggle }) => (
       }
     `}>
       <Tractor className="h-3 w-3" />
-      Wholesale
+      <span className="hidden sm:inline">Wholesale</span>
     </span>
 
     {/* Mode indicator badge */}
     <span className={`
-      absolute -top-3 left-1/2 -translate-x-1/2
+      hidden sm:block absolute -top-3 left-1/2 -translate-x-1/2
       px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-widest
       transition-all duration-300
       ${isB2B
@@ -77,7 +77,7 @@ const MarketToggle = ({ isB2B, onToggle }) => (
 
 // ── Main Navbar ──────────────────────────────────────────
 export const Navbar = () => {
-  const { marketMode, toggleMarketMode, user, logout, styles, isB2B } = useMarket();
+  const { marketMode, toggleMarketMode, user, logout, styles, isB2B, settings } = useMarket();
   const { cartCount } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
@@ -116,8 +116,12 @@ export const Navbar = () => {
               <div className={`p-1.5 rounded-xl transition-colors duration-300 ${isB2B ? 'bg-amber-100' : 'bg-emerald-100'}`}>
                 <Sprout className={`h-5 w-5 transition-colors duration-300 ${styles.textHighlight}`} />
               </div>
-              <span className="text-xl font-black tracking-tight text-stone-900">
-                Open<span className={`${styles.textHighlight} transition-colors duration-300`}>Agri</span>
+              <span className="text-lg sm:text-xl font-black tracking-tight text-stone-900">
+                {settings?.siteName || (
+                  <>
+                    Open<span className={`${styles.textHighlight} transition-colors duration-300`}>Agri</span>
+                  </>
+                )}
               </span>
             </Link>
 
@@ -142,6 +146,17 @@ export const Navbar = () => {
             <div className="hidden md:flex items-center gap-4">
               {/* B2B / B2C Toggle */}
               <MarketToggle isB2B={isB2B} onToggle={toggleMarketMode} />
+
+              {/* Wishlist Link */}
+              <Link
+                to="/wishlist"
+                id="wishlist-button"
+                className="p-2 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-all duration-200"
+                aria-label="Wishlist"
+                title={isB2B ? "Sourcing Watchlist" : "Wishlist"}
+              >
+                <Heart className={`h-5 w-5 ${isB2B ? 'text-amber-600 hover:text-amber-800' : 'text-emerald-600 hover:text-emerald-800'}`} />
+              </Link>
 
               {/* Cart */}
               {!isB2B && (
@@ -248,6 +263,10 @@ export const Navbar = () => {
           ))}
 
           <div className="pt-3 border-t border-stone-100 space-y-2">
+            <Link to="/wishlist" className="flex items-center gap-3 px-4 py-3 rounded-xl text-stone-700 hover:bg-stone-50 font-semibold text-sm">
+              <Heart className={`h-5 w-5 ${isB2B ? 'text-amber-600' : 'text-emerald-600'}`} />
+              {isB2B ? 'Sourcing Watchlist' : 'My Wishlist'}
+            </Link>
             {!isB2B && (
               <Link to="/cart" className="flex items-center gap-3 px-4 py-3 rounded-xl text-stone-700 hover:bg-stone-50 font-semibold text-sm">
                 <ShoppingCart className="h-5 w-5" />

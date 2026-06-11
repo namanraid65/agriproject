@@ -5,7 +5,7 @@ import { UserRoles } from '@open-agri/shared';
 import { ShieldCheck, Sparkles } from 'lucide-react';
 
 export const Auth = () => {
-  const { login, register, styles, isB2B } = useMarket();
+  const { login, register, styles, isB2B, user } = useMarket();
   const navigate = useNavigate();
   
   const [isLogin, setIsLogin] = useState(true);
@@ -20,6 +20,17 @@ export const Auth = () => {
   const [companyName, setCompanyName] = useState('');
   const [taxId, setTaxId] = useState('');
 
+  React.useEffect(() => {
+    if (user) {
+      const uRole = user.role?.toUpperCase();
+      if (uRole === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    }
+  }, [user, navigate]);
+
   const isB2BRoleSelected = [UserRoles.FARMER, UserRoles.DISTRIBUTOR, UserRoles.WHOLESALER].includes(role);
 
   const handleSubmit = async (e) => {
@@ -28,8 +39,9 @@ export const Auth = () => {
     setLoading(true);
 
     try {
+      let loggedUser;
       if (isLogin) {
-        await login(email, password);
+        loggedUser = await login(email, password);
       } else {
         const payload = {
           name,
@@ -46,12 +58,19 @@ export const Auth = () => {
           };
         }
         
-        await register(payload);
+        loggedUser = await register(payload);
       }
       
       // Navigate to redirect location or homepage after login
       const query = new URLSearchParams(window.location.search);
-      const redirect = query.get('redirect') || '/';
+      let redirect = query.get('redirect');
+      
+      if (loggedUser && loggedUser.role === 'admin') {
+        redirect = '/admin';
+      } else if (!redirect) {
+        redirect = '/';
+      }
+      
       navigate(redirect);
     } catch (err) {
       setError(err);
@@ -128,21 +147,7 @@ export const Auth = () => {
 
           {!isLogin && (
             <div className="space-y-4">
-              <div>
-                <label htmlFor="auth-role" className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Account Role</label>
-                <select
-                  id="auth-role"
-                  name="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className={`w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 ${styles.focusRing}`}
-                >
-                  <option value={UserRoles.CUSTOMER}>Retail Customer (B2C)</option>
-                  <option value={UserRoles.FARMER}>Producer/Farmer (B2B)</option>
-                  <option value={UserRoles.WHOLESALER}>Wholesale Buyer (B2B)</option>
-                  <option value={UserRoles.DISTRIBUTOR}>Agricultural Distributor (B2B)</option>
-                </select>
-              </div>
+
 
               {/* Dynamic B2B Business Profile details */}
               {isB2BRoleSelected && (

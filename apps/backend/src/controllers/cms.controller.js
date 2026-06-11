@@ -20,7 +20,7 @@ export const getAllCMSPages = async (req, res, next) => {
 export const upsertCMSPage = async (req, res, next) => {
   try {
     const { pageType } = req.params;
-    const validTypes = ['homepage', 'about', 'policy'];
+    const validTypes = ['homepage', 'about', 'contact', 'privacy', 'terms', 'shipping', 'returns', 'faq', 'policy'];
     if (!validTypes.includes(pageType)) return next(new AppError('Invalid pageType.', 400));
     const page = await CMS.findOneAndUpdate(
       { pageType },

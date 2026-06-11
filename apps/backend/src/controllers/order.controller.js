@@ -1,6 +1,7 @@
 // controllers/order.controller.js
 import { Order } from '../models/Order.js';
 import { Product } from '../models/Product.js';
+import Settings from '../models/Settings.js';
 import { calculateProductPrice } from '../services/pricingService.js';
 import AppError from '../utils/AppError.js';
 import { UserRoles } from '@open-agri/shared';
@@ -60,8 +61,18 @@ export const createOrder = async (req, res, next) => {
       await product.save();
     }
 
+    // Fetch dynamic website settings configurations
+    const settings = await Settings.getSingleton();
+    const threshold = settings.retailOrderSettings?.freeShippingThreshold ?? 499;
+    const charge = settings.retailOrderSettings?.shippingCharge ?? 49;
+    const minOrderVal = settings.retailOrderSettings?.minimumOrderValue ?? 0;
+
+    if (marketMode !== 'B2B' && subtotal < minOrderVal) {
+      return next(new AppError(`Minimum order value for retail purchase is ₹${minOrderVal}. Please add more items.`, 400));
+    }
+
     // Shipping calculations (Wholesale logistics vs retail delivery pricing)
-    const shippingCost = marketMode === 'B2B' ? 100 : (subtotal > 499 ? 0 : 49);
+    const shippingCost = marketMode === 'B2B' ? 100 : (subtotal > threshold ? 0 : charge);
     const totalAmount = subtotal + shippingCost - discount;
 
     const order = new Order({

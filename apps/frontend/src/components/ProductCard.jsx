@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useMarket } from '../hooks/useMarket.js';
+import { useCart } from '../hooks/useCart.js';
 import {
   ShoppingCart, FileText, Star, Package,
   Tag, Award, Truck, CheckCircle2, AlertTriangle
@@ -46,8 +47,20 @@ function ModeBadge({ isB2B }) {
 
 /* ─── ProductCard (list view variant) ───────────────────── */
 function ProductCardList({ product, isB2B, onAddToCart }) {
+  const { cart, updateQty, remove } = useCart();
+  const [added, setAdded] = React.useState(false);
+  
+  const cartItem = cart?.find(item => item.product._id === product._id);
+  const cartQty = cartItem ? cartItem.quantity : 0;
+
   const img = product.primaryImage || product.images?.[0];
   const catName = typeof product.category === 'object' ? product.category?.name : product.category;
+
+  const handleAddToCart = () => {
+    onAddToCart(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
 
   return (
     <div className="flex gap-5 bg-white border border-stone-200 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group">
@@ -114,17 +127,57 @@ function ProductCardList({ product, isB2B, onAddToCart }) {
                 <FileText className="h-4 w-4" />
                 {product.stock === 0 ? 'Unavailable' : 'Request Quote'}
               </Link>
+            ) : cartQty > 0 ? (
+              <div className="flex items-center border-2 border-emerald-600 rounded-xl overflow-hidden bg-white h-9 shadow-sm">
+                <button
+                  onClick={() => {
+                    if (cartQty === 1) {
+                      remove(product._id);
+                    } else {
+                      updateQty(product._id, cartQty - 1);
+                    }
+                  }}
+                  className="px-3.5 py-1 text-emerald-600 hover:bg-emerald-50 font-black text-base transition-colors flex items-center justify-center h-full w-10 border-r border-emerald-100 select-none cursor-pointer"
+                >
+                  -
+                </button>
+                <span className="px-3 font-bold text-stone-800 text-xs text-center min-w-[70px]">
+                  {cartQty} in Cart
+                </span>
+                <button
+                  onClick={() => {
+                    if (cartQty >= product.stock) {
+                      alert(`Only ${product.stock} units available in stock.`);
+                    } else {
+                      updateQty(product._id, cartQty + 1);
+                    }
+                  }}
+                  className="px-3.5 py-1 text-emerald-600 hover:bg-emerald-50 font-black text-base transition-colors flex items-center justify-center h-full w-10 border-l border-emerald-100 select-none cursor-pointer"
+                >
+                  +
+                </button>
+              </div>
             ) : (
               <button
-                onClick={() => onAddToCart(product)}
-                disabled={product.stock === 0}
+                onClick={handleAddToCart}
+                disabled={product.stock === 0 || added}
                 className={`text-sm font-bold px-5 py-2 rounded-xl flex items-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
                   product.stock === 0 ? 'bg-stone-100 text-stone-400' :
+                  added ? 'bg-emerald-700 text-white shadow-md' :
                           'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-200 hover:-translate-y-px'
                 }`}
               >
-                <ShoppingCart className="h-4 w-4" />
-                {product.stock === 0 ? 'Unavailable' : 'Add to Cart'}
+                {added ? (
+                  <>
+                    <CheckCircle2 className="h-4 w-4 text-white" />
+                    Added!
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="h-4 w-4" />
+                    {product.stock === 0 ? 'Unavailable' : 'Add to Cart'}
+                  </>
+                )}
               </button>
             )}
           </div>
@@ -137,10 +190,50 @@ function ProductCardList({ product, isB2B, onAddToCart }) {
 /* ═══ PRIMARY EXPORT: ProductCard (grid variant) ════════════ */
 export function ProductCard({ product, onAddToCart, viewMode = 'grid' }) {
   const { isB2B } = useMarket();
+  const { cart, updateQty, remove } = useCart();
+  const [added, setAdded] = React.useState(false);
+  const [isWishlisted, setIsWishlisted] = React.useState(false);
+
+  React.useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("agri-wishlist") || "[]");
+      setIsWishlisted(stored.includes(product._id?.toString()));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [product._id]);
+
+  const toggleWishlist = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const stored = JSON.parse(localStorage.getItem("agri-wishlist") || "[]");
+      let updated;
+      if (stored.includes(product._id?.toString())) {
+        updated = stored.filter(id => id !== product._id?.toString());
+        setIsWishlisted(false);
+      } else {
+        updated = [...stored, product._id?.toString()];
+        setIsWishlisted(true);
+      }
+      localStorage.setItem("agri-wishlist", JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   if (viewMode === 'list') {
     return <ProductCardList product={product} isB2B={isB2B} onAddToCart={onAddToCart} />;
   }
+
+  const cartItem = cart?.find(item => item.product._id === product._id);
+  const cartQty = cartItem ? cartItem.quantity : 0;
+
+  const handleAddToCart = () => {
+    onAddToCart(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+  };
 
   const img    = product.primaryImage || product.images?.[0];
   const catName = typeof product.category === 'object' ? product.category?.name : product.category;
@@ -176,8 +269,14 @@ export function ProductCard({ product, onAddToCart, viewMode = 'grid' }) {
         </div>
 
         {/* Wishlist */}
-        <button className="absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur rounded-lg flex items-center justify-center text-stone-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-white hover:scale-110">
-          🤍
+        <button 
+          onClick={toggleWishlist}
+          className="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur rounded-lg flex items-center justify-center text-stone-400 hover:text-red-500 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200 hover:bg-white hover:scale-110 shadow-sm"
+          title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        >
+          <span style={{ color: isWishlisted ? '#e76f51' : '#a8a8a8', fontSize: 16 }}>
+            {isWishlisted ? '❤️' : '🤍'}
+          </span>
         </button>
 
         {/* OOS overlay */}
@@ -238,18 +337,58 @@ export function ProductCard({ product, onAddToCart, viewMode = 'grid' }) {
               <FileText className="h-4 w-4" />
               {product.stock === 0 ? 'Out of Stock' : 'Request Quote'}
             </Link>
+          ) : cartQty > 0 ? (
+            <div className="w-full flex items-center justify-between border-2 border-emerald-600 rounded-xl overflow-hidden bg-white h-[38px] shadow-sm">
+              <button
+                onClick={() => {
+                  if (cartQty === 1) {
+                    remove(product._id);
+                  } else {
+                    updateQty(product._id, cartQty - 1);
+                  }
+                }}
+                className="px-4 py-2 text-emerald-600 hover:bg-emerald-50 font-black text-base transition-colors flex items-center justify-center h-full w-12 border-r border-emerald-100 select-none cursor-pointer"
+              >
+                -
+              </button>
+              <span className="flex-1 font-bold text-stone-850 text-xs text-center">
+                {cartQty} in Cart
+              </span>
+              <button
+                onClick={() => {
+                  if (cartQty >= product.stock) {
+                    alert(`Only ${product.stock} units available in stock.`);
+                  } else {
+                    updateQty(product._id, cartQty + 1);
+                  }
+                }}
+                className="px-4 py-2 text-emerald-600 hover:bg-emerald-50 font-black text-base transition-colors flex items-center justify-center h-full w-12 border-l border-emerald-100 select-none cursor-pointer"
+              >
+                +
+              </button>
+            </div>
           ) : (
             <button
               id={`add-to-cart-${product._id}`}
-              onClick={() => onAddToCart(product)}
-              disabled={product.stock === 0}
+              onClick={handleAddToCart}
+              disabled={product.stock === 0 || added}
               className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${
                 product.stock === 0 ? 'bg-stone-100 text-stone-400' :
+                added ? 'bg-emerald-700 text-white shadow-md' :
                 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white shadow-md shadow-emerald-200 hover:shadow-lg hover:-translate-y-px'
               }`}
             >
-              <ShoppingCart className="h-4 w-4" />
-              {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+              {added ? (
+                <>
+                  <CheckCircle2 className="h-4 w-4 text-white" />
+                  Added!
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="h-4 w-4" />
+                  {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                </>
+              )}
             </button>
           )}
         </div>

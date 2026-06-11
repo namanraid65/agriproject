@@ -105,19 +105,8 @@ export const AdminOrders = () => {
     { key: 'createdAt', label: 'Created At', render: (val) => new Date(val).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) }
   ];
 
-  const navItems = [
-    { section: "Main" },
-    { label: "Dashboard", icon: "ti-layout-dashboard", href: "/admin" },
-    { label: "Products", icon: "ti-tag", href: "/admin/products" },
-    { label: "Categories", icon: "ti-category", href: "/admin/categories" },
-    { label: "Orders", icon: "ti-shopping-bag", href: "/admin/orders" },
-    { label: "Enquiries", icon: "ti-message", href: "/admin/enquiries" },
-    { label: "CMS Pages", icon: "ti-file-text", href: "/admin/cms" },
-    { label: "Settings", icon: "ti-settings", href: "/admin/settings" }
-  ];
-
   return (
-    <AdminLayout navItems={navItems} pageTitle="Customer Orders Management" user={{ name: user.name, role: 'Administrator', initials: user.name?.[0]?.toUpperCase() || 'A' }}>
+    <AdminLayout pageTitle="Customer Orders Management" user={{ name: user.name, role: 'Administrator', initials: user.name?.[0]?.toUpperCase() || 'A' }}>
       <div className="space-y-6">
         {loading ? (
           <div className="flex flex-col items-center py-20 gap-3 text-stone-400">

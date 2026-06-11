@@ -42,6 +42,16 @@ export const AdminSettings = () => {
   const [facebook, setFacebook] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
 
+  // Enquiry settings
+  const [enableGeneralEnquiry, setEnableGeneralEnquiry] = useState(true);
+  const [enableBulkRFQ, setEnableBulkRFQ] = useState(true);
+  const [alertEmail, setAlertEmail] = useState('');
+
+  // Retail order settings
+  const [minimumOrderValue, setMinimumOrderValue] = useState(0);
+  const [shippingCharge, setShippingCharge] = useState(49);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(499);
+
   const fetchSettings = async () => {
     setLoading(true);
     setError(null);
@@ -62,10 +72,20 @@ export const AdminSettings = () => {
       setPincode(address.pincode || '');
       setCountry(address.country || 'India');
 
-      const socials = settings.socialLinks || {};
+       const socials = settings.socialLinks || {};
       setInstagram(socials.instagram || '');
       setFacebook(socials.facebook || '');
       setWhatsapp(socials.whatsapp || '');
+
+      const enq = settings.enquirySettings || {};
+      setEnableGeneralEnquiry(enq.enableGeneralEnquiry !== false);
+      setEnableBulkRFQ(enq.enableBulkRFQ !== false);
+      setAlertEmail(enq.alertEmail || '');
+
+      const retail = settings.retailOrderSettings || {};
+      setMinimumOrderValue(retail.minimumOrderValue ?? 0);
+      setShippingCharge(retail.shippingCharge ?? 49);
+      setFreeShippingThreshold(retail.freeShippingThreshold ?? 499);
     } catch (err) {
       console.error('Failed to load settings:', err);
       setError('Could not fetch global settings configurations.');
@@ -103,6 +123,16 @@ export const AdminSettings = () => {
         instagram,
         facebook,
         whatsapp
+      },
+      enquirySettings: {
+        enableGeneralEnquiry,
+        enableBulkRFQ,
+        alertEmail
+      },
+      retailOrderSettings: {
+        minimumOrderValue: Number(minimumOrderValue),
+        shippingCharge: Number(shippingCharge),
+        freeShippingThreshold: Number(freeShippingThreshold)
       }
     };
 
@@ -122,19 +152,8 @@ export const AdminSettings = () => {
     return null;
   }
 
-  const navItems = [
-    { section: "Main" },
-    { label: "Dashboard", icon: "ti-layout-dashboard", href: "/admin" },
-    { label: "Products", icon: "ti-tag", href: "/admin/products" },
-    { label: "Categories", icon: "ti-category", href: "/admin/categories" },
-    { label: "Orders", icon: "ti-shopping-bag", href: "/admin/orders" },
-    { label: "Enquiries", icon: "ti-message", href: "/admin/enquiries" },
-    { label: "CMS Pages", icon: "ti-file-text", href: "/admin/cms" },
-    { label: "Settings", icon: "ti-settings", href: "/admin/settings" }
-  ];
-
   return (
-    <AdminLayout navItems={navItems} pageTitle="Global Site Settings" user={{ name: user.name, role: 'Administrator', initials: user.name?.[0]?.toUpperCase() || 'A' }}>
+    <AdminLayout pageTitle="Global Site Settings" user={{ name: user.name, role: 'Administrator', initials: user.name?.[0]?.toUpperCase() || 'A' }}>
       <div className="max-w-2xl bg-white border border-stone-200 shadow-sm rounded-xl overflow-hidden">
         
         {/* Header */}
@@ -212,6 +231,82 @@ export const AdminSettings = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full px-3 py-1.5 border border-stone-200 rounded-lg bg-stone-50 focus:bg-white text-xs outline-none focus:border-[#5a9e30]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Enquiry Settings */}
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-black uppercase tracking-wider text-stone-400 pb-1 border-b border-stone-150">B2B Enquiry Settings</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 sm:col-span-1 flex items-center pt-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={enableGeneralEnquiry}
+                      onChange={(e) => setEnableGeneralEnquiry(e.target.checked)}
+                      className="w-4 h-4 rounded accent-[#3b6d11]"
+                    />
+                    <span className="text-[11px] font-bold text-stone-550">Enable General Enquiries</span>
+                  </label>
+                </div>
+                <div className="col-span-2 sm:col-span-1 flex items-center pt-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={enableBulkRFQ}
+                      onChange={(e) => setEnableBulkRFQ(e.target.checked)}
+                      className="w-4 h-4 rounded accent-[#3b6d11]"
+                    />
+                    <span className="text-[11px] font-bold text-stone-550">Enable Wholesale Bulk RFQs</span>
+                  </label>
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-[11px] font-bold text-stone-550 mb-1">Enquiry Alert Notification Email</label>
+                  <input
+                    type="email"
+                    value={alertEmail}
+                    onChange={(e) => setAlertEmail(e.target.value)}
+                    className="w-full px-3 py-1.5 border border-stone-200 rounded-lg bg-stone-50 focus:bg-white text-xs outline-none focus:border-[#5a9e30]"
+                    placeholder="sourcing-desk@openagri.com"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Retail Order Settings */}
+            <div className="space-y-4">
+              <h4 className="text-[10px] font-black uppercase tracking-wider text-stone-400 pb-1 border-b border-stone-150">B2C Retail Order Settings</h4>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-3 sm:col-span-1">
+                  <label className="block text-[11px] font-bold text-stone-550 mb-1">Minimum Order Value (₹)</label>
+                  <input
+                    type="number"
+                    value={minimumOrderValue}
+                    onChange={(e) => setMinimumOrderValue(e.target.value)}
+                    className="w-full px-3 py-1.5 border border-stone-200 rounded-lg bg-stone-50 focus:bg-white text-xs outline-none focus:border-[#5a9e30]"
+                    min="0"
+                  />
+                </div>
+                <div className="col-span-3 sm:col-span-1">
+                  <label className="block text-[11px] font-bold text-stone-550 mb-1">Flat Delivery Fee (₹)</label>
+                  <input
+                    type="number"
+                    value={shippingCharge}
+                    onChange={(e) => setShippingCharge(e.target.value)}
+                    className="w-full px-3 py-1.5 border border-stone-200 rounded-lg bg-stone-50 focus:bg-white text-xs outline-none focus:border-[#5a9e30]"
+                    min="0"
+                  />
+                </div>
+                <div className="col-span-3 sm:col-span-1">
+                  <label className="block text-[11px] font-bold text-stone-550 mb-1">Free Shipping Min (₹)</label>
+                  <input
+                    type="number"
+                    value={freeShippingThreshold}
+                    onChange={(e) => setFreeShippingThreshold(e.target.value)}
+                    className="w-full px-3 py-1.5 border border-stone-200 rounded-lg bg-stone-50 focus:bg-white text-xs outline-none focus:border-[#5a9e30]"
+                    min="0"
                   />
                 </div>
               </div>

@@ -113,16 +113,8 @@ export const AdminEnquiries = () => {
     return null; // Let the redirect trigger
   }
 
-  // Sidebar navigation mapping to align with AdminLayout specifications
-  const navItems = [
-    { section: "Main" },
-    { label: "Dashboard", icon: "ti-layout-dashboard", href: "/admin/dashboard" },
-    { label: "Enquiries", icon: "ti-message", href: "/admin/enquiries" },
-    { label: "Catalog Products", icon: "ti-tag", href: "/products" },
-  ];
-
   return (
-    <AdminLayout navItems={navItems} pageTitle="B2B Enquiries Management" user={{ name: user.name, role: 'Administrator', initials: user.name?.[0]?.toUpperCase() || 'A' }}>
+    <AdminLayout pageTitle="B2B Enquiries Management" user={{ name: user.name, role: 'Administrator', initials: user.name?.[0]?.toUpperCase() || 'A' }}>
       
       {/* Filters bar */}
       <div className="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm mb-6 flex flex-col md:flex-row justify-between items-center gap-4">

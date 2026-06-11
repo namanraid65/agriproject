@@ -220,6 +220,7 @@ export default function ProductDetail() {
   const [showQuote,   setShowQuote]   = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const [wishlisted,  setWishlisted]  = useState(false);
+  const [shareText,   setShareText]   = useState('');
 
   /* ── Fetch ── */
   useEffect(() => {
@@ -229,7 +230,17 @@ export default function ProductDetail() {
     setActiveTab('description');
 
     api.get(`/products/${id}?marketMode=${marketMode}`)
-      .then(res => setProduct(res.data?.data?.product))
+      .then(res => {
+        const prod = res.data?.data?.product;
+        setProduct(prod);
+        // check wishlist
+        try {
+          const stored = JSON.parse(localStorage.getItem("agri-wishlist") || "[]");
+          setWishlisted(stored.includes(id));
+        } catch (e) {
+          console.error(e);
+        }
+      })
       .catch(err => {
         if (err.response?.status === 404) setError('Product not found.');
         else if (err.response?.status === 403) setError('This product is not available in your current market mode.');
@@ -237,6 +248,40 @@ export default function ProductDetail() {
       })
       .finally(() => setLoading(false));
   }, [id, marketMode]);
+
+  /* ── Wishlist handler ── */
+  const toggleWishlist = () => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("agri-wishlist") || "[]");
+      let updated;
+      if (stored.includes(id)) {
+        updated = stored.filter(prodId => prodId !== id);
+        setWishlisted(false);
+      } else {
+        updated = [...stored, id];
+        setWishlisted(true);
+      }
+      localStorage.setItem("agri-wishlist", JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  /* ── Share handler ── */
+  const handleShare = () => {
+    const shareData = {
+      title: product?.name || 'OpenAgri Product',
+      text: product?.description || '',
+      url: window.location.href,
+    };
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      setShareText('Link Copied!');
+      setTimeout(() => setShareText(''), 2000);
+    }
+  };
 
   const { addToCart } = useCart();
 
@@ -469,7 +514,7 @@ export default function ProductDetail() {
                         Request Wholesale Quote
                       </button>
                       <button
-                        onClick={() => setWishlisted(w => !w)}
+                        onClick={toggleWishlist}
                         className={`p-4 rounded-2xl border-2 ${themeOutline} transition-all duration-200`}
                         title={wishlisted ? 'Remove from watchlist' : 'Add to watchlist'}
                       >
@@ -491,7 +536,7 @@ export default function ProductDetail() {
                         )}
                       </button>
                       <button
-                        onClick={() => setWishlisted(w => !w)}
+                        onClick={toggleWishlist}
                         className={`p-4 rounded-2xl border-2 ${themeOutline} transition-all duration-200`}
                         title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                       >
@@ -499,8 +544,17 @@ export default function ProductDetail() {
                       </button>
                     </>
                   )}
-                  <button className="p-4 rounded-2xl border-2 border-stone-200 text-stone-400 hover:border-stone-300 hover:text-stone-600 transition-all duration-200" title="Share">
+                  <button 
+                    onClick={handleShare}
+                    className="relative p-4 rounded-2xl border-2 border-stone-200 text-stone-400 hover:border-stone-300 hover:text-stone-600 transition-all duration-200" 
+                    title="Share"
+                  >
                     <Share2 className="h-5 w-5" />
+                    {shareText && (
+                      <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-stone-800 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-md z-10 whitespace-nowrap">
+                        {shareText}
+                      </span>
+                    )}
                   </button>
                 </div>
               </div>

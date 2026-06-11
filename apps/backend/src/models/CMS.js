@@ -69,8 +69,8 @@ const cmsSchema = new Schema(
     pageType: {
       type: String,
       enum: {
-        values: ["homepage", "about", "policy"],
-        message: "pageType must be homepage, about, or policy",
+        values: ["homepage", "about", "contact", "privacy", "terms", "shipping", "returns", "faq", "policy"],
+        message: "pageType must be homepage, about, contact, privacy, terms, shipping, returns, faq, or policy",
       },
       required: [true, "pageType is required"],
       unique: true, // One document per page type

@@ -71,17 +71,6 @@ export const AdminDashboard = () => {
     return null;
   }
 
-  const navItems = [
-    { section: "Main" },
-    { label: "Dashboard", icon: "ti-layout-dashboard", href: "/admin" },
-    { label: "Products", icon: "ti-tag", href: "/admin/products" },
-    { label: "Categories", icon: "ti-category", href: "/admin/categories" },
-    { label: "Orders", icon: "ti-shopping-bag", href: "/admin/orders" },
-    { label: "Enquiries", icon: "ti-message", href: "/admin/enquiries" },
-    { label: "CMS Pages", icon: "ti-file-text", href: "/admin/cms" },
-    { label: "Settings", icon: "ti-settings", href: "/admin/settings" }
-  ];
-
   const statCards = [
     {
       label: "Total Products",
@@ -114,7 +103,7 @@ export const AdminDashboard = () => {
   ];
 
   return (
-    <AdminLayout navItems={navItems} pageTitle="Admin Dashboard" user={{ name: user.name, role: 'Administrator', initials: user.name?.[0]?.toUpperCase() || 'A' }}>
+    <AdminLayout pageTitle="Admin Dashboard" user={{ name: user.name, role: 'Administrator', initials: user.name?.[0]?.toUpperCase() || 'A' }}>
       <div className="space-y-6">
         <div className="bg-white rounded-xl border border-stone-200 p-6">
           <h1 className="text-xl font-bold text-stone-850">Welcome to OpenAgri Admin Panel</h1>

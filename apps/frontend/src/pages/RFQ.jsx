@@ -7,26 +7,7 @@ export const RFQ = () => {
   const { isB2B, user } = useMarket();
   const [activeFormType, setActiveFormType] = useState('general'); // 'general' or 'bulk'
 
-  if (user && user.role === 'CUSTOMER') {
-    return (
-      <div className="min-h-screen bg-stone-50 flex flex-col items-center justify-center py-12 px-4">
-        <div className="max-w-md w-full bg-white rounded-3xl border border-stone-200/80 shadow-md p-8 text-center space-y-4">
-          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-stone-100 mx-auto">
-            <svg className="h-8 w-8 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-          </div>
-          <h2 className="text-2xl font-black text-stone-800">Access Restricted</h2>
-          <p className="text-sm text-stone-500 leading-relaxed">
-            Wholesale B2B quote requests (RFQs) are reserved for verified business accounts. Your account is registered as a B2C Retail Customer.
-          </p>
-          <div className="pt-4">
-            <a href="/" className="btn btn-primary-green w-full">Go to Homepage</a>
-          </div>
-        </div>
-      </div>
-    );
-  }
+
 
   const themeText = isB2B ? 'text-amber-700' : 'text-emerald-700';
   const themeBg = isB2B ? 'bg-amber-50' : 'bg-emerald-50';

@@ -294,6 +294,99 @@ export const toggleUserStatus = async (req, res, next) => {
 };
 
 // ─────────────────────────────────────────────────────────────
+// ADMIN: CREATE USER/ADMIN
+// POST /api/auth/admin/users
+// ─────────────────────────────────────────────────────────────
+export const createUserByAdmin = async (req, res, next) => {
+  try {
+    const { name, email, password, phone, role, address, isActive } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return next(new AppError("An account with this email already exists.", 409));
+    }
+
+    const user = await User.create({
+      name,
+      email,
+      password,
+      phone,
+      role: role || UserRoles.CUSTOMER,
+      address,
+      isActive: isActive !== undefined ? isActive : true
+    });
+
+    res.status(201).json({
+      status: "success",
+      message: "User account created successfully.",
+      data: { user: sanitizeUser(user) }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────
+// ADMIN: UPDATE USER/ADMIN details
+// PATCH /api/auth/admin/users/:id
+// ─────────────────────────────────────────────────────────────
+export const updateUserByAdmin = async (req, res, next) => {
+  try {
+    const { name, email, phone, role, address, isActive, password } = req.body;
+    
+    const user = await User.findById(req.params.id);
+    if (!user) return next(new AppError("User not found.", 404));
+
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return next(new AppError("An account with this email already exists.", 409));
+      }
+      user.email = email;
+    }
+
+    if (name) user.name = name;
+    if (phone) user.phone = phone;
+    if (role) user.role = role;
+    if (address) user.address = address;
+    if (isActive !== undefined) user.isActive = isActive;
+    if (password) user.password = password; // pre-save hook will hash it
+
+    const updated = await user.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "User updated successfully.",
+      data: { user: sanitizeUser(updated) }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────
+// ADMIN: DELETE USER
+// DELETE /api/auth/admin/users/:id
+// ─────────────────────────────────────────────────────────────
+export const deleteUserByAdmin = async (req, res, next) => {
+  try {
+    if (req.params.id === req.user._id.toString()) {
+      return next(new AppError("You cannot delete your own account.", 400));
+    }
+
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return next(new AppError("User not found.", 404));
+
+    res.status(200).json({
+      status: "success",
+      message: "User deleted successfully."
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────
 // PRIVATE HELPER
 // Strips internal fields before sending user data to client
 // ─────────────────────────────────────────────────────────────
