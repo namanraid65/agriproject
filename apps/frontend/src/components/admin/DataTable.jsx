@@ -98,13 +98,55 @@ export default function DataTable({
   const [sortKey, setSortKey] = useState(null);
   const [sortDir, setSortDir] = useState("asc");
 
+  // Filters state
+  const [activeFilters, setActiveFilters] = useState({});
+  const [filterOpen, setFilterOpen] = useState(false);
+
   const keys = searchKeys ?? columns.map((c) => c.key);
 
+  // Derive unique values for columns that are filterable (between 2 and 10 unique values)
+  const filterOptions = useMemo(() => {
+    const options = {};
+    columns.forEach(col => {
+      const values = data.map(row => {
+        const val = row[col.key];
+        if (val && typeof val === 'object') {
+          return val.name || val.title || JSON.stringify(val);
+        }
+        return val;
+      });
+
+      const uniqueVals = [...new Set(values)].filter(v => v !== undefined && v !== null && v !== '');
+
+      if (uniqueVals.length >= 2 && uniqueVals.length <= 10) {
+        options[col.key] = {
+          label: col.label,
+          values: uniqueVals
+        };
+      }
+    });
+    return options;
+  }, [data, columns]);
+
   const filtered = useMemo(() => {
-    const q = query.toLowerCase();
+    const q = query.toLowerCase().trim();
     let rows = q
       ? data.filter((row) => keys.some((k) => String(row[k] ?? "").toLowerCase().includes(q)))
       : data;
+
+    // Apply active column filters
+    Object.keys(activeFilters).forEach(colKey => {
+      const selectedVals = activeFilters[colKey];
+      if (selectedVals && selectedVals.length > 0) {
+        rows = rows.filter(row => {
+          let val = row[colKey];
+          if (val && typeof val === 'object') {
+            val = val.name || val.title || JSON.stringify(val);
+          }
+          return selectedVals.some(sv => String(sv) === String(val));
+        });
+      }
+    });
 
     if (sortKey) {
       rows = [...rows].sort((a, b) => {
@@ -115,7 +157,7 @@ export default function DataTable({
       });
     }
     return rows;
-  }, [data, query, sortKey, sortDir, keys]);
+  }, [data, query, sortKey, sortDir, keys, activeFilters]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
   const safePage = Math.min(page, totalPages);
@@ -158,11 +200,80 @@ export default function DataTable({
           />
         </label>
 
-        {/* Filter stub */}
-        <button className="flex items-center gap-1.5 px-3 py-1.5 border border-stone-200 rounded-lg text-[12px] text-stone-500 bg-white hover:bg-stone-50 transition-colors font-medium">
-          <i className="ti ti-adjustments-horizontal text-sm" aria-hidden />
-          Filter
-        </button>
+        {/* Dynamic Filter Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setFilterOpen(!filterOpen)}
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-stone-200 rounded-lg text-[12px] text-stone-500 bg-white hover:bg-stone-50 transition-colors font-medium"
+          >
+            <i className="ti ti-adjustments-horizontal text-sm" aria-hidden />
+            Filter
+            {Object.values(activeFilters).some(arr => arr.length > 0) && (
+              <span className="w-1.5 h-1.5 bg-[#3b6d11] rounded-full" />
+            )}
+          </button>
+          
+          {filterOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setFilterOpen(false)} />
+              <div className="absolute right-0 top-10 w-64 bg-white rounded-xl border border-stone-200 shadow-xl py-3 z-50 text-left">
+                <div className="flex justify-between items-center px-4 pb-2 border-b border-stone-100">
+                  <span className="text-xs font-bold text-stone-700">Filters</span>
+                  {Object.values(activeFilters).some(arr => arr.length > 0) && (
+                    <button 
+                      onClick={() => {
+                        setActiveFilters({});
+                        setPage(1);
+                      }} 
+                      className="text-[10px] text-red-650 hover:underline font-bold"
+                    >
+                      Clear all
+                    </button>
+                  )}
+                </div>
+                <div className="max-h-60 overflow-y-auto p-4 space-y-4">
+                  {Object.keys(filterOptions).length === 0 ? (
+                    <p className="text-stone-400 text-xs text-center py-4">No filter options available</p>
+                  ) : (
+                    Object.keys(filterOptions).map(colKey => {
+                      const opt = filterOptions[colKey];
+                      return (
+                        <div key={colKey} className="space-y-1.5">
+                          <p className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">{opt.label}</p>
+                          <div className="space-y-1">
+                            {opt.values.map(val => {
+                              const isChecked = activeFilters[colKey]?.includes(val) || false;
+                              return (
+                                <label key={String(val)} className="flex items-center gap-2 cursor-pointer text-xs text-stone-600 hover:text-stone-800">
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() => {
+                                      setActiveFilters(prev => {
+                                        const current = prev[colKey] || [];
+                                        const next = isChecked 
+                                          ? current.filter(v => v !== val)
+                                          : [...current, val];
+                                        return { ...prev, [colKey]: next };
+                                      });
+                                      setPage(1);
+                                    }}
+                                    className="rounded border-stone-300 text-[#3b6d11] focus:ring-[#3b6d11] w-3.5 h-3.5"
+                                  />
+                                  <span>{String(val) === 'true' ? 'Yes' : String(val) === 'false' ? 'No' : String(val)}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
 
         {/* Add button */}
         {onAdd && (
