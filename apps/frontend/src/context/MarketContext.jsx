@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { MarketModes } from '@open-agri/shared';
-import axios from 'axios';
+import api from '../services/api.js';
 
 export const MarketContext = createContext();
 
@@ -29,7 +29,7 @@ export const MarketProvider = ({ children }) => {
 
   const fetchSettings = async () => {
     try {
-      const response = await axios.get('/api/settings');
+      const response = await api.get('/settings');
       setSettings(response.data?.data?.settings || null);
     } catch (error) {
       console.error('Failed to load global settings:', error);
@@ -50,7 +50,7 @@ export const MarketProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await api.post('/auth/login', { email, password });
       // API response shape: { status, token, data: { user } }
       const userToken = response.data.token;
       const userData  = response.data.data?.user || response.data.data || {};
@@ -80,7 +80,7 @@ export const MarketProvider = ({ children }) => {
 
   const register = async (registerData) => {
     try {
-      const response = await axios.post('/api/auth/register', registerData);
+      const response = await api.post('/auth/register', registerData);
       // API response shape: { status, token, data: { user } }
       const userToken = response.data.token;
       const userData  = response.data.data?.user || response.data.data || {};
