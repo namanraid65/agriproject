@@ -104,15 +104,25 @@ export default function AdminLayout({
           });
         });
 
-        // Add low stock products (stock < 50)
-        products.filter(p => p.stock < 50).forEach(p => {
-          dynamicNotifs.push({
-            id: `stock-${p._id}`,
-            text: `Low stock alert: ${p.name} (${p.stock} units left)`,
-            time: 'Stock Alert',
-            link: '/admin/products',
-            read: false
-          });
+        // Add out of stock and low stock alerts
+        products.forEach(p => {
+          if (p.stock === 0) {
+            dynamicNotifs.push({
+              id: `outofstock-${p._id}`,
+              text: `🚨 Out of stock: "${p.name}" is completely out of stock!`,
+              time: 'Out of Stock Alert',
+              link: '/admin/products',
+              read: false
+            });
+          } else if (p.stock > 0 && p.stock < 50) {
+            dynamicNotifs.push({
+              id: `stock-${p._id}`,
+              text: `⚠️ Low stock alert: "${p.name}" (${p.stock} units left)`,
+              time: 'Low Stock Alert',
+              link: '/admin/products',
+              read: false
+            });
+          }
         });
 
         // Load latest saved status to preserve read indicators
