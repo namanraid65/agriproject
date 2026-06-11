@@ -109,7 +109,12 @@ export default function DataTable({
     const options = {};
     columns.forEach(col => {
       const values = data.map(row => {
-        const val = row[col.key];
+        let val = row[col.key];
+        // Fallback for nested keys ending with 'Name' (like 'categoryName' -> 'category')
+        if (val === undefined && col.key.endsWith('Name')) {
+          const fallbackKey = col.key.slice(0, -4);
+          val = row[fallbackKey];
+        }
         if (val && typeof val === 'object') {
           return val.name || val.title || JSON.stringify(val);
         }
@@ -140,6 +145,11 @@ export default function DataTable({
       if (selectedVals && selectedVals.length > 0) {
         rows = rows.filter(row => {
           let val = row[colKey];
+          // Fallback for nested keys ending with 'Name'
+          if (val === undefined && colKey.endsWith('Name')) {
+            const fallbackKey = colKey.slice(0, -4);
+            val = row[fallbackKey];
+          }
           if (val && typeof val === 'object') {
             val = val.name || val.title || JSON.stringify(val);
           }
