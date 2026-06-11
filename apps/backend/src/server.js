@@ -31,17 +31,18 @@ const app = express();
 // Security
 app.use(helmet());
 
-// CORS
+// CORS configuration supporting credentials (cookies)
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
-  'https://agriproject-frontend.vercel.app',
+  'http://localhost:5000',
+  'https://agriproject-frontend.vercel.app'
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, Postman)
+      // Allow requests with no origin (like mobile apps, curl, or postman)
       if (!origin) return callback(null, true);
 
       const origins = [...allowedOrigins];
@@ -50,10 +51,12 @@ app.use(
         origins.push(...urls);
       }
 
-      if (origins.includes(origin)) {
+      // Check if origin is allowed or ends with vercel.app
+      const isAllowed = origins.includes(origin) || origin.endsWith('.vercel.app');
+      if (isAllowed) {
         callback(null, true);
       } else {
-        callback(null, false);
+        callback(null, false); // Let CORS block it
       }
     },
     credentials: true,
