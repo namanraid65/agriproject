@@ -125,6 +125,15 @@ const productSchema = new Schema(
     numReviews: {
       type: Number,
       default: 0
+    },
+    faqs: {
+      type: [
+        {
+          question: { type: String, required: true },
+          answer: { type: String, required: true }
+        }
+      ],
+      default: []
     }
   },
   {
@@ -154,6 +163,75 @@ productSchema.virtual("primaryImage").get(function () {
   return primary || this.images?.[0] || null;
 });
 
+// ── Helper to generate default trust FAQs ─────────────────
+const generateFAQsForProduct = (product) => {
+  const commonFAQs = [
+    {
+      question: "How is the quality of this product verified?",
+      answer: "All our agricultural products undergo strict quality checks. We source directly from certified manufacturers and authorized distributors to ensure 100% authenticity, purity, and effectiveness."
+    },
+    {
+      question: "What is the return or refund policy for this product?",
+      answer: "We offer a hassle-free 7-day return policy for unopened and unused items. If you receive a damaged package or have quality concerns, please contact our support team immediately for a replacement or refund."
+    }
+  ];
+
+  const seedsFAQs = [
+    {
+      question: "What is the germination rate of these seeds?",
+      answer: "Our seeds are tested regularly and maintain a germination rate of 85% to 95% under standard nursery conditions. Ensure proper soil moisture and planting depth for best results."
+    },
+    {
+      question: "How should these seeds be stored if not used immediately?",
+      answer: "Store seeds in a cool, dry, and dark place (ideally in an airtight container) away from direct sunlight and moisture to maintain their viability for up to 12-18 months."
+    }
+  ];
+
+  const toolsFAQs = [
+    {
+      question: "Does this farming tool come with any warranty?",
+      answer: "Yes, all our agricultural tools and equipment come with a 6-month warranty covering manufacturing defects. We also provide replacement parts if needed."
+    },
+    {
+      question: "Is this tool suitable for heavy clay soil?",
+      answer: "Yes, this tool is constructed using heavy-duty reinforced carbon steel, making it highly durable and suitable for all agricultural soil types, including hard clay."
+    }
+  ];
+
+  const fertilizerFAQs = [
+    {
+      question: "Is this product safe for organic farming?",
+      answer: (product.name?.toLowerCase().includes("organic") || product.description?.toLowerCase().includes("organic"))
+        ? "Yes, this product is 100% organic and OMRI-listed/NPOP-certified, making it completely safe and recommended for organic farming."
+        : "This is a high-grade mineral/chemical nutrient. While highly effective for crop yield, please refer to the application guide for recommended safety intervals before harvest."
+    },
+    {
+      question: "What is the correct dosage and application frequency?",
+      answer: "Application rates vary by crop. Generally, mix as per instructions (usually 2-3g per liter of water) and apply every 14-21 days during the active growth stages. Avoid over-application."
+    }
+  ];
+
+  let categoryFAQs = [];
+  const nameLower = product.name?.toLowerCase() || "";
+  
+  if (nameLower.includes("seed")) {
+    categoryFAQs = seedsFAQs;
+  } else if (nameLower.includes("tool") || nameLower.includes("shovel") || nameLower.includes("pruner") || nameLower.includes("sickle") || nameLower.includes("sprayer") || nameLower.includes("wheelbarrow")) {
+    categoryFAQs = toolsFAQs;
+  } else if (nameLower.includes("fertilizer") || nameLower.includes("oil") || nameLower.includes("nutrient") || nameLower.includes("npk") || nameLower.includes("urea") || nameLower.includes("growth") || nameLower.includes("pesticide")) {
+    categoryFAQs = fertilizerFAQs;
+  } else {
+    categoryFAQs = [
+      {
+        question: "Is this product sourced direct from local farmers?",
+        answer: "Yes, we prioritize fair-trade sourcing. This product is sourced directly from smallholder farmers and agricultural cooperatives, ensuring fair wages and authentic local quality."
+      }
+    ];
+  }
+
+  return [...categoryFAQs, ...commonFAQs];
+};
+
 // ── Pre-save: auto-generate slug ─────────────────────────
 productSchema.pre("save", function (next) {
   if (this.isModified("name") && !this.slug) {
@@ -162,6 +240,10 @@ productSchema.pre("save", function (next) {
   // Auto-mark out_of_stock when stock hits 0
   if (this.isModified("stock") && this.stock === 0 && this.status === "active") {
     this.status = "out_of_stock";
+  }
+  // Auto-populate trust-building FAQs if empty
+  if (!this.faqs || this.faqs.length === 0) {
+    this.faqs = generateFAQsForProduct(this);
   }
   next();
 });

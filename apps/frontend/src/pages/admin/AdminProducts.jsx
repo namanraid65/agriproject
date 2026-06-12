@@ -73,7 +73,8 @@ export const AdminProducts = () => {
       b2bVisible: true,
       b2cVisible: true,
       status: 'draft',
-      featured: false
+      featured: false,
+      faqsJSON: '[]'
     });
     setModalOpen(true);
   };
@@ -82,7 +83,8 @@ export const AdminProducts = () => {
     setModalMode('edit');
     setEditingProduct({
       ...product,
-      category: product.category?._id || product.category || ''
+      category: product.category?._id || product.category || '',
+      faqsJSON: product.faqs ? JSON.stringify(product.faqs, null, 2) : '[]'
     });
     setModalOpen(true);
   };
@@ -102,10 +104,21 @@ export const AdminProducts = () => {
   const handleFormSubmit = async (formData) => {
     setFormLoading(true);
     try {
+      const payload = { ...formData };
+      if (payload.faqsJSON) {
+        try {
+          payload.faqs = JSON.parse(payload.faqsJSON);
+          delete payload.faqsJSON;
+        } catch (e) {
+          alert('Invalid FAQs JSON format. Please ensure it is a valid JSON array of objects with "question" and "answer" keys.');
+          setFormLoading(false);
+          return;
+        }
+      }
       if (modalMode === 'create') {
-        await api.post('/products', formData);
+        await api.post('/products', payload);
       } else {
-        await api.patch(`/products/${editingProduct._id}`, formData);
+        await api.patch(`/products/${editingProduct._id}`, payload);
       }
       fetchProducts();
       setModalOpen(false);
@@ -169,6 +182,18 @@ export const AdminProducts = () => {
         { key: 'featured', label: 'Featured Product', type: 'checkbox', halfWidth: true, placeholder: 'Show on homepage featured products' },
         { key: 'b2bVisible', label: 'Visible to B2B Customers', type: 'checkbox', placeholder: 'Allow B2B portal viewing' },
         { key: 'b2cVisible', label: 'Visible to B2C Retail Customers', type: 'checkbox', placeholder: 'Allow B2C shop viewing' }
+      ]
+    },
+    {
+      label: 'FAQs',
+      fields: [
+        {
+          key: 'faqsJSON',
+          label: 'Product FAQs (JSON List)',
+          type: 'textarea',
+          placeholder: '[\n  {\n    "question": "...",\n    "answer": "..."\n  }\n]',
+          hint: 'Provide a JSON list of objects containing "question" and "answer". If left empty or as [], it will fall back to automatically generating category trust FAQs.'
+        }
       ]
     }
   ];

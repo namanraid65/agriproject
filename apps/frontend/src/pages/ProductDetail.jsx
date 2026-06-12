@@ -207,6 +207,35 @@ function QuoteForm({ product, onClose }) {
   );
 }
 
+/* ─── FAQ Accordion Item ─────────────────────────────────── */
+function FAQItem({ question, answer, isB2B }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="border border-stone-200 rounded-2xl overflow-hidden bg-white hover:border-stone-300 transition-colors">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-5 py-4 flex items-center justify-between text-left focus:outline-none"
+      >
+        <span className="font-extrabold text-stone-850 text-sm">{question}</span>
+        <span className={`transform transition-transform duration-250 shrink-0 ml-4 ${isOpen ? "rotate-180" : ""}`}>
+          <ChevronDown className={`h-4.5 w-4.5 ${isB2B ? "text-amber-600" : "text-emerald-600"}`} />
+        </span>
+      </button>
+      <div
+        className={`transition-all duration-355 ease-in-out overflow-hidden ${
+          isOpen ? "max-h-[500px] border-t border-stone-100 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-5 py-4 text-xs text-stone-600 leading-relaxed bg-stone-50">
+          {answer}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ═══ PRODUCT DETAIL PAGE ══════════════════════════════════ */
 export default function ProductDetail() {
   const { id }  = useParams();
@@ -655,16 +684,26 @@ export default function ProductDetail() {
         <div className="mt-14 border-t border-stone-200 pt-10">
           {/* Tab nav */}
           <div className="flex gap-0 border-b border-stone-200 overflow-x-auto">
-            {['description', 'specifications', 'delivery', 'reviews'].map(tab => (
+            {['description', 'specifications', 'faqs', 'delivery', 'reviews'].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-6 py-3 text-sm font-bold capitalize whitespace-nowrap border-b-2 transition-all -mb-px ${
+                className={`px-6 py-3 text-sm font-bold whitespace-nowrap border-b-2 transition-all -mb-px ${
                   activeTab === tab
                     ? `${themeTab} border-current`
                     : 'text-stone-400 border-transparent hover:text-stone-700 hover:border-stone-200'
                 }`}
-              >{tab}</button>
+              >
+                {tab === 'faqs' 
+                  ? 'FAQs' 
+                  : tab === 'specifications' 
+                    ? 'Specifications' 
+                    : tab === 'description' 
+                      ? 'Description' 
+                      : tab === 'delivery' 
+                        ? 'Delivery' 
+                        : 'Reviews'}
+              </button>
             ))}
           </div>
 
@@ -718,6 +757,25 @@ export default function ProductDetail() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {activeTab === 'faqs' && (
+              <div className="max-w-2xl space-y-4">
+                {product?.faqs?.length > 0 ? (
+                  product.faqs.map((faq, i) => (
+                    <FAQItem 
+                      key={i} 
+                      question={faq.question} 
+                      answer={faq.answer} 
+                      isB2B={isB2B} 
+                    />
+                  ))
+                ) : (
+                  <div className="text-center py-12 text-stone-400">
+                    <p className="text-sm font-medium">No FAQs have been added to this product yet.</p>
+                  </div>
+                )}
               </div>
             )}
 
