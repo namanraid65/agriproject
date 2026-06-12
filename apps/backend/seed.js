@@ -191,7 +191,7 @@ const seedDatabase = async () => {
       {
         name: 'Premium Chilli F1 Seeds',
         category: catSeeds,
-        images: [{ url: 'https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?q=80&w=800', isPrimary: true, altText: 'Premium Chilli F1 Seeds' }],
+        images: [{ url: '/uploads/premium_chilli_seeds.png', isPrimary: true, altText: 'Premium Chilli F1 Seeds' }],
         description: 'High pungency hybrid chilli seeds. Highly resistant to leaf curl virus and root wilt diseases.',
         specifications: { purity: '98%', germinationRate: '90%', packageSize: '500 seeds' },
         retailPrice: 20,
@@ -205,7 +205,7 @@ const seedDatabase = async () => {
       {
         name: 'Organic Sunflower Seeds',
         category: catSeeds,
-        images: [{ url: 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?q=80&w=800', isPrimary: true, altText: 'Organic Sunflower Seeds' }],
+        images: [{ url: '/uploads/sunflower_seeds.png', isPrimary: true, altText: 'Organic Sunflower Seeds' }],
         description: 'Raw oil-rich organic sunflower seeds suitable for sowing or oil extraction processes.',
         specifications: { oilContent: '42%', purity: '99%', packageWeight: '1kg' },
         retailPrice: 45,
@@ -234,7 +234,7 @@ const seedDatabase = async () => {
       {
         name: 'Cold-Pressed Neem Oil Pesticide',
         category: catFert,
-        images: [{ url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?q=80&w=800', isPrimary: true, altText: 'Neem Oil Bottle' }],
+        images: [{ url: '/uploads/neem_oil.png', isPrimary: true, altText: 'Neem Oil Bottle' }],
         description: '100% natural organic neem oil cold-pressed to retain azadirachtin compound. Controls aphids, whiteflies, and mites.',
         specifications: { type: 'Concentrate', dilutionRatio: '5ml per Liter', volume: '1 Liter' },
         retailPrice: 18,
@@ -263,7 +263,7 @@ const seedDatabase = async () => {
       {
         name: 'Organic Vermicompost Manure',
         category: catFert,
-        images: [{ url: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?q=80&w=800', isPrimary: true, altText: 'Organic Vermicompost Manure' }],
+        images: [{ url: '/uploads/vermicompost.png', isPrimary: true, altText: 'Organic Vermicompost Manure' }],
         description: 'Highly rich organic compost produced using earthworms. Aerates soil and boosts crop water retention.',
         specifications: { composition: '100% Organic', packaging: '25kg bag', certifications: 'NPOP Certified' },
         retailPrice: 15,
@@ -276,7 +276,7 @@ const seedDatabase = async () => {
       {
         name: 'Bio-Organic Phosphate Fertilizer',
         category: catFert,
-        images: [{ url: 'https://images.unsplash.com/photo-1628352081506-83c43123ed6d?q=80&w=800', isPrimary: true, altText: 'Phosphate Fertilizer' }],
+        images: [{ url: '/uploads/phosphate_fertilizer.png', isPrimary: true, altText: 'Phosphate Fertilizer' }],
         description: 'Provides soluble phosphate nutrients to roots using soil-friendly micro-organisms and rock phosphates.',
         specifications: { phosphateContent: '16%', solubility: '95%', packaging: '50kg bag' },
         retailPrice: 35,
@@ -291,7 +291,7 @@ const seedDatabase = async () => {
       {
         name: 'Hand Cultivator Garden Rake',
         category: catTools,
-        images: [{ url: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?q=80&w=800', isPrimary: true, altText: 'Hand Cultivator' }],
+        images: [{ url: '/uploads/hand_cultivator.png', isPrimary: true, altText: 'Hand Cultivator' }],
         description: 'Rust-resistant carbon steel hand cultivator with an ergonomic wooden handle for weeding and aerating soil.',
         specifications: { material: 'Carbon Steel', handle: 'Ashwood', length: '12 inches' },
         retailPrice: 12,
@@ -304,7 +304,7 @@ const seedDatabase = async () => {
       {
         name: 'Ergonomic D-Handle Shovel',
         category: catTools,
-        images: [{ url: 'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?q=80&w=800', isPrimary: true, altText: 'Farming Shovel' }],
+        images: [{ url: '/uploads/d_handle_shovel.png', isPrimary: true, altText: 'Farming Shovel' }],
         description: 'Heavy-duty steel shovel blade with a lightweight fiberglass shaft and comfortable non-slip D-grip handle.',
         specifications: { bladeType: 'Round point', shaftMaterial: 'Fiberglass', weight: '1.8 kg' },
         retailPrice: 28,
@@ -317,7 +317,7 @@ const seedDatabase = async () => {
       {
         name: 'Heavy-Duty Bypass Pruning Shears',
         category: catTools,
-        images: [{ url: 'https://images.unsplash.com/photo-1530652101053-8c0db4fbb5de?q=80&w=800', isPrimary: true, altText: 'Pruning Shears' }],
+        images: [{ url: '/uploads/pruning_shears.png', isPrimary: true, altText: 'Pruning Shears' }],
         description: 'Ultra-sharp SK5 steel blades for smooth branch pruning. Safely cuts branches up to 20mm thick.',
         specifications: { bladeMaterial: 'SK5 Hardened Steel', cuttingCapacity: '20mm', length: '8.5 inches' },
         retailPrice: 22,
@@ -330,7 +330,7 @@ const seedDatabase = async () => {
       {
         name: 'Automatic Drip Irrigation Kit',
         category: catTools,
-        images: [{ url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=800', isPrimary: true, altText: 'Drip Irrigation Kit' }],
+        images: [{ url: '/uploads/drip_irrigation.png', isPrimary: true, altText: 'Drip Irrigation Kit' }],
         description: 'Complete water-saving micro-irrigation layout. Includes 50m pipe, drippers, connectors, and filters.',
         specifications: { coverageArea: 'Up to 500 sq ft', tubeLength: '50 Meters', dripperFlowRate: '4L/hour' },
         retailPrice: 1200,
@@ -358,7 +358,7 @@ const seedDatabase = async () => {
       {
         name: 'Heritage Tomatoes',
         category: catVeg,
-        images: [{ url: 'https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=800', isPrimary: true, altText: 'Heritage Tomatoes' }],
+        images: [{ url: '/uploads/heritage_tomatoes.png', isPrimary: true, altText: 'Heritage Tomatoes' }],
         description: 'Sun-ripened heirloom variety, hand-picked daily at peak sweetness. Directly from Pune fields.',
         specifications: { origin: 'Pune, Maharashtra', variety: 'Heirloom', organic: 'Yes' },
         retailPrice: 89,
@@ -374,7 +374,7 @@ const seedDatabase = async () => {
       {
         name: 'Red Onion Bulk Pack',
         category: catVeg,
-        images: [{ url: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?q=80&w=800', isPrimary: true, altText: 'Red Onions' }],
+        images: [{ url: '/uploads/red_onions.png', isPrimary: true, altText: 'Red Onions' }],
         description: 'Export-grade red onion, sorted and washed. Sourced directly from Nashik growers.',
         specifications: { origin: 'Nashik, Maharashtra', packageSize: '10kg bag', quality: 'Grade A' },
         retailPrice: 28,
@@ -390,7 +390,7 @@ const seedDatabase = async () => {
       {
         name: 'Organic Green Broccoli',
         category: catVeg,
-        images: [{ url: 'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?q=80&w=800', isPrimary: true, altText: 'Green Broccoli' }],
+        images: [{ url: '/uploads/green_broccoli.png', isPrimary: true, altText: 'Green Broccoli' }],
         description: 'Fresh organic broccoli florets. Extremely crisp, harvested from organic farms under shade-nets.',
         specifications: { origin: 'Mahabaleshwar, Maharashtra', certification: 'APEDA Certified', packaging: 'Crated' },
         retailPrice: 120,
