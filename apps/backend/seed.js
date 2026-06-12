@@ -221,7 +221,7 @@ const seedDatabase = async () => {
       {
         name: 'Water-Soluble NPK 19-19-19',
         category: catFert,
-        images: [{ url: 'https://images.unsplash.com/photo-1617791160536-598cf32026fb?q=80&w=800', isPrimary: true, altText: 'NPK Fertilizer Bag' }],
+        images: [{ url: '/uploads/npk_fertilizer.png', isPrimary: true, altText: 'NPK Fertilizer Bag' }],
         description: 'Balanced fertilizer providing equal nitrogen, phosphorus, and potassium ratios for vegetative growth stages.',
         specifications: { nitrogen: '19%', phosphate: '19%', potash: '19%', solubility: '100%' },
         retailPrice: 42,
@@ -247,7 +247,7 @@ const seedDatabase = async () => {
       {
         name: 'Granular Slow-Release Urea Bags',
         category: catFert,
-        images: [{ url: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=800', isPrimary: true, altText: 'Urea Pellets' }],
+        images: [{ url: '/uploads/urea_fertilizer.png', isPrimary: true, altText: 'Urea Pellets' }],
         description: '46% Nitrogen slow-release granular fertilizer designed to minimize nitrogen washing and evaporation.',
         specifications: { chemicalFormula: 'CO(NH2)2', nitrogen: '46%', packageWeight: '50kg' },
         retailPrice: 55,
@@ -343,7 +343,7 @@ const seedDatabase = async () => {
       {
         name: 'Stainless Steel Garden Trowel',
         category: catTools,
-        images: [{ url: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?q=80&w=800', isPrimary: true, altText: 'Garden Trowel' }],
+        images: [{ url: '/uploads/garden_trowel.png', isPrimary: true, altText: 'Garden Trowel' }],
         description: 'Polished stainless steel trowel with depth markings. Ideal for transplanting seedlings.',
         specifications: { material: 'Stainless Steel', handle: 'Rubber gripized wood', length: '13 inches' },
         retailPrice: 8,
@@ -473,7 +473,7 @@ const seedDatabase = async () => {
       {
         name: 'Fresh Red Apples (Shimla)',
         category: catFruit,
-        images: [{ url: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?q=80&w=800', isPrimary: true, altText: 'Shimla Red Apples' }],
+        images: [{ url: 'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?q=80&w=800', isPrimary: true, altText: 'Shimla Red Apples' }],
         description: 'Crisp and sweet red royal delicious apples harvested from high-altitude orchards in Shimla.',
         specifications: { origin: 'Shimla, Himachal Pradesh', grade: 'Royal A', storageCondition: 'Chilled' },
         retailPrice: 160,
@@ -709,7 +709,7 @@ const seedDatabase = async () => {
         {
           title: 'Monsoon seed discount',
           subtitle: 'Get 20% off all hybrid crop seeds this season.',
-          image: { url: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?q=80&w=800' },
+          image: { url: '/uploads/hybrid_tomato_seeds.png' },
           link: '/catalog?category=seeds',
           isActive: true
         },
