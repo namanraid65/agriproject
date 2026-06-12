@@ -94,7 +94,7 @@ const seedDatabase = async () => {
         name: 'Fertilizers & Pesticides',
         slug: 'fertilizers-pesticides',
         description: 'Chemical and organic soil nutrients and crop protection solutions.',
-        image: { url: 'https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?q=80&w=800' },
+        image: { url: '/uploads/category_fertilizers.png' },
         displayOrder: 2
       },
       {
