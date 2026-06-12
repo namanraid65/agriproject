@@ -8,20 +8,54 @@ import {
   Tag, Award, Truck, CheckCircle2, AlertTriangle
 } from 'lucide-react';
 
+/* ─── Helper for rendering partially filled SVG star ─────── */
+function StarIcon({ fillPercent = 100, size = 12 }) {
+  const id = React.useId();
+  const color = '#c8860a'; // gold/amber color
+  const emptyColor = '#d4d4d4'; // gray color
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="none"
+      style={{ display: 'inline-block', verticalAlign: 'middle' }}
+    >
+      <defs>
+        <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset={`${fillPercent}%`} stopColor={color} />
+          <stop offset={`${fillPercent}%`} stopColor={emptyColor} />
+        </linearGradient>
+      </defs>
+      <path
+        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+        fill={`url(#${id})`}
+      />
+    </svg>
+  );
+}
+
 /* ─── Shared star rating ─────────────────────────────────── */
 export function StarRating({ rating = 0, count, size = 'sm' }) {
-  const full = Math.floor(rating);
-  const half = rating % 1 >= 0.5;
-  const px   = size === 'sm' ? 12 : 15;
+  const px = size === 'sm' ? 12 : 15;
+  const stars = [];
+
+  for (let i = 1; i <= 5; i++) {
+    let fillPercent = 0;
+    if (rating >= i) {
+      fillPercent = 100;
+    } else if (rating > i - 1) {
+      fillPercent = (rating - (i - 1)) * 100;
+    }
+    stars.push(<StarIcon key={i} fillPercent={fillPercent} size={px} />);
+  }
 
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span style={{ fontSize: px, lineHeight: 1, letterSpacing: '0.5px' }}>
-        {[1,2,3,4,5].map(i => (
-          <span key={i} style={{ color: i <= full ? '#c8860a' : (i === full + 1 && half ? '#c8860a' : '#d4d4d4') }}>
-            {i <= full ? '★' : (i === full + 1 && half ? '⯨' : '☆')}
-          </span>
-        ))}
+      <span className="inline-flex items-center gap-0.5">
+        {stars}
       </span>
       {count !== undefined && (
         <span className="text-stone-400" style={{ fontSize: px - 1 }}>({count.toLocaleString()})</span>
