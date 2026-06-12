@@ -165,12 +165,36 @@ export const getAllOrders = async (req, res, next) => {
 // PATCH /api/orders/:id/status — Admin: update order status
 export const updateOrderStatus = async (req, res, next) => {
   try {
-    const { status, trackingNumber, carrier, paymentStatus } = req.body;
+    const { status, trackingNumber, carrier, paymentStatus, returnStatus } = req.body;
     const order = await Order.findById(req.params.id);
     if (!order) return next(new AppError('Order not found.', 404));
 
-    // If changing to cancelled, and it wasn't cancelled/refunded, restore stock
-    if (status === 'cancelled' && order.status !== 'cancelled' && order.status !== 'refunded') {
+    const wasCancelledOrRefunded = order.status === 'cancelled' || order.status === 'refunded' || order.returnStatus === 'refunded';
+
+    if (trackingNumber !== undefined) order.trackingNumber = trackingNumber;
+    if (carrier !== undefined) order.carrier = carrier;
+    if (paymentStatus !== undefined) order.paymentStatus = paymentStatus;
+
+    if (returnStatus !== undefined) {
+      order.returnStatus = returnStatus;
+      if (returnStatus === 'refunded') {
+        order.status = 'refunded';
+        order.paymentStatus = 'refunded';
+      }
+    }
+
+    if (status !== undefined) {
+      order.status = status;
+      if (status === 'refunded') {
+        order.paymentStatus = 'refunded';
+        order.returnStatus = 'refunded';
+      }
+    }
+
+    const isCancelledOrRefundedNow = order.status === 'cancelled' || order.status === 'refunded' || order.returnStatus === 'refunded';
+
+    // If transitioning to cancelled/refunded from non-cancelled/non-refunded, restore stock
+    if (isCancelledOrRefundedNow && !wasCancelledOrRefunded) {
       for (const item of order.items) {
         const product = await Product.findById(item.product);
         if (product) {
@@ -180,10 +204,6 @@ export const updateOrderStatus = async (req, res, next) => {
       }
     }
 
-    if (status) order.status = status;
-    if (trackingNumber) order.trackingNumber = trackingNumber;
-    if (carrier) order.carrier = carrier;
-    if (paymentStatus) order.paymentStatus = paymentStatus;
     const updated = await order.save();
     res.status(200).json({ status: 'success', data: { order: updated } });
   } catch (err) { next(err); }
@@ -254,20 +274,15 @@ export const returnOrder = async (req, res, next) => {
       return next(new AppError(`Cannot return order in "${order.status}" status. Only delivered orders can be returned.`, 400));
     }
 
-    const { reason } = req.body;
-
-    // Restore stock levels
-    for (const item of order.items) {
-      const product = await Product.findById(item.product);
-      if (product) {
-        product.stock += item.quantity;
-        await product.save();
-      }
+    // Check if return is already initiated
+    if (order.returnStatus && order.returnStatus !== 'none') {
+      return next(new AppError('A return has already been requested or processed for this order.', 400));
     }
 
-    order.status = 'refunded';
+    const { reason } = req.body;
+
+    order.returnStatus = 'return_requested';
     order.cancelReason = `Returned: ${reason || 'No reason provided'}`; // reuse cancelReason to store return reason
-    order.paymentStatus = 'refunded';
 
     const updated = await order.save();
     res.status(200).json({
@@ -278,7 +293,6 @@ export const returnOrder = async (req, res, next) => {
     next(err);
   }
 };
-
 
 // GET /api/orders/ticker-stats — Public: get live count of orders in packing / shipping
 export const getTickerStats = async (req, res, next) => {

@@ -186,8 +186,12 @@ export const MyOrders = () => {
         <div className="space-y-6">
           {orders.map((order) => {
             const currentStep = getStatusStep(order.status);
-            const isCancelled = order.status === 'cancelled' || order.status === 'refunded';
+            const hasReturn = order.returnStatus && order.returnStatus !== 'none';
+            const isCancelled = order.status === 'cancelled' || (order.status === 'refunded' && !hasReturn);
             const theme = getStatusTheme(order.status);
+
+            const returnSteps = ['return_requested', 'picked_up', 'received', 'refunded'];
+            const currentReturnStep = returnSteps.indexOf(order.returnStatus);
             
             return (
               <div
@@ -216,15 +220,75 @@ export const MyOrders = () => {
                     </span>
                   </div>
                   <div className="flex justify-start sm:justify-end">
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide border ${theme.bg} ${theme.text}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${theme.dot}`} />
-                      {order.status}
-                    </span>
+                    {hasReturn ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide border bg-amber-50 text-amber-700 border-amber-200">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                        {order.returnStatus === 'return_requested' && 'Return Requested'}
+                        {order.returnStatus === 'picked_up' && 'Item Picked Up'}
+                        {order.returnStatus === 'received' && 'Received at Hub'}
+                        {order.returnStatus === 'refunded' && 'Refunded'}
+                      </span>
+                    ) : (
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide border ${theme.bg} ${theme.text}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${theme.dot}`} />
+                        {order.status}
+                      </span>
+                    )}
                   </div>
                 </div>
 
+                {/* Return Stepper Tracking Visual */}
+                {hasReturn && (
+                  <div className="px-5 py-6 border-b border-stone-100 bg-amber-50/10">
+                    <div className="relative">
+                      {/* Connection bar */}
+                      <div className="absolute top-[9px] left-8 right-8 h-1 bg-amber-100 rounded-full z-0">
+                        <div
+                          className="h-full rounded-full transition-all duration-500 bg-amber-500"
+                          style={{ width: `${(Math.max(0, currentReturnStep) / 3) * 100}%` }}
+                        />
+                      </div>
+
+                      {/* Stepper Nodes */}
+                      <div className="relative z-10 flex justify-between text-center">
+                        {[
+                          { label: 'Return Requested', icon: Package },
+                          { label: 'Item Picked Up', icon: Truck },
+                          { label: 'Received at Hub', icon: ShoppingBag },
+                          { label: 'Refund Processed', icon: CreditCard }
+                        ].map((step, idx) => {
+                          const StepIcon = step.icon;
+                          const isCompleted = idx <= currentReturnStep;
+                          const isActive = idx === currentReturnStep;
+
+                          return (
+                            <div key={idx} className="flex flex-col items-center">
+                              <div
+                                className={`w-6 h-6 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                                  isCompleted
+                                    ? 'bg-amber-500 border-amber-500 text-white shadow-md ring-2 ring-amber-50'
+                                    : 'bg-white border-amber-250 text-amber-300'
+                                }`}
+                              >
+                                <StepIcon className={`h-3 w-3 ${isActive && order.returnStatus !== 'refunded' ? 'animate-pulse' : ''}`} />
+                              </div>
+                              <span
+                                className={`text-[10px] font-bold mt-2 hidden sm:block ${
+                                  isCompleted ? 'text-amber-800' : 'text-stone-400'
+                                }`}
+                              >
+                                {step.label}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Stepper Tracking Visual */}
-                {!isCancelled && (
+                {!hasReturn && !isCancelled && (
                   <div className="px-5 py-6 border-b border-stone-100 bg-stone-50/20">
                     <div className="relative">
                       {/* Connection bar */}
@@ -376,7 +440,23 @@ export const MyOrders = () => {
                     </div>
 
                     {/* Cancellation or Return Action Buttons */}
-                    {!isCancelled ? (
+                    {hasReturn ? (
+                      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 mt-3 text-[11px] text-amber-800 space-y-1">
+                        <span className="font-extrabold text-amber-900 block">
+                          Return Details:
+                        </span>
+                        <p className="mt-0.5 leading-relaxed">
+                          <span className="font-semibold text-stone-500">Reason: </span>
+                          {order.cancelReason ? order.cancelReason.replace(/^Returned:\s*/, '') : 'No reason specified.'}
+                        </p>
+                        <p className="text-[10px] text-stone-500 leading-normal mt-1.5">
+                          {order.returnStatus === 'return_requested' && 'Return requested. Our courier agent will arrive for pickup shortly.'}
+                          {order.returnStatus === 'picked_up' && 'Courier agent has picked up the item. Transit to hub in progress.'}
+                          {order.returnStatus === 'received' && 'Fulfillment center received the package. Inspection and refund processing in progress.'}
+                          {order.returnStatus === 'refunded' && 'Refund processed successfully. Funds should appear in your source account within 3-5 days.'}
+                        </p>
+                      </div>
+                    ) : !isCancelled ? (
                       <div>
                         {(order.status === 'pending' || order.status === 'confirmed') ? (
                           <button

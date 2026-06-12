@@ -93,6 +93,32 @@ export const AdminOrders = () => {
     }
   };
 
+  const handleReturnStatusChange = async (orderId, newReturnStatus) => {
+    setUpdatingStatus(true);
+    try {
+      await api.patch(`/orders/admin/${orderId}/status`, { returnStatus: newReturnStatus });
+      
+      // Update selected order in state if open
+      if (selectedOrder && selectedOrder._id === orderId) {
+        setSelectedOrder(prev => {
+          const updated = { ...prev, returnStatus: newReturnStatus };
+          if (newReturnStatus === 'refunded') {
+            updated.status = 'refunded';
+            updated.paymentStatus = 'refunded';
+          }
+          return updated;
+        });
+      }
+      
+      fetchOrders();
+    } catch (err) {
+      console.error('Failed to update return status:', err);
+      alert(err.response?.data?.message || 'Failed to update return status.');
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
   if (!user || user.role !== 'admin') {
     return null;
   }
@@ -111,6 +137,23 @@ export const AdminOrders = () => {
         cancelled: "bg-stone-100 text-stone-500",
         refunded: "bg-purple-50 text-purple-700"
       };
+
+      const hasReturn = row.returnStatus && row.returnStatus !== 'none';
+      if (hasReturn) {
+        const returnMap = {
+          return_requested: "Return Requested",
+          picked_up: "Item Picked Up",
+          received: "Received at Hub",
+          refunded: "Refunded"
+        };
+        const text = returnMap[row.returnStatus] || "Return Active";
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-750 border border-amber-200">
+            {text.toUpperCase()}
+          </span>
+        );
+      }
+
       const cls = statusMap[val] ?? "bg-stone-150 text-stone-600";
       return (
         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold ${cls}`}>
@@ -173,7 +216,7 @@ export const AdminOrders = () => {
               <div className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-thin">
                 
                 {/* Status Update Selectors */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className={`grid ${selectedOrder.returnStatus && selectedOrder.returnStatus !== 'none' ? 'grid-cols-1 gap-3' : 'grid-cols-2 gap-3'}`}>
                   {/* Workflow Status Dropdown */}
                   <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-2">
                     <h4 className="text-[9px] font-black uppercase tracking-wider text-stone-400 flex items-center gap-1"><Truck className="h-3 w-3" /> Order Status</h4>
@@ -194,6 +237,26 @@ export const AdminOrders = () => {
                       </select>
                     </div>
                   </div>
+
+                  {/* Return Status Dropdown */}
+                  {selectedOrder.returnStatus && selectedOrder.returnStatus !== 'none' && (
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-3.5 space-y-2">
+                      <h4 className="text-[9px] font-black uppercase tracking-wider text-amber-700 flex items-center gap-1"><RefreshCw className="h-3 w-3" /> Return Status</h4>
+                      <div className="flex gap-2">
+                        <select
+                          value={selectedOrder.returnStatus}
+                          disabled={updatingStatus}
+                          onChange={(e) => handleReturnStatusChange(selectedOrder._id, e.target.value)}
+                          className="flex-1 px-2 py-1.5 border border-amber-200 rounded-lg text-[11px] bg-white font-bold text-amber-805 focus:outline-none"
+                        >
+                          <option value="return_requested">Return Requested</option>
+                          <option value="picked_up">Item Picked Up</option>
+                          <option value="received">Received at Hub</option>
+                          <option value="refunded">Refund Processed</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Payment Status Dropdown */}
                   <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-2">
@@ -279,6 +342,18 @@ export const AdminOrders = () => {
                     <span>₹{selectedOrder.totalAmount?.toLocaleString()}</span>
                   </div>
                 </div>
+
+                {/* Reason Info */}
+                {selectedOrder.cancelReason && (
+                  <div className="bg-stone-50 border border-stone-200 rounded-xl p-3 text-xs text-stone-605">
+                    <p className="font-extrabold text-stone-850">
+                      {selectedOrder.returnStatus && selectedOrder.returnStatus !== 'none' ? 'Return Reason' : 'Cancellation Reason'}
+                    </p>
+                    <p className="mt-1 text-stone-600 leading-relaxed font-semibold">
+                      {selectedOrder.cancelReason.replace(/^Returned:\s*/, '')}
+                    </p>
+                  </div>
+                )}
 
                 {/* Additional Info */}
                 <div className="text-[10px] text-stone-400 space-y-1">

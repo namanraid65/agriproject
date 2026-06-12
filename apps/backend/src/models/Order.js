@@ -102,6 +102,14 @@ const orderSchema = new Schema(
 
     notes: { type: String, maxlength: 500 }, // Customer notes
     cancelReason: { type: String },          // Populated if status = cancelled
+    returnStatus: {
+      type: String,
+      enum: {
+        values: ["none", "return_requested", "picked_up", "received", "refunded"],
+        message: "Invalid return status",
+      },
+      default: "none",
+    },
   },
   {
     timestamps: true,
