@@ -11,7 +11,13 @@ const imageSchema = new Schema(
       required: true,
       get: function(url) {
         if (url && url.startsWith('/uploads/')) {
-          const baseUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 5000}`;
+          let baseUrl = process.env.BACKEND_URL || process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 5000}`;
+          if (baseUrl.endsWith('/')) {
+            baseUrl = baseUrl.slice(0, -1);
+          }
+          if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
+            baseUrl = `https://${baseUrl}`;
+          }
           return `${baseUrl}${url}`;
         }
         return url;
