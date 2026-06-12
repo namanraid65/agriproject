@@ -12,7 +12,7 @@ import {
 function StarIcon({ fillPercent = 100, size = 12 }) {
   const id = React.useId();
   const color = '#c8860a'; // gold/amber color
-  const emptyColor = '#d4d4d4'; // gray color
+  const emptyColor = '#f4f4f5'; // very light grey for inner empty area
 
   return (
     <svg
@@ -20,8 +20,11 @@ function StarIcon({ fillPercent = 100, size = 12 }) {
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke="none"
-      style={{ display: 'inline-block', verticalAlign: 'middle' }}
+      stroke={color}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '1px' }}
     >
       <defs>
         <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="0%">
