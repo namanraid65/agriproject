@@ -67,6 +67,7 @@ export const AdminProducts = () => {
       category: '',
       description: '',
       retailPrice: 0,
+      discountPrice: 0,
       stock: 0,
       unit: 'units',
       minimumOrderQuantity: 1,
@@ -84,6 +85,7 @@ export const AdminProducts = () => {
     setEditingProduct({
       ...product,
       category: product.category?._id || product.category || '',
+      discountPrice: product.discountPrice || 0,
       faqsJSON: product.faqs ? JSON.stringify(product.faqs, null, 2) : '[]'
     });
     setModalOpen(true);
@@ -177,6 +179,7 @@ export const AdminProducts = () => {
       label: 'Pricing & Visibility',
       fields: [
         { key: 'retailPrice', label: 'Retail Price (₹)', type: 'number', halfWidth: true, required: true, placeholder: '0.00' },
+        { key: 'discountPrice', label: 'Discount Retail Price (₹)', type: 'number', halfWidth: true, placeholder: '0.00', hint: 'Leave 0 or blank for no discount' },
         { key: 'stock', label: 'Stock Level', type: 'number', halfWidth: true, required: true, placeholder: '0' },
         { key: 'minimumOrderQuantity', label: 'Minimum Order Quantity', type: 'number', halfWidth: true, required: true, placeholder: '1' },
         { key: 'featured', label: 'Featured Product', type: 'checkbox', halfWidth: true, placeholder: 'Show on homepage featured products' },

@@ -100,7 +100,12 @@ export const CartProvider = ({ children }) => {
 
   // Derived state calculations
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const cartSubtotal = items.reduce((sum, item) => sum + (item.product.retailPrice || 0) * item.quantity, 0);
+  const cartSubtotal = items.reduce((sum, item) => {
+    const price = (item.product.discountPrice && item.product.discountPrice > 0)
+      ? item.product.discountPrice
+      : (item.product.retailPrice || 0);
+    return sum + price * item.quantity;
+  }, 0);
   
   // Dynamic shipping cost calculation based on DB settings
   const freeShippingThreshold = settings?.retailOrderSettings?.freeShippingThreshold ?? 499;

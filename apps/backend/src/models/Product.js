@@ -71,6 +71,19 @@ const productSchema = new Schema(
       required: [true, "Retail price is required"],
       min: [0, "Price cannot be negative"],
     },
+    discountPrice: {
+      type: Number,
+      min: [0, "Discount price cannot be negative"],
+      validate: {
+        validator: function (value) {
+          if (value !== undefined && value !== null) {
+            return value < this.retailPrice;
+          }
+          return true;
+        },
+        message: "Discount price must be less than regular retail price"
+      }
+    },
     stock: {
       type: Number,
       required: true,

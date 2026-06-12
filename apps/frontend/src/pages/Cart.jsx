@@ -97,7 +97,17 @@ export const Cart = () => {
                           <Link to={`/products/${product._id}`} className="font-bold text-stone-850 hover:text-emerald-700 transition-colors text-base leading-snug">
                             {product.name}
                           </Link>
-                          <p className="text-xs text-stone-400 font-semibold mt-1">₹{product.retailPrice?.toLocaleString()} / unit</p>
+                          {product.discountPrice && product.discountPrice > 0 ? (
+                            <span className="flex items-center gap-1.5 flex-wrap mt-1">
+                              <span className="text-xs text-stone-800 font-bold">₹{product.discountPrice.toLocaleString()}</span>
+                              <span className="text-[10px] text-stone-400 line-through font-semibold">₹{product.retailPrice?.toLocaleString()}</span>
+                              <span className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-105 px-1.5 py-0.5 rounded">
+                                {Math.round(((product.retailPrice - product.discountPrice) / product.retailPrice) * 100)}% OFF
+                              </span>
+                            </span>
+                          ) : (
+                            <p className="text-xs text-stone-400 font-semibold mt-1">₹{product.retailPrice?.toLocaleString()} / unit</p>
+                          )}
                         </div>
                       </div>
 
@@ -132,7 +142,7 @@ export const Cart = () => {
                         {/* Total Price & Delete Button */}
                         <div className="flex items-center gap-4 min-w-[100px] justify-end">
                           <span className="font-black text-stone-800 text-base">
-                            ₹{(product.retailPrice * item.quantity).toLocaleString()}
+                            ₹{((product.discountPrice && product.discountPrice > 0 ? product.discountPrice : product.retailPrice) * item.quantity).toLocaleString()}
                           </span>
                           <button
                             onClick={() => removeFromCart(product._id)}

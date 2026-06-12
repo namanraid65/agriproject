@@ -117,6 +117,11 @@ function ProductCardList({ product, isB2B, onAddToCart }) {
             <Award className="h-2.5 w-2.5" />Featured
           </span>
         )}
+        {!isB2B && product.discountPrice && product.discountPrice > 0 && (
+          <span className="absolute top-2 right-2 inline-flex items-center gap-1 text-[9px] font-black text-white bg-red-650 px-1.5 py-0.5 rounded uppercase tracking-wide shadow-sm">
+            {Math.round(((product.retailPrice - product.discountPrice) / product.retailPrice) * 100)}% OFF
+          </span>
+        )}
       </Link>
 
       {/* Body */}
@@ -146,7 +151,14 @@ function ProductCardList({ product, isB2B, onAddToCart }) {
           ) : (
             <div>
               <span className="text-xs text-stone-400 block">Retail Price</span>
-              <span className="text-2xl font-black text-emerald-700">₹{product.retailPrice?.toLocaleString()}</span>
+              {product.discountPrice && product.discountPrice > 0 ? (
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-2xl font-black text-emerald-700">₹{product.discountPrice.toLocaleString()}</span>
+                  <span className="text-sm text-stone-400 line-through font-medium">₹{product.retailPrice?.toLocaleString()}</span>
+                </div>
+              ) : (
+                <span className="text-2xl font-black text-emerald-700">₹{product.retailPrice?.toLocaleString()}</span>
+              )}
             </div>
           )}
 
@@ -309,6 +321,11 @@ export function ProductCard({ product, onAddToCart, viewMode = 'grid' }) {
               <Star className="h-2.5 w-2.5 fill-current" />Featured
             </span>
           )}
+          {!isB2B && product.discountPrice && product.discountPrice > 0 && (
+            <span className="inline-flex items-center gap-0.5 text-[9px] font-black text-white bg-red-600 px-2 py-0.5 rounded uppercase shadow-sm">
+              {Math.round(((product.retailPrice - product.discountPrice) / product.retailPrice) * 100)}% OFF
+            </span>
+          )}
         </div>
 
         {/* Wishlist */}
@@ -362,8 +379,15 @@ export function ProductCard({ product, onAddToCart, viewMode = 'grid' }) {
             </div>
           ) : (
             /* B2C Pricing Block */
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-black text-emerald-700 tracking-tight">₹{product.retailPrice?.toLocaleString()}</span>
+            <div className="flex items-baseline gap-2 flex-wrap">
+              {product.discountPrice && product.discountPrice > 0 ? (
+                <>
+                  <span className="text-2xl font-black text-emerald-700 tracking-tight">₹{product.discountPrice.toLocaleString()}</span>
+                  <span className="text-sm text-stone-400 line-through font-medium">₹{product.retailPrice?.toLocaleString()}</span>
+                </>
+              ) : (
+                <span className="text-2xl font-black text-emerald-700 tracking-tight">₹{product.retailPrice?.toLocaleString()}</span>
+              )}
               <span className="text-xs text-stone-400 font-medium">/ unit</span>
             </div>
           )}

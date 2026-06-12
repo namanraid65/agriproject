@@ -404,10 +404,10 @@ export const Checkout = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-stone-800 text-sm truncate">{product.name}</h4>
-                      <p className="text-xs text-stone-400 font-semibold mt-0.5">Qty: {item.quantity} · ₹{product.retailPrice?.toLocaleString()} / unit</p>
+                      <p className="text-xs text-stone-400 font-semibold mt-0.5">Qty: {item.quantity} · ₹{(product.discountPrice && product.discountPrice > 0 ? product.discountPrice : product.retailPrice)?.toLocaleString()} / unit</p>
                     </div>
                     <span className="font-bold text-stone-800 text-sm">
-                      ₹{(product.retailPrice * item.quantity).toLocaleString()}
+                      ₹{((product.discountPrice && product.discountPrice > 0 ? product.discountPrice : product.retailPrice) * item.quantity).toLocaleString()}
                     </span>
                   </div>
                 );

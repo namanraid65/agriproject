@@ -1128,6 +1128,17 @@ export default function AgriHomepage() {
                       fontSize: 10, fontWeight: 800, letterSpacing: "0.5px",
                       padding: "4px 12px", borderRadius: 20, textTransform: "uppercase",
                     }}>{p.badge}</div>
+                    {!isB2B && p.rawProduct?.discountPrice && p.rawProduct.discountPrice > 0 && (
+                      <div style={{
+                        position: "absolute", top: 14, right: 54,
+                        background: "#d90429", color: "#fff",
+                        fontSize: 9, fontWeight: 900,
+                        padding: "3px 8px", borderRadius: 10, textTransform: "uppercase",
+                        boxShadow: "0 2px 6px rgba(0,0,0,0.15)"
+                      }}>
+                        {Math.round(((p.price - p.rawProduct.discountPrice) / p.price) * 100)}% OFF
+                      </div>
+                    )}
                     <button 
                       onClick={() => toggleWishlist(p.id.toString())}
                       aria-label={wishlist.has(p.id.toString()) ? "Remove from wishlist" : "Add to wishlist"}
@@ -1169,7 +1180,14 @@ export default function AgriHomepage() {
                         <span style={{ fontSize: 11, color: C.muted, display: "block", marginBottom: 2 }}>
                           {isB2B ? "Wholesale Est." : `Price per ${p.unit}`}
                         </span>
-                        <span style={{ fontSize: 22, fontWeight: 900, color: C.forest, letterSpacing: "-0.5px" }}>₹{p.price}</span>
+                        {!isB2B && p.rawProduct?.discountPrice && p.rawProduct.discountPrice > 0 ? (
+                          <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap" }}>
+                            <span style={{ fontSize: 22, fontWeight: 900, color: C.forest, letterSpacing: "-0.5px" }}>₹{p.rawProduct.discountPrice}</span>
+                            <span style={{ fontSize: 14, color: C.muted, textDecoration: "line-through", fontWeight: 600 }}>₹{p.price}</span>
+                          </div>
+                        ) : (
+                          <span style={{ fontSize: 22, fontWeight: 900, color: C.forest, letterSpacing: "-0.5px" }}>₹{p.price}</span>
+                        )}
                         <span style={{ fontSize: 12, color: C.muted }}>/{p.unit}</span>
                       </div>
                       {isB2B ? (

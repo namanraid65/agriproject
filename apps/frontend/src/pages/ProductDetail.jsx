@@ -560,13 +560,27 @@ export default function ProductDetail() {
               /* ── B2C Pricing ── */
               <div className="space-y-1">
                 <p className="text-xs text-stone-400 font-medium uppercase tracking-wider">Retail Price</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-black text-emerald-700 tracking-tight">
-                    ₹{product?.retailPrice?.toLocaleString()}
-                  </span>
-                  <span className="text-stone-400 text-sm">/ unit · incl. taxes</span>
-                </div>
-                <p className="text-xs text-emerald-600 font-semibold">🎉 Free delivery on orders above ₹499</p>
+                {product?.discountPrice && product.discountPrice > 0 ? (
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    <span className="text-4xl font-black text-emerald-700 tracking-tight">
+                      ₹{product.discountPrice.toLocaleString()}
+                    </span>
+                    <span className="text-stone-400 text-lg line-through font-semibold">
+                      ₹{product.retailPrice?.toLocaleString()}
+                    </span>
+                    <span className="text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
+                      {Math.round(((product.retailPrice - product.discountPrice) / product.retailPrice) * 100)}% OFF
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-black text-emerald-700 tracking-tight">
+                      ₹{product?.retailPrice?.toLocaleString()}
+                    </span>
+                  </div>
+                )}
+                <span className="text-stone-400 text-xs block mt-0.5">/ unit · incl. all taxes</span>
+                <p className="text-xs text-emerald-600 font-semibold mt-1">🎉 Free delivery on orders above ₹499</p>
               </div>
             )}
 

@@ -23,5 +23,8 @@ export const calculateProductPrice = (product, quantity, marketMode) => {
   }
 
   // Default to retail price for B2C or B2B fallback
+  if (marketMode !== 'B2B' && product.discountPrice && product.discountPrice > 0) {
+    return product.discountPrice;
+  }
   return product.retailPrice;
 };
