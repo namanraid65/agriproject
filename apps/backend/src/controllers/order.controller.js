@@ -234,6 +234,52 @@ export const cancelOrder = async (req, res, next) => {
   }
 };
 
+// PATCH /api/orders/:id/return — Customer self-service order return
+export const returnOrder = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return next(new AppError('Order not found.', 404));
+    }
+
+    // Access control: only owner or admin can return
+    const isOwner = order.customer.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+    if (!isOwner && !isAdmin) {
+      return next(new AppError('You do not have permission to return this order.', 403));
+    }
+
+    // Can only return delivered orders
+    if (order.status !== 'delivered') {
+      return next(new AppError(`Cannot return order in "${order.status}" status. Only delivered orders can be returned.`, 400));
+    }
+
+    const { reason } = req.body;
+
+    // Restore stock levels
+    for (const item of order.items) {
+      const product = await Product.findById(item.product);
+      if (product) {
+        product.stock += item.quantity;
+        await product.save();
+      }
+    }
+
+    order.status = 'refunded';
+    order.cancelReason = `Returned: ${reason || 'No reason provided'}`; // reuse cancelReason to store return reason
+    order.paymentStatus = 'refunded';
+
+    const updated = await order.save();
+    res.status(200).json({
+      status: 'success',
+      data: { order: updated }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 // GET /api/orders/ticker-stats — Public: get live count of orders in packing / shipping
 export const getTickerStats = async (req, res, next) => {
   try {

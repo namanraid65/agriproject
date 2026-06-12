@@ -16,11 +16,18 @@ export const MyOrders = () => {
 
   // Cancellation states
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showReturnModal, setShowReturnModal] = useState(false);
   const [cancelOrderId, setCancelOrderId] = useState(null);
   const [cancelReason, setCancelReason] = useState('Changed my mind');
   const [cancelDetail, setCancelDetail] = useState('');
   const [submittingCancel, setSubmittingCancel] = useState(false);
+
+  // Return states
+  const [showReturnInfoModal, setShowReturnInfoModal] = useState(false);
+  const [showSelfReturnModal, setShowSelfReturnModal] = useState(false);
+  const [returnOrderId, setReturnOrderId] = useState(null);
+  const [returnReason, setReturnReason] = useState('Defective product');
+  const [returnDetail, setReturnDetail] = useState('');
+  const [submittingReturn, setSubmittingReturn] = useState(false);
 
   const handleCancelClick = (orderId) => {
     setCancelOrderId(orderId);
@@ -29,8 +36,30 @@ export const MyOrders = () => {
     setShowCancelModal(true);
   };
 
-  const handleReturnClick = () => {
-    setShowReturnModal(true);
+  const handleReturnInfoClick = () => {
+    setShowReturnInfoModal(true);
+  };
+
+  const handleSelfReturnClick = (orderId) => {
+    setReturnOrderId(orderId);
+    setReturnReason('Defective product');
+    setReturnDetail('');
+    setShowSelfReturnModal(true);
+  };
+
+  const handleConfirmReturn = async () => {
+    setSubmittingReturn(true);
+    try {
+      const finalReason = returnReason === 'Other' ? returnDetail.trim() || 'Other' : returnReason;
+      await api.patch(`/orders/${returnOrderId}/return`, { reason: finalReason });
+      setShowSelfReturnModal(false);
+      fetchMyOrders();
+    } catch (err) {
+      console.error('Failed to return order:', err);
+      alert(err.response?.data?.message || 'Failed to return the order. Please try again.');
+    } finally {
+      setSubmittingReturn(false);
+    }
   };
 
   const handleConfirmCancel = async () => {
@@ -356,9 +385,16 @@ export const MyOrders = () => {
                           >
                             Cancel Order
                           </button>
+                        ) : order.status === 'delivered' ? (
+                          <button
+                            onClick={() => handleSelfReturnClick(order._id)}
+                            className="w-full mt-3 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold border border-amber-200 rounded-2xl text-xs transition-all tracking-wide text-center uppercase shadow-sm"
+                          >
+                            Return Order
+                          </button>
                         ) : (
                           <button
-                            onClick={() => handleReturnClick()}
+                            onClick={() => handleReturnInfoClick()}
                             className="w-full mt-3 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold border border-stone-300 rounded-2xl text-xs transition-all tracking-wide text-center uppercase"
                           >
                             Request Return
@@ -367,8 +403,10 @@ export const MyOrders = () => {
                       </div>
                     ) : (
                       <div className="bg-stone-50 border border-stone-200 rounded-2xl p-3 mt-3 text-[11px] text-stone-500">
-                        <span className="font-extrabold text-stone-700 block">Cancel Reason:</span>
-                        <p className="mt-0.5 leading-relaxed">{order.cancelReason || 'No reason provided.'}</p>
+                        <span className="font-extrabold text-stone-700 block">
+                          {order.status === 'refunded' ? 'Return Details:' : 'Cancel Reason:'}
+                        </span>
+                        <p className="mt-0.5 leading-relaxed">{order.cancelReason || 'No details provided.'}</p>
                       </div>
                     )}
 
@@ -440,9 +478,9 @@ export const MyOrders = () => {
         )}
 
         {/* Return Details Modal */}
-        {showReturnModal && (
+        {showReturnInfoModal && (
           <>
-            <div className="fixed inset-0 bg-black/40 z-50 backdrop-blur-sm" onClick={() => setShowReturnModal(false)} />
+            <div className="fixed inset-0 bg-black/40 z-50 backdrop-blur-sm" onClick={() => setShowReturnInfoModal(false)} />
             <div className="fixed inset-0 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
               <div className="bg-white rounded-3xl border border-stone-200 shadow-2xl p-6 max-w-sm w-full space-y-4">
                 <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 border border-emerald-100 shadow-md">
@@ -450,7 +488,7 @@ export const MyOrders = () => {
                 </div>
                 <h3 className="font-black text-stone-850 text-base">How to Return Items</h3>
                 <p className="text-xs text-stone-500 leading-relaxed">
-                  For items that have already been processed, shipped, or delivered, returns are managed manually by our support team.
+                  For items that have already been processed or shipped (but not yet delivered), returns are managed manually by our support team.
                 </p>
                 <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-1 text-xs text-stone-705">
                   <p className="font-bold text-stone-800">OpenAgri Returns & Support</p>
@@ -459,11 +497,73 @@ export const MyOrders = () => {
                   <p className="text-[10px] text-stone-400 mt-1.5 leading-normal">Please mention your order ID when contacting customer support.</p>
                 </div>
                 <button
-                  onClick={() => setShowReturnModal(false)}
+                  onClick={() => setShowReturnInfoModal(false)}
                   className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-colors"
                 >
                   Close
                 </button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Self-Service Return Confirmation Modal */}
+        {showSelfReturnModal && (
+          <>
+            <div className="fixed inset-0 bg-black/40 z-50 backdrop-blur-sm" onClick={() => setShowSelfReturnModal(false)} />
+            <div className="fixed inset-0 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+              <div className="bg-white rounded-3xl border border-stone-200 shadow-2xl p-6 max-w-sm w-full space-y-4">
+                <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center text-amber-600 border border-amber-100 shadow-md">
+                  <Info className="h-5 w-5" />
+                </div>
+                <h3 className="font-black text-stone-850 text-base">Return Order</h3>
+                <p className="text-xs text-stone-500 leading-relaxed font-medium">
+                  Are you sure you want to return this order? Once confirmed, the products will be registered as returned and the refund status will set to refunded.
+                </p>
+                <div className="space-y-3 pt-1">
+                  <label className="block text-[10px] font-black uppercase text-stone-400 tracking-wider">Reason for Return</label>
+                  <select
+                    value={returnReason}
+                    onChange={(e) => setReturnReason(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-stone-250 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  >
+                    <option value="Defective product">Defective product</option>
+                    <option value="Wrong item delivered">Wrong item delivered</option>
+                    <option value="Stale/expired product">Stale/expired product</option>
+                    <option value="No longer needed">No longer needed</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                {returnReason === 'Other' && (
+                  <div className="space-y-1.5 animate-in slide-in-from-top-2 duration-200">
+                    <label className="block text-[10px] font-black uppercase text-stone-400 tracking-wider">Please Specify</label>
+                    <textarea
+                      value={returnDetail}
+                      onChange={(e) => setReturnDetail(e.target.value)}
+                      required
+                      placeholder="Specify details..."
+                      rows={2}
+                      className="w-full px-3 py-2 rounded-xl border border-stone-250 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    />
+                  </div>
+                )}
+                <div className="flex gap-2.5 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowSelfReturnModal(false)}
+                    className="flex-1 py-2.5 border border-stone-250 hover:bg-stone-50 font-bold rounded-xl text-xs text-stone-600 transition-colors"
+                  >
+                    Keep Order
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleConfirmReturn}
+                    disabled={submittingReturn}
+                    className="flex-1 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition-colors disabled:opacity-50 flex items-center justify-center gap-1"
+                  >
+                    {submittingReturn ? 'Processing...' : 'Confirm Return'}
+                  </button>
+                </div>
               </div>
             </div>
           </>

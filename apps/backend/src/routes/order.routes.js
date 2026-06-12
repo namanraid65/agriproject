@@ -1,6 +1,6 @@
 // routes/order.routes.js
 import express from 'express';
-import { createOrder, getOrderById, getMyOrders, getAllOrders, updateOrderStatus, cancelOrder, getTickerStats } from '../controllers/order.controller.js';
+import { createOrder, getOrderById, getMyOrders, getAllOrders, updateOrderStatus, cancelOrder, returnOrder, getTickerStats } from '../controllers/order.controller.js';
 import { protect, adminOnly } from '../middleware/auth.middleware.js';
 import { marketModeDetector } from '../middleware/marketMode.js';
 
@@ -20,5 +20,6 @@ router.post('/', marketModeDetector, createOrder);
 router.get('/myorders', getMyOrders);
 router.get('/:id', getOrderById);
 router.patch('/:id/cancel', cancelOrder);
+router.patch('/:id/return', returnOrder);
 
 export default router;
