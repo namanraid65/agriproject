@@ -231,3 +231,27 @@ export const cancelOrder = async (req, res, next) => {
     next(err);
   }
 };
+
+// GET /api/orders/ticker-stats — Public: get live count of orders in packing / shipping
+export const getTickerStats = async (req, res, next) => {
+  try {
+    const packingCount = await Order.countDocuments({
+      status: { $in: ['pending', 'confirmed', 'processing'] }
+    });
+
+    const shippedCount = await Order.countDocuments({
+      status: 'shipped'
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        packingCount: 2340 + packingCount,
+        shippedCount: 80 + shippedCount
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+

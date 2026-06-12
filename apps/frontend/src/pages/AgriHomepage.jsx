@@ -337,6 +337,7 @@ export default function AgriHomepage() {
   const [cmsLoading,   setCmsLoading]   = useState(true);
   const [dismissedBanners, setDismissedBanners] = useState(new Set());
   const [wishlist, setWishlist] = useState(new Set());
+  const [tickerStats, setTickerStats] = useState({ packingCount: 2347, shippedCount: 84 });
 
   useEffect(() => {
     try {
@@ -447,7 +448,23 @@ export default function AgriHomepage() {
         setCmsLoading(false);
       }
     };
+
+    const fetchTickerStats = async () => {
+      try {
+        const res = await api.get('/orders/ticker-stats');
+        if (res.data?.data) {
+          setTickerStats({
+            packingCount: res.data.data.packingCount,
+            shippedCount: res.data.data.shippedCount
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load ticker stats:', err);
+      }
+    };
+
     loadCMS();
+    fetchTickerStats();
   }, []);
 
   // Fetch products when isB2B changes
@@ -1013,7 +1030,9 @@ export default function AgriHomepage() {
             }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#4caf50", display: "inline-block", boxShadow: "0 0 8px #4caf50" }} />
               <span style={{ fontSize: 13, color: "#ffd166", fontWeight: 600 }}>
-                {isB2B ? "ACTIVE: 84 cargo freight trucks en route" : "LIVE: 2,347 orders being packed right now"}
+                {isB2B 
+                  ? `ACTIVE: ${tickerStats.shippedCount} cargo freight trucks en route` 
+                  : `LIVE: ${tickerStats.packingCount.toLocaleString()} orders being packed right now`}
               </span>
             </div>
           </div>
