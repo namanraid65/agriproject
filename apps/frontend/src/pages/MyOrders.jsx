@@ -14,6 +14,40 @@ export const MyOrders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Cancellation states
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [cancelOrderId, setCancelOrderId] = useState(null);
+  const [cancelReason, setCancelReason] = useState('Changed my mind');
+  const [cancelDetail, setCancelDetail] = useState('');
+  const [submittingCancel, setSubmittingCancel] = useState(false);
+
+  const handleCancelClick = (orderId) => {
+    setCancelOrderId(orderId);
+    setCancelReason('Changed my mind');
+    setCancelDetail('');
+    setShowCancelModal(true);
+  };
+
+  const handleReturnClick = () => {
+    setShowReturnModal(true);
+  };
+
+  const handleConfirmCancel = async () => {
+    setSubmittingCancel(true);
+    try {
+      const finalReason = cancelReason === 'Other' ? cancelDetail.trim() || 'Other' : cancelReason;
+      await api.patch(`/orders/${cancelOrderId}/cancel`, { reason: finalReason });
+      setShowCancelModal(false);
+      fetchMyOrders();
+    } catch (err) {
+      console.error('Failed to cancel order:', err);
+      alert(err.response?.data?.message || 'Failed to cancel the order. Please try again.');
+    } finally {
+      setSubmittingCancel(false);
+    }
+  };
+
   const fetchMyOrders = async () => {
     setLoading(true);
     setError(null);
@@ -312,6 +346,32 @@ export const MyOrders = () => {
                       </div>
                     </div>
 
+                    {/* Cancellation or Return Action Buttons */}
+                    {!isCancelled ? (
+                      <div>
+                        {(order.status === 'pending' || order.status === 'confirmed') ? (
+                          <button
+                            onClick={() => handleCancelClick(order._id)}
+                            className="w-full mt-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-650 font-bold border border-red-200 rounded-2xl text-xs transition-all tracking-wide text-center uppercase"
+                          >
+                            Cancel Order
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleReturnClick()}
+                            className="w-full mt-3 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold border border-stone-300 rounded-2xl text-xs transition-all tracking-wide text-center uppercase"
+                          >
+                            Request Return
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="bg-stone-50 border border-stone-200 rounded-2xl p-3 mt-3 text-[11px] text-stone-500">
+                        <span className="font-extrabold text-stone-700 block">Cancel Reason:</span>
+                        <p className="mt-0.5 leading-relaxed">{order.cancelReason || 'No reason provided.'}</p>
+                      </div>
+                    )}
+
                   </div>
                 </div>
 
@@ -319,6 +379,95 @@ export const MyOrders = () => {
             );
           })}
         </div>
+
+        {/* Cancel Confirmation Modal */}
+        {showCancelModal && (
+          <>
+            <div className="fixed inset-0 bg-black/40 z-50 backdrop-blur-sm" onClick={() => setShowCancelModal(false)} />
+            <div className="fixed inset-0 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+              <div className="bg-white rounded-3xl border border-stone-200 shadow-2xl p-6 max-w-sm w-full space-y-4">
+                <h3 className="font-black text-stone-850 text-base">Cancel Order</h3>
+                <p className="text-xs text-stone-500 leading-relaxed">
+                  Are you sure you want to cancel this order? This action will release the reserved item stocks back to inventory.
+                </p>
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-black uppercase text-stone-400 tracking-wider">Reason for Cancellation</label>
+                  <select
+                    value={cancelReason}
+                    onChange={(e) => setCancelReason(e.target.value)}
+                    className="w-full px-3 py-2 border border-stone-200 rounded-xl text-xs bg-white font-semibold focus:outline-none"
+                  >
+                    <option value="Changed my mind">Changed my mind</option>
+                    <option value="Found a better price elsewhere">Found a better price elsewhere</option>
+                    <option value="Incorrect items selected">Incorrect items selected</option>
+                    <option value="Delivery takes too long">Delivery takes too long</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                {cancelReason === 'Other' && (
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-black uppercase text-stone-400 tracking-wider">Please specify</label>
+                    <textarea
+                      value={cancelDetail}
+                      onChange={(e) => setCancelDetail(e.target.value)}
+                      placeholder="Specify your reason..."
+                      className="w-full px-3 py-2 border border-stone-200 rounded-xl text-xs resize-none focus:outline-none h-16"
+                    />
+                  </div>
+                )}
+                <div className="flex gap-2.5 pt-2">
+                  <button
+                    onClick={() => setShowCancelModal(false)}
+                    className="flex-1 py-2.5 border border-stone-200 text-stone-500 font-bold rounded-xl text-xs hover:bg-stone-50 transition-colors"
+                  >
+                    No, Keep Order
+                  </button>
+                  <button
+                    onClick={handleConfirmCancel}
+                    disabled={submittingCancel}
+                    className="flex-1 py-2.5 bg-red-650 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition-colors disabled:opacity-60 flex items-center justify-center gap-1.5"
+                  >
+                    {submittingCancel ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      'Yes, Cancel Order'
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Return Details Modal */}
+        {showReturnModal && (
+          <>
+            <div className="fixed inset-0 bg-black/40 z-50 backdrop-blur-sm" onClick={() => setShowReturnModal(false)} />
+            <div className="fixed inset-0 flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+              <div className="bg-white rounded-3xl border border-stone-200 shadow-2xl p-6 max-w-sm w-full space-y-4">
+                <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 border border-emerald-100 shadow-md">
+                  <Info className="h-5 w-5" />
+                </div>
+                <h3 className="font-black text-stone-850 text-base">How to Return Items</h3>
+                <p className="text-xs text-stone-500 leading-relaxed">
+                  For items that have already been processed, shipped, or delivered, returns are managed manually by our support team.
+                </p>
+                <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-1 text-xs text-stone-750">
+                  <p className="font-bold text-stone-800">KisanMart Returns & Support</p>
+                  <p>📧 Email: <span className="font-semibold">returns@kisanmart.com</span></p>
+                  <p>📞 Toll-Free Support: <span className="font-semibold">1800-419-5050</span></p>
+                  <p className="text-[10px] text-stone-400 mt-1.5 leading-normal">Please mention your order ID when contacting customer support.</p>
+                </div>
+                <button
+                  onClick={() => setShowReturnModal(false)}
+                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </>
+        )}
 
       </div>
     </div>

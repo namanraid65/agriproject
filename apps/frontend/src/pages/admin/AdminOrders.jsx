@@ -107,7 +107,9 @@ export const AdminOrders = () => {
         confirmed: "bg-blue-50 text-blue-650",
         processing: "bg-amber-50 text-amber-700",
         shipped: "bg-indigo-50 text-indigo-700",
-        delivered: "bg-[#f2f7ee] text-[#3b6d11]"
+        delivered: "bg-[#f2f7ee] text-[#3b6d11]",
+        cancelled: "bg-stone-100 text-stone-500",
+        refunded: "bg-purple-50 text-purple-750"
       };
       const cls = statusMap[val] ?? "bg-stone-150 text-stone-600";
       return (
@@ -116,11 +118,16 @@ export const AdminOrders = () => {
         </span>
       );
     }},
-    { key: 'paymentStatus', label: 'Payment', render: (val) => (
-      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold ${val === 'paid' ? 'bg-[#f2f7ee] text-[#3b6d11]' : 'bg-red-50 text-red-600'}`}>
-        {val?.toUpperCase()}
-      </span>
-    )},
+    { key: 'paymentStatus', label: 'Payment', render: (val) => {
+      const payCls = val === 'paid' ? 'bg-[#f2f7ee] text-[#3b6d11]' :
+                     val === 'refunded' ? 'bg-purple-50 text-purple-750' :
+                     'bg-red-50 text-red-600';
+      return (
+        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold ${payCls}`}>
+          {val?.toUpperCase()}
+        </span>
+      );
+    }},
     { key: 'createdAt', label: 'Created At', render: (val) => new Date(val).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) }
   ];
 
@@ -182,6 +189,8 @@ export const AdminOrders = () => {
                         <option value="processing">Processing</option>
                         <option value="shipped">Shipped</option>
                         <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="refunded">Refunded</option>
                       </select>
                     </div>
                   </div>

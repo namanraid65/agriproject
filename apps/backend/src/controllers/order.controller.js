@@ -166,6 +166,18 @@ export const updateOrderStatus = async (req, res, next) => {
     const { status, trackingNumber, carrier, paymentStatus } = req.body;
     const order = await Order.findById(req.params.id);
     if (!order) return next(new AppError('Order not found.', 404));
+
+    // If changing to cancelled, and it wasn't cancelled/refunded, restore stock
+    if (status === 'cancelled' && order.status !== 'cancelled' && order.status !== 'refunded') {
+      for (const item of order.items) {
+        const product = await Product.findById(item.product);
+        if (product) {
+          product.stock += item.quantity;
+          await product.save();
+        }
+      }
+    }
+
     if (status) order.status = status;
     if (trackingNumber) order.trackingNumber = trackingNumber;
     if (carrier) order.carrier = carrier;
@@ -173,4 +185,49 @@ export const updateOrderStatus = async (req, res, next) => {
     const updated = await order.save();
     res.status(200).json({ status: 'success', data: { order: updated } });
   } catch (err) { next(err); }
+};
+
+// PATCH /api/orders/:id/cancel — Customer self-service order cancellation
+export const cancelOrder = async (req, res, next) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return next(new AppError('Order not found.', 404));
+    }
+
+    // Access control: only owner or admin can cancel
+    const isOwner = order.customer.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === 'admin';
+    if (!isOwner && !isAdmin) {
+      return next(new AppError('You do not have permission to cancel this order.', 403));
+    }
+
+    // Can only cancel pending or confirmed orders
+    if (order.status !== 'pending' && order.status !== 'confirmed') {
+      return next(new AppError(`Cannot cancel order in "${order.status}" status.`, 400));
+    }
+
+    const { reason } = req.body;
+
+    // Restore stock levels
+    for (const item of order.items) {
+      const product = await Product.findById(item.product);
+      if (product) {
+        product.stock += item.quantity;
+        await product.save();
+      }
+    }
+
+    order.status = 'cancelled';
+    order.cancelReason = reason || 'Cancelled by user';
+    order.paymentStatus = 'refunded';
+
+    const updated = await order.save();
+    res.status(200).json({
+      status: 'success',
+      data: { order: updated }
+    });
+  } catch (err) {
+    next(err);
+  }
 };
