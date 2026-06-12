@@ -11,6 +11,7 @@ export const Cart = () => {
     removeFromCart,
     clearCart,
     cartSubtotal,
+    cartSavings,
     shippingCost,
     cartTotal,
     isEmpty,
@@ -199,7 +200,7 @@ export const Cart = () => {
                   <span>Subtotal</span>
                   <span className="text-stone-700 font-bold">₹{cartSubtotal.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-sm text-stone-500 font-semibold">
+                 <div className="flex justify-between text-sm text-stone-500 font-semibold">
                   <span>Delivery Charges</span>
                   {shippingCost === 0 ? (
                     <span className="text-emerald-600 font-black uppercase text-xs tracking-wider">Free</span>
@@ -207,6 +208,12 @@ export const Cart = () => {
                     <span className="text-stone-700 font-bold">₹{shippingCost.toLocaleString()}</span>
                   )}
                 </div>
+                {cartSavings > 0 && (
+                  <div className="flex justify-between text-sm text-emerald-600 font-bold">
+                    <span>Total Discount Savings</span>
+                    <span>-₹{cartSavings.toLocaleString()}</span>
+                  </div>
+                )}
               </div>
 
               <div className="pt-4 border-t border-stone-100 flex justify-between items-baseline">

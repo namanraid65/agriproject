@@ -561,16 +561,23 @@ export default function ProductDetail() {
               <div className="space-y-1">
                 <p className="text-xs text-stone-400 font-medium uppercase tracking-wider">Retail Price</p>
                 {product?.discountPrice && product.discountPrice > 0 ? (
-                  <div className="flex items-baseline gap-3 flex-wrap">
-                    <span className="text-4xl font-black text-emerald-700 tracking-tight">
-                      ₹{product.discountPrice.toLocaleString()}
-                    </span>
-                    <span className="text-stone-400 text-lg line-through font-semibold">
-                      ₹{product.retailPrice?.toLocaleString()}
-                    </span>
-                    <span className="text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
-                      {Math.round(((product.retailPrice - product.discountPrice) / product.retailPrice) * 100)}% OFF
-                    </span>
+                  <div className="space-y-2 bg-stone-100/60 p-4 border border-stone-200/80 rounded-2xl">
+                    <div className="flex items-baseline gap-2 text-stone-500 text-sm font-semibold">
+                      <span>M.R.P.:</span>
+                      <span className="line-through">₹{product.retailPrice.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-baseline gap-2.5">
+                      <span className="text-sm font-bold text-red-600 uppercase tracking-wide">Deal Price:</span>
+                      <span className="text-3xl font-black text-stone-900 tracking-tight">
+                        ₹{product.discountPrice.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="text-xs font-bold text-stone-605 flex items-center gap-1.5 flex-wrap pt-0.5">
+                      <span>You Save:</span>
+                      <span className="text-emerald-700 font-extrabold bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-lg shadow-sm">
+                        ₹{(product.retailPrice - product.discountPrice).toLocaleString()} ({Math.round(((product.retailPrice - product.discountPrice) / product.retailPrice) * 100)}% Off)
+                      </span>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex items-baseline gap-2">
@@ -579,7 +586,7 @@ export default function ProductDetail() {
                     </span>
                   </div>
                 )}
-                <span className="text-stone-400 text-xs block mt-0.5">/ unit · incl. all taxes</span>
+                <span className="text-stone-400 text-xs block mt-1">/ unit · incl. all taxes</span>
                 <p className="text-xs text-emerald-600 font-semibold mt-1">🎉 Free delivery on orders above ₹499</p>
               </div>
             )}

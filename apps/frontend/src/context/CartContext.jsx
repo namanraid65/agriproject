@@ -107,6 +107,13 @@ export const CartProvider = ({ children }) => {
     return sum + price * item.quantity;
   }, 0);
   
+  const cartSavings = items.reduce((sum, item) => {
+    if (item.product.discountPrice && item.product.discountPrice > 0) {
+      return sum + (item.product.retailPrice - item.product.discountPrice) * item.quantity;
+    }
+    return sum;
+  }, 0);
+  
   // Dynamic shipping cost calculation based on DB settings
   const freeShippingThreshold = settings?.retailOrderSettings?.freeShippingThreshold ?? 499;
   const flatShippingCharge = settings?.retailOrderSettings?.shippingCharge ?? 49;
@@ -128,6 +135,7 @@ export const CartProvider = ({ children }) => {
         clear,
         cartCount,
         cartSubtotal,
+        cartSavings,
         shippingCost,
         cartTotal,
         isEmpty,

@@ -7,7 +7,7 @@ import { ArrowLeft, Loader2, CheckCircle2, MapPin, CreditCard, ShoppingBag } fro
 
 export const Checkout = () => {
   const { user } = useMarket();
-  const { items, cartSubtotal, shippingCost, cartTotal, clearCart, isEmpty } = useCart();
+  const { items, cartSubtotal, cartSavings, shippingCost, cartTotal, clearCart, isEmpty } = useCart();
   const navigate = useNavigate();
 
   // Redirect to Auth if not logged in
@@ -428,6 +428,12 @@ export const Checkout = () => {
                   <span className="text-stone-700 font-bold">₹{shippingCost.toLocaleString()}</span>
                 )}
               </div>
+              {cartSavings > 0 && (
+                <div className="flex justify-between text-sm text-emerald-600 font-bold">
+                  <span>Total Discount Savings</span>
+                  <span>-₹{cartSavings.toLocaleString()}</span>
+                </div>
+              )}
 
               <div className="pt-4 border-t border-stone-100 flex justify-between items-baseline">
                 <span className="font-black text-stone-800 text-base">Order Total</span>
