@@ -37,6 +37,7 @@ export const Checkout = () => {
   const validateForm = () => {
     if (!fullName.trim()) return 'Full name is required';
     if (!phone.trim()) return 'Phone number is required';
+    if (!/^\d{10}$/.test(phone.trim())) return 'Phone number must be exactly 10 digits';
     if (!line1.trim()) return 'Address line 1 is required';
     if (!city.trim()) return 'City is required';
     if (!state.trim()) return 'State is required';
@@ -233,7 +234,11 @@ export const Checkout = () => {
                       type="tel"
                       required
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      maxLength={10}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        setPhone(val);
+                      }}
                       className="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
                       placeholder="e.g. 9876543210"
                     />
