@@ -80,7 +80,7 @@ export const Checkout = () => {
       
       // Clear cart in context + local storage
       clearCart();
-      setCreatedOrder(response.data);
+      setCreatedOrder(response.data?.data?.order);
     } catch (err) {
       console.error('Failed to create order:', err);
       setError(err.response?.data?.message || 'Failed to place order. Please try again.');
