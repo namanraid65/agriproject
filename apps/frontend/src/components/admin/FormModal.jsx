@@ -231,6 +231,7 @@ export default function FormModal({
   submitLabel = "Save",
   initialValues = {},
   loading = false,
+  onFileUpload,
 }) {
   const [activeTab, setActiveTab] = useState(0);
   const [values, setValues] = useState(initialValues);
