@@ -174,7 +174,7 @@ export const create = async (req, res, next) => {
     }
 
     // Map uploaded files to schema structure
-    const images = [];
+    let images = [];
     if (req.files && req.files.length > 0) {
       req.files.forEach((file, index) => {
         const isCloudinary = file.path && (file.path.startsWith('http://') || file.path.startsWith('https://'));
@@ -185,6 +185,8 @@ export const create = async (req, res, next) => {
           altText: `${name} Image ${index + 1}`
         });
       });
+    } else if (req.body.images) {
+      images = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
     }
 
     const product = await Product.create({
@@ -267,6 +269,10 @@ export const update = async (req, res, next) => {
       } catch (e) {
         return next(new AppError('Specifications must be a valid JSON object.', 400));
       }
+    }
+
+    if (req.body.images !== undefined) {
+      product.images = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
     }
 
     // Append new uploaded images if supplied

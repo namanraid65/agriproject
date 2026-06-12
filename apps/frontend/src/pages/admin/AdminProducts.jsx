@@ -75,7 +75,8 @@ export const AdminProducts = () => {
       b2cVisible: true,
       status: 'draft',
       featured: false,
-      faqsJSON: '[]'
+      faqsJSON: '[]',
+      imageUrl: ''
     });
     setModalOpen(true);
   };
@@ -86,7 +87,8 @@ export const AdminProducts = () => {
       ...product,
       category: product.category?._id || product.category || '',
       discountPrice: product.discountPrice || 0,
-      faqsJSON: product.faqs ? JSON.stringify(product.faqs, null, 2) : '[]'
+      faqsJSON: product.faqs ? JSON.stringify(product.faqs, null, 2) : '[]',
+      imageUrl: product.images?.[0]?.url || ''
     });
     setModalOpen(true);
   };
@@ -117,6 +119,13 @@ export const AdminProducts = () => {
           return;
         }
       }
+      if (payload.imageUrl) {
+        payload.images = [{ url: payload.imageUrl, isPrimary: true, altText: payload.name || '' }];
+      } else {
+        payload.images = [];
+      }
+      delete payload.imageUrl;
+
       if (modalMode === 'create') {
         await api.post('/products', payload);
       } else {
@@ -146,7 +155,7 @@ export const AdminProducts = () => {
             <span className="text-sm">🌾</span>
           )}
         </div>
-        <span className="font-medium text-stone-800">{val}</span>
+        <span className="font-medium text-stone-850">{val}</span>
       </div>
     )},
     { key: 'categoryName', label: 'Category', render: (val, row) => row.category?.name || '—' },
@@ -166,6 +175,7 @@ export const AdminProducts = () => {
         { key: 'name', label: 'Product Name', required: true, placeholder: 'e.g. F1 Hybrid Seeds' },
         { key: 'category', label: 'Category', type: 'select', required: true, options: categoryOptions, placeholder: 'Select category…' },
         { key: 'description', label: 'Description', type: 'textarea', required: true, placeholder: 'Describe the product usage, benefits...' },
+        { key: 'imageUrl', label: 'Product Image URL', placeholder: 'e.g. /uploads/hybrid_tomato_seeds_1781243508833.png' },
         { key: 'unit', label: 'Unit of Measure', halfWidth: true, placeholder: 'e.g. packs, bags, kg', required: true },
         { key: 'status', label: 'Status', type: 'select', halfWidth: true, required: true, options: [
           { label: 'Active', value: 'active' },

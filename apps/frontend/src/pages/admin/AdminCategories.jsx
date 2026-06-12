@@ -55,14 +55,18 @@ export const AdminCategories = () => {
       name: '',
       description: '',
       displayOrder: 1,
-      status: 'active'
+      status: 'active',
+      imageUrl: ''
     });
     setModalOpen(true);
   };
 
   const handleEditClick = (category) => {
     setModalMode('edit');
-    setEditingCategory(category);
+    setEditingCategory({
+      ...category,
+      imageUrl: category.image?.url || ''
+    });
     setModalOpen(true);
   };
 
@@ -81,10 +85,18 @@ export const AdminCategories = () => {
   const handleFormSubmit = async (formData) => {
     setFormLoading(true);
     try {
-      if (modalMode === 'create') {
-        await api.post('/categories', formData);
+      const payload = { ...formData };
+      if (payload.imageUrl) {
+        payload.image = { url: payload.imageUrl };
       } else {
-        await api.patch(`/categories/${editingCategory._id}`, formData);
+        payload.image = { url: '' };
+      }
+      delete payload.imageUrl;
+
+      if (modalMode === 'create') {
+        await api.post('/categories', payload);
+      } else {
+        await api.patch(`/categories/${editingCategory._id}`, payload);
       }
       fetchCategories();
       setModalOpen(false);
@@ -124,6 +136,7 @@ export const AdminCategories = () => {
       fields: [
         { key: 'name', label: 'Category Name', required: true, placeholder: 'e.g. Irrigation Tools' },
         { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe the category...' },
+        { key: 'imageUrl', label: 'Category Image URL', placeholder: 'e.g. /uploads/category_seeds.png' },
         { key: 'displayOrder', label: 'Display Order', type: 'number', required: true, placeholder: '1', halfWidth: true },
         { key: 'status', label: 'Status', type: 'select', required: true, halfWidth: true, options: [
           { label: 'Active', value: 'active' },
