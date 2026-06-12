@@ -35,8 +35,7 @@ import { useState, useEffect, useRef } from "react";
  */
 
 // ── Single field renderer ─────────────────────────────────────────────────────
-
-function Field({ field, value, onChange, error }) {
+function Field({ field, value, onChange, error, onFileUpload }) {
   const base =
     "w-full px-2.5 py-2 border rounded-lg text-[13px] text-stone-800 bg-stone-50 outline-none transition-colors placeholder:text-stone-400 " +
     (error
@@ -91,6 +90,72 @@ function Field({ field, value, onChange, error }) {
     );
   }
 
+  if (field.type === "file") {
+    const fileInputRef = useRef(null);
+    const [uploading, setUploading] = useState(false);
+    return (
+      <div className="space-y-2 text-left">
+        <div className="flex items-center gap-3">
+          <input
+            type="file"
+            id={field.key}
+            ref={fileInputRef}
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              setUploading(true);
+              try {
+                const url = await onFileUpload(file);
+                onChange(field.key, url);
+              } catch (err) {
+                console.error("Upload error:", err);
+                alert("Failed to upload image from device.");
+              } finally {
+                setUploading(false);
+              }
+            }}
+            className="hidden"
+          />
+          <button
+            type="button"
+            disabled={uploading}
+            onClick={() => fileInputRef.current?.click()}
+            className="px-3 py-1.5 border border-stone-300 rounded-lg text-xs font-bold bg-white text-stone-700 hover:bg-stone-50 transition-colors shadow-sm disabled:opacity-50 flex items-center gap-1"
+          >
+            {uploading ? "Uploading..." : "Upload from Device"}
+          </button>
+          {value ? (
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] text-stone-500 font-semibold truncate max-w-[150px]">{value.split('/').pop()}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  onChange(field.key, "");
+                  if (fileInputRef.current) fileInputRef.current.value = "";
+                }}
+                className="text-red-500 hover:text-red-700 font-bold text-xs"
+              >
+                Clear
+              </button>
+            </div>
+          ) : (
+            <span className="text-[11px] text-stone-400">No file chosen</span>
+          )}
+        </div>
+        {value && (
+          <div className="w-16 h-16 rounded-lg border border-stone-200 bg-stone-50 overflow-hidden flex items-center justify-center shadow-inner">
+            <img 
+              src={value.startsWith('/uploads/') ? 'http://localhost:5000' + value : value} 
+              alt="Preview" 
+              className="w-full h-full object-cover" 
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <input
       id={field.key}
@@ -103,11 +168,11 @@ function Field({ field, value, onChange, error }) {
   );
 }
 
-function FieldGroup({ field, value, onChange, error }) {
+function FieldGroup({ field, value, onChange, error, onFileUpload }) {
   if (field.type === "checkbox") {
     return (
       <div className={field.halfWidth ? "" : "col-span-2"}>
-        <Field field={field} value={value} onChange={onChange} error={error} />
+        <Field field={field} value={value} onChange={onChange} error={error} onFileUpload={onFileUpload} />
         {error && <p className="text-[11px] text-red-500 mt-1">{error}</p>}
       </div>
     );
@@ -119,7 +184,7 @@ function FieldGroup({ field, value, onChange, error }) {
         {field.label}
         {field.required && <span className="text-[#3b6d11] ml-0.5">*</span>}
       </label>
-      <Field field={field} value={value} onChange={onChange} error={error} />
+      <Field field={field} value={value} onChange={onChange} error={error} onFileUpload={onFileUpload} />
       {field.hint && !error && (
         <p className="text-[11px] text-stone-400 mt-1">{field.hint}</p>
       )}
@@ -273,6 +338,7 @@ export default function FormModal({
               value={values[field.key]}
               onChange={handleChange}
               error={errors[field.key]}
+              onFileUpload={onFileUpload}
             />
           ))}
         </div>

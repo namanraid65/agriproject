@@ -82,6 +82,17 @@ export const AdminCategories = () => {
     }
   };
 
+  const handleImageUpload = async (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await api.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data?.url;
+  };
+
   const handleFormSubmit = async (formData) => {
     setFormLoading(true);
     try {
@@ -136,7 +147,7 @@ export const AdminCategories = () => {
       fields: [
         { key: 'name', label: 'Category Name', required: true, placeholder: 'e.g. Irrigation Tools' },
         { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Describe the category...' },
-        { key: 'imageUrl', label: 'Category Image URL', placeholder: 'e.g. /uploads/category_seeds.png' },
+        { key: 'imageUrl', label: 'Category Image', type: 'file' },
         { key: 'displayOrder', label: 'Display Order', type: 'number', required: true, placeholder: '1', halfWidth: true },
         { key: 'status', label: 'Status', type: 'select', required: true, halfWidth: true, options: [
           { label: 'Active', value: 'active' },
@@ -182,6 +193,7 @@ export const AdminCategories = () => {
           submitLabel={modalMode === 'create' ? 'Create' : 'Save Changes'}
           initialValues={editingCategory || {}}
           loading={formLoading}
+          onFileUpload={handleImageUpload}
         />
       </div>
     </AdminLayout>

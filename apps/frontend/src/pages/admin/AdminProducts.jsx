@@ -105,6 +105,17 @@ export const AdminProducts = () => {
     }
   };
 
+  const handleImageUpload = async (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    const response = await api.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data?.url;
+  };
+
   const handleFormSubmit = async (formData) => {
     setFormLoading(true);
     try {
@@ -175,7 +186,7 @@ export const AdminProducts = () => {
         { key: 'name', label: 'Product Name', required: true, placeholder: 'e.g. F1 Hybrid Seeds' },
         { key: 'category', label: 'Category', type: 'select', required: true, options: categoryOptions, placeholder: 'Select category…' },
         { key: 'description', label: 'Description', type: 'textarea', required: true, placeholder: 'Describe the product usage, benefits...' },
-        { key: 'imageUrl', label: 'Product Image URL', placeholder: 'e.g. /uploads/hybrid_tomato_seeds_1781243508833.png' },
+        { key: 'imageUrl', label: 'Product Image', type: 'file' },
         { key: 'unit', label: 'Unit of Measure', halfWidth: true, placeholder: 'e.g. packs, bags, kg', required: true },
         { key: 'status', label: 'Status', type: 'select', halfWidth: true, required: true, options: [
           { label: 'Active', value: 'active' },
@@ -247,6 +258,7 @@ export const AdminProducts = () => {
           submitLabel={modalMode === 'create' ? 'Create' : 'Save Changes'}
           initialValues={editingProduct || {}}
           loading={formLoading}
+          onFileUpload={handleImageUpload}
         />
       </div>
     </AdminLayout>

@@ -5,6 +5,7 @@ import productRouter from './product.routes.js';
 import categoryRouter from './category.routes.js';
 import orderRouter from './order.routes.js';
 import enquiryRouter from './enquiry.routes.js';
+import uploadRouter from './upload.routes.js';
 
 import cmsRouter from './cms.routes.js';
 import settingsRouter from './settings.routes.js';
@@ -18,5 +19,6 @@ router.use('/orders', orderRouter);
 router.use('/enquiries', enquiryRouter);
 router.use('/cms', cmsRouter);
 router.use('/settings', settingsRouter);
+router.use('/upload', uploadRouter);
 
 export default router;
