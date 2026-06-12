@@ -87,7 +87,7 @@ const seedDatabase = async () => {
         name: 'Seeds',
         slug: 'seeds',
         description: 'Certified, high-yield vegetable, flower, and crop seeds.',
-        image: { url: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?q=80&w=800' },
+        image: { url: '/uploads/category_seeds.png' },
         displayOrder: 1
       },
       {
@@ -101,42 +101,42 @@ const seedDatabase = async () => {
         name: 'Farm Tools',
         slug: 'farm-tools',
         description: 'Hand tools, automated equipment, and irrigation kits.',
-        image: { url: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=800' },
+        image: { url: '/uploads/category_tools.png' },
         displayOrder: 3
       },
       {
         name: 'Fresh Vegetables',
         slug: 'fresh-vegetables',
         description: 'Crisp, organic vegetables sourced daily from local fields.',
-        image: { url: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?q=80&w=800' },
+        image: { url: '/uploads/category_vegetables.png' },
         displayOrder: 4
       },
       {
         name: 'Seasonal Fruits',
         slug: 'seasonal-fruits',
         description: 'Delicious, hand-picked seasonal fruits at peak sweetness.',
-        image: { url: 'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?q=80&w=800' },
+        image: { url: '/uploads/category_fruits.png' },
         displayOrder: 5
       },
       {
         name: 'Organic Grains',
         slug: 'organic-grains',
         description: 'High-quality pulses, rice, wheat, and millets.',
-        image: { url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=800' },
+        image: { url: '/uploads/category_grains.png' },
         displayOrder: 6
       },
       {
         name: 'Dairy & Eggs',
         slug: 'dairy-eggs',
         description: 'Pure, bilona-churned ghee, fresh paneer, and organic farm eggs.',
-        image: { url: 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?q=80&w=800' },
+        image: { url: '/uploads/category_dairy.png' },
         displayOrder: 7
       },
       {
         name: 'Herbs & Spices',
         slug: 'herbs-spices',
         description: 'Freshly cut herbs and organic whole or powdered spices.',
-        image: { url: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=800' },
+        image: { url: '/uploads/category_spices.png' },
         displayOrder: 8
       }
     ];
