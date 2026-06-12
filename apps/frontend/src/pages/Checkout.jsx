@@ -85,7 +85,7 @@ const CITIES_BY_STATE = {
 
 export const Checkout = () => {
   const { user } = useMarket();
-  const { items, cartSubtotal, cartSavings, shippingCost, cartTotal, clearCart, isEmpty } = useCart();
+  const { items, cartSubtotal, cartSavings, shippingCost, cartTotal, clearCart, isEmpty, removeFromCart } = useCart();
   const navigate = useNavigate();
 
   // Redirect to Auth if not logged in
@@ -366,8 +366,27 @@ export const Checkout = () => {
         <h1 className="text-3xl font-black text-stone-900 tracking-tight mb-8">Checkout</h1>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 text-sm font-bold p-4 rounded-2xl mb-6">
-            {error}
+          <div className="bg-red-50 border border-red-200 text-red-700 text-sm font-bold p-4 rounded-2xl mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <span>{error}</span>
+            {error.includes('Product not found:') && (() => {
+              const match = error.match(/Product not found:\s*([a-f\d]{24})/i);
+              const staleId = match ? match[1] : null;
+              if (staleId) {
+                return (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      removeFromCart(staleId);
+                      setError(null);
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white text-xs font-black px-4 py-2 rounded-xl transition-colors shrink-0"
+                  >
+                    Remove Item & Retry
+                  </button>
+                );
+              }
+              return null;
+            })()}
           </div>
         )}
 
