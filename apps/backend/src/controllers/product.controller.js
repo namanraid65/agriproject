@@ -152,6 +152,7 @@ export const create = async (req, res, next) => {
       category,
       description,
       retailPrice,
+      discountPrice,
       stock,
       minimumOrderQuantity,
       unit,
@@ -191,6 +192,7 @@ export const create = async (req, res, next) => {
       category,
       description,
       retailPrice,
+      discountPrice: discountPrice !== undefined && discountPrice !== '' ? Number(discountPrice) : 0,
       stock,
       minimumOrderQuantity: minimumOrderQuantity ? Number(minimumOrderQuantity) : 1,
       unit: unit || 'units',
@@ -228,6 +230,7 @@ export const update = async (req, res, next) => {
       category,
       description,
       retailPrice,
+      discountPrice,
       stock,
       minimumOrderQuantity,
       unit,
@@ -246,6 +249,9 @@ export const update = async (req, res, next) => {
     if (category) product.category = category;
     if (description) product.description = description;
     if (retailPrice !== undefined) product.retailPrice = Number(retailPrice);
+    if (discountPrice !== undefined) {
+      product.discountPrice = (discountPrice === '' || discountPrice === null) ? 0 : Number(discountPrice);
+    }
     if (stock !== undefined) product.stock = Number(stock);
     if (minimumOrderQuantity !== undefined) product.minimumOrderQuantity = Number(minimumOrderQuantity);
     if (unit) product.unit = unit;
