@@ -160,7 +160,7 @@ const seedDatabase = async () => {
       {
         name: 'F1 Hybrid Tomato Seeds',
         category: catSeeds,
-        images: [{ url: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?q=80&w=800', isPrimary: true, altText: 'Hybrid Tomato Seeds' }],
+        images: [{ url: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?q=80&w=800', isPrimary: true, altText: 'Hybrid Tomato Seeds' }],
         description: 'Premium disease-resistant high-yield hybrid tomato seeds. Ideal for greenhouse and open-field cultivation.',
         specifications: { purity: '99%', germinationRate: '92%', packageSize: '1000 seeds' },
         retailPrice: 15,
@@ -177,7 +177,7 @@ const seedDatabase = async () => {
       {
         name: 'Sweet Corn F1 Seeds',
         category: catSeeds,
-        images: [{ url: 'https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=800', isPrimary: true, altText: 'Sweet Corn Seeds' }],
+        images: [{ url: 'https://images.unsplash.com/photo-1471193945509-9ad0617afabf?q=80&w=800', isPrimary: true, altText: 'Sweet Corn Seeds' }],
         description: 'Very sweet yellow kernel variety with excellent seedling vigor and high disease tolerance.',
         specifications: { sugarContent: 'High', maturityPeriod: '75-80 days', weight: '500g' },
         retailPrice: 24,
@@ -191,7 +191,7 @@ const seedDatabase = async () => {
       {
         name: 'Premium Chilli F1 Seeds',
         category: catSeeds,
-        images: [{ url: 'https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?q=80&w=800', isPrimary: true, altText: 'Premium Chilli F1 Seeds' }],
+        images: [{ url: 'https://images.unsplash.com/photo-1602491453631-e2a5ad90a131?q=80&w=800', isPrimary: true, altText: 'Premium Chilli F1 Seeds' }],
         description: 'High pungency hybrid chilli seeds. Highly resistant to leaf curl virus and root wilt diseases.',
         specifications: { purity: '98%', germinationRate: '90%', packageSize: '500 seeds' },
         retailPrice: 20,
@@ -205,7 +205,7 @@ const seedDatabase = async () => {
       {
         name: 'Organic Sunflower Seeds',
         category: catSeeds,
-        images: [{ url: 'https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?q=80&w=800', isPrimary: true, altText: 'Organic Sunflower Seeds' }],
+        images: [{ url: 'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?q=80&w=800', isPrimary: true, altText: 'Organic Sunflower Seeds' }],
         description: 'Raw oil-rich organic sunflower seeds suitable for sowing or oil extraction processes.',
         specifications: { oilContent: '42%', purity: '99%', packageWeight: '1kg' },
         retailPrice: 45,
