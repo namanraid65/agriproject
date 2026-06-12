@@ -44,6 +44,45 @@ const INDIAN_STATES = [
   'Puducherry'
 ];
 
+const CITIES_BY_STATE = {
+  'Andhra Pradesh': ['Visakhapatnam', 'Vijayawada', 'Guntur', 'Nellore', 'Tirupati', 'Kurnool', 'Rajahmundry', 'Kakinada', 'Kadapa', 'Anantapur'],
+  'Arunachal Pradesh': ['Itanagar', 'Naharlagun', 'Pasighat', 'Tawang', 'Ziro', 'Aalo', 'Tezu', 'Bomdila'],
+  'Assam': ['Guwahati', 'Silchar', 'Dibrugarh', 'Jorhat', 'Nagaon', 'Tinsukia', 'Tezpur', 'Bongaigaon', 'Karimganj', 'Sivasagar'],
+  'Bihar': ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Purnia', 'Darbhanga', 'Bihar Sharif', 'Arrah', 'Begusarai', 'Katihar'],
+  'Chhattisgarh': ['Raipur', 'Bhilai', 'Bilaspur', 'Korba', 'Rajnandgaon', 'Jagdalpur', 'Ambikapur', 'Dhamtari', 'Raigarh', 'Mahasamund'],
+  'Goa': ['Panaji', 'Margao', 'Vasco da Gama', 'Mapusa', 'Ponda', 'Bicholim', 'Curchorem'],
+  'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Junagadh', 'Gandhinagar', 'Anand', 'Morbi'],
+  'Haryana': ['Gurugram', 'Faridabad', 'Panipat', 'Ambala', 'Yamunanagar', 'Rohtak', 'Hisar', 'Karnal', 'Sonipat', 'Panchkula'],
+  'Himachal Pradesh': ['Shimla', 'Dharamshala', 'Solan', 'Mandi', 'Nahan', 'Una', 'Chamba', 'Hamirpur', 'Kullu', 'Bilaspur'],
+  'Jharkhand': ['Ranchi', 'Jamshedpur', 'Dhanbad', 'Bokaro Steel City', 'Deoghar', 'Hazaribagh', 'Giridih', 'Ramgarh', 'Medininagar', 'Phusro'],
+  'Karnataka': ['Bengaluru', 'Mysuru', 'Hubballi-Dharwad', 'Mangaluru', 'Belagavi', 'Davangere', 'Ballari', 'Vijayapura', 'Shivamogga', 'Tumakuru'],
+  'Kerala': ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Kollam', 'Alappuzha', 'Palakkad', 'Kannur', 'Kottayam', 'Manjeri'],
+  'Madhya Pradesh': ['Indore', 'Bhopal', 'Jabalpur', 'Gwalior', 'Ujjain', 'Sagar', 'Dewas', 'Satna', 'Ratlam', 'Rewa'],
+  'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Thane', 'Pimpri-Chinchwad', 'Nashik', 'Kalyan-Dombivli', 'Vasai-Virar', 'Aurangabad', 'Navi Mumbai', 'Solapur', 'Kolhapur'],
+  'Manipur': ['Imphal', 'Thoubal', 'Kakching', 'Ukhrul', 'Churachandpur', 'Senapati'],
+  'Meghalaya': ['Shillong', 'Tura', 'Jowai', 'Nongpoh', 'Williamnagar'],
+  'Mizoram': ['Aizawl', 'Lunglei', 'Saiha', 'Champhai', 'Kolasib'],
+  'Nagaland': ['Dimapur', 'Kohima', 'Tuensang', 'Mokokchung', 'Wokha', 'Zunheboto'],
+  'Odisha': ['Bhubaneswar', 'Cuttack', 'Rourkela', 'Sambalpur', 'Puri', 'Balasore', 'Bhadrak', 'Baripada', 'Berhampur', 'Jharsuguda'],
+  'Punjab': ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda', 'Mohali', 'Hoshiarpur', 'Pathankot', 'Moga', 'Phagwara'],
+  'Rajasthan': ['Jaipur', 'Jodhpur', 'Kota', 'Bikaner', 'Ajmer', 'Udaipur', 'Bhilwara', 'Alwar', 'Sikar', 'Sri Ganganagar'],
+  'Sikkim': ['Gangtok', 'Namchi', 'Geyzing', 'Mangan'],
+  'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem', 'Tiruppur', 'Erode', 'Vellore', 'Thoothukudi', 'Nagercoil'],
+  'Telangana': ['Hyderabad', 'Warangal', 'Nizamabad', 'Khammam', 'Karimnagar', 'Ramagundam', 'Mahbubnagar', 'Nalgonda', 'Adilabad', 'Suryapet'],
+  'Tripura': ['Agartala', 'Dharmanagar', 'Udaipur', 'Kailasahar', 'Belonia'],
+  'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Noida', 'Greater Noida', 'Ghaziabad', 'Agra', 'Varanasi', 'Meerut', 'Allahabad', 'Bareilly', 'Aligarh', 'Moradabad'],
+  'Uttarakhand': ['Dehradun', 'Haridwar', 'Haldwani', 'Rudrapur', 'Roorkee', 'Kashipur', 'Rishikesh'],
+  'West Bengal': ['Kolkata', 'Howrah', 'Asansol', 'Siliguri', 'Durgapur', 'Bardhaman', 'English Bazar', 'Baharampur', 'Kharagpur', 'Haldia'],
+  'Andaman and Nicobar Islands': ['Port Blair'],
+  'Chandigarh': ['Chandigarh'],
+  'Dadra and Nagar Haveli and Daman and Diu': ['Daman', 'Diu', 'Silvassa'],
+  'Delhi': ['New Delhi', 'Delhi', 'Dwarka', 'Rohini', 'Narela'],
+  'Jammu and Kashmir': ['Srinagar', 'Jammu', 'Anantnag', 'Baramulla', 'Kathua', 'Sopore'],
+  'Ladakh': ['Leh', 'Kargil'],
+  'Lakshadweep': ['Kavaratti', 'Minicoy', 'Amini'],
+  'Puducherry': ['Puducherry', 'Karaikal', 'Ozhukarai', 'Mahe', 'Yanam']
+};
+
 export const Checkout = () => {
   const { user } = useMarket();
   const { items, cartSubtotal, cartSavings, shippingCost, cartTotal, clearCart, isEmpty } = useCart();
@@ -61,12 +100,35 @@ export const Checkout = () => {
   const [phone, setPhone] = useState(user?.phone || '');
   const [line1, setLine1] = useState(user?.address?.line1 || '');
   const [line2, setLine2] = useState(user?.address?.line2 || '');
-  const [city, setCity] = useState(user?.address?.city || '');
   const [state, setState] = useState(() => {
     const savedState = user?.address?.state;
     if (!savedState) return '';
     const match = INDIAN_STATES.find(s => s.toLowerCase() === savedState.trim().toLowerCase());
     return match || '';
+  });
+  const [city, setCity] = useState(() => {
+    const savedState = user?.address?.state;
+    const savedCity = user?.address?.city;
+    if (!savedState || !savedCity) return '';
+
+    const matchedState = INDIAN_STATES.find(s => s.toLowerCase() === savedState.trim().toLowerCase());
+    if (!matchedState) return savedCity;
+
+    const cities = CITIES_BY_STATE[matchedState] || [];
+    const matchedCity = cities.find(c => c.toLowerCase() === savedCity.trim().toLowerCase());
+    return matchedCity || savedCity;
+  });
+  const [isCustomCity, setIsCustomCity] = useState(() => {
+    const savedState = user?.address?.state;
+    const savedCity = user?.address?.city;
+    if (!savedState || !savedCity) return false;
+
+    const matchedState = INDIAN_STATES.find(s => s.toLowerCase() === savedState.trim().toLowerCase());
+    if (!matchedState) return true;
+
+    const cities = CITIES_BY_STATE[matchedState] || [];
+    const isPredefined = cities.some(c => c.toLowerCase() === savedCity.trim().toLowerCase());
+    return !isPredefined;
   });
   const [pincode, setPincode] = useState(user?.address?.pincode || '');
   const [country, setCountry] = useState('India');
@@ -334,14 +396,57 @@ export const Checkout = () => {
                     <label className="block text-xs font-bold text-stone-500 uppercase tracking-wide mb-1.5">
                       City
                     </label>
-                    <input
-                      type="text"
-                      required
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
-                      placeholder="City"
-                    />
+                    {!state ? (
+                      <select
+                        disabled
+                        className="w-full px-4 py-2.5 rounded-xl border border-stone-200 bg-stone-50 text-stone-400 text-sm cursor-not-allowed"
+                      >
+                        <option>Select State first</option>
+                      </select>
+                    ) : isCustomCity ? (
+                      <div className="relative">
+                        <input
+                          type="text"
+                          required
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                          className="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                          placeholder="Enter city name"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsCustomCity(false);
+                            setCity('');
+                          }}
+                          className="absolute right-3 top-2.5 text-xs font-bold text-emerald-600 hover:text-emerald-700"
+                        >
+                          Select from list
+                        </button>
+                      </div>
+                    ) : (
+                      <select
+                        required
+                        value={city}
+                        onChange={(e) => {
+                          if (e.target.value === 'Other') {
+                            setIsCustomCity(true);
+                            setCity('');
+                          } else {
+                            setCity(e.target.value);
+                          }
+                        }}
+                        className="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white cursor-pointer"
+                      >
+                        <option value="" disabled>Select City</option>
+                        {(CITIES_BY_STATE[state] || []).map((ct) => (
+                          <option key={ct} value={ct}>
+                            {ct}
+                          </option>
+                        ))}
+                        <option value="Other">Other (Type manually)</option>
+                      </select>
+                    )}
                   </div>
 
                   <div>
@@ -351,7 +456,12 @@ export const Checkout = () => {
                     <select
                       required
                       value={state}
-                      onChange={(e) => setState(e.target.value)}
+                      onChange={(e) => {
+                        const newState = e.target.value;
+                        setState(newState);
+                        setCity('');
+                        setIsCustomCity(false);
+                      }}
                       className="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white cursor-pointer"
                     >
                       <option value="" disabled>Select State</option>
