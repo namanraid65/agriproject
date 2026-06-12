@@ -7,6 +7,7 @@ import crypto from 'crypto';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { getAll, getOne, create, update, deleteProduct } from '../controllers/product.controller.js';
+import { addProductReview, getProductReviews, checkUserCanReview } from '../controllers/review.controller.js';
 import { protect, adminOnly } from '../middleware/auth.middleware.js';
 import AppError from '../utils/AppError.js';
 
@@ -96,6 +97,11 @@ const router = express.Router();
 // ── Public Routes ─────────────────────────────────────────
 router.get('/', getAll);
 router.get('/:id', getOne);
+router.get('/:id/reviews', getProductReviews);
+
+// ── Protected Routes ──────────────────────────────────────
+router.post('/:id/reviews', protect, addProductReview);
+router.get('/:id/can-review', protect, checkUserCanReview);
 
 // ── Admin Protected Routes ────────────────────────────────
 router.post(

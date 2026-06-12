@@ -115,6 +115,17 @@ const productSchema = new Schema(
       default: "draft",
     },
     featured: { type: Boolean, default: false },
+    averageRating: {
+      type: Number,
+      default: 0,
+      min: [0, 'Rating must be at least 0'],
+      max: [5, 'Rating must be at most 5'],
+      set: val => Math.round(val * 10) / 10
+    },
+    numReviews: {
+      type: Number,
+      default: 0
+    }
   },
   {
     timestamps: true,

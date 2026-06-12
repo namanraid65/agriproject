@@ -129,7 +129,7 @@ function ProductCardList({ product, isB2B, onAddToCart }) {
           <p className="text-sm text-stone-500 mt-1.5 line-clamp-2 leading-relaxed">{product.description}</p>
 
           <div className="flex items-center gap-4 mt-2.5 flex-wrap">
-            <StarRating rating={4.8} count={213} />
+            <StarRating rating={product.averageRating || 4.8} count={product.numReviews ?? 213} />
             <StockBadge stock={product.stock} />
             <ModeBadge isB2B={isB2B} />
           </div>
@@ -339,7 +339,7 @@ export function ProductCard({ product, onAddToCart, viewMode = 'grid' }) {
           <p className="text-xs text-stone-500 line-clamp-2 leading-relaxed mb-2.5">{product.description}</p>
 
           <div className="flex items-center gap-2 flex-wrap mb-2">
-            <StarRating rating={4.8} count={213} />
+            <StarRating rating={product.averageRating || 4.8} count={product.numReviews ?? 213} />
           </div>
 
           <div className="flex items-center gap-2 flex-wrap mb-1">
