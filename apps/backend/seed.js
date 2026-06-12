@@ -403,7 +403,7 @@ const seedDatabase = async () => {
       {
         name: 'Fresh Baby Spinach Bunch',
         category: catVeg,
-        images: [{ url: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?q=80&w=800', isPrimary: true, altText: 'Baby Spinach' }],
+        images: [{ url: '/uploads/baby_spinach.png', isPrimary: true, altText: 'Baby Spinach' }],
         description: 'Tender baby spinach bunch washed with ozonated water. Packed fresh with root systems intact.',
         specifications: { origin: 'Pune, Maharashtra', weight: '250g per bunch', shelfLife: '3 days' },
         retailPrice: 40,
@@ -416,7 +416,7 @@ const seedDatabase = async () => {
       {
         name: 'Fresh Orange Carrots',
         category: catVeg,
-        images: [{ url: 'https://images.unsplash.com/photo-1447175008436-054170c2e979?q=80&w=800', isPrimary: true, altText: 'Fresh Carrots' }],
+        images: [{ url: '/uploads/orange_carrots.png', isPrimary: true, altText: 'Fresh Carrots' }],
         description: 'Sweet, crisp orange carrots. Ideal for salads, juices, or traditional cooking styles.',
         specifications: { origin: 'Ooty, Tamil Nadu', size: '12-18cm length', organicStatus: 'In-conversion organic' },
         retailPrice: 45,
@@ -431,7 +431,7 @@ const seedDatabase = async () => {
       {
         name: 'Alphonso Mangoes',
         category: catFruit,
-        images: [{ url: 'https://images.unsplash.com/photo-1553279768-865429fa0078?q=80&w=800', isPrimary: true, altText: 'Alphonso Mangoes' }],
+        images: [{ url: '/uploads/alphonso_mangoes.png', isPrimary: true, altText: 'Alphonso Mangoes' }],
         description: 'Certified GI-tagged Alphonso mangoes from Devgad. Rich aroma, golden pulp, and zero fiber.',
         specifications: { origin: 'Devgad, Maharashtra', size: 'Medium', certification: 'GI Tagged' },
         retailPrice: 420,
@@ -447,7 +447,7 @@ const seedDatabase = async () => {
       {
         name: 'Fresh Sweet Lemon (Mosambi)',
         category: catFruit,
-        images: [{ url: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?q=80&w=800', isPrimary: true, altText: 'Mosambi Sweet Lemon' }],
+        images: [{ url: '/uploads/sweet_lemon.png', isPrimary: true, altText: 'Mosambi Sweet Lemon' }],
         description: 'Juicy, sweet mosambi citrus fruits sourced directly from Nanded farms. High juice extraction yield.',
         specifications: { origin: 'Nanded, Maharashtra', size: 'Large', skinThickness: 'Thin' },
         retailPrice: 65,
@@ -460,7 +460,7 @@ const seedDatabase = async () => {
       {
         name: 'Organic Ripe Papaya',
         category: catFruit,
-        images: [{ url: 'https://images.unsplash.com/photo-1526318896980-cf78c088247c?q=80&w=800', isPrimary: true, altText: 'Ripe Papaya' }],
+        images: [{ url: '/uploads/organic_papaya.png', isPrimary: true, altText: 'Ripe Papaya' }],
         description: 'Sweet, orange-fleshed organic papaya, tree-ripened and harvested with caution to prevent bruising.',
         specifications: { variety: 'Red Lady', averageWeight: '1.2kg per fruit', sugarContent: '12% Brix' },
         retailPrice: 50,
@@ -473,7 +473,7 @@ const seedDatabase = async () => {
       {
         name: 'Fresh Red Apples (Shimla)',
         category: catFruit,
-        images: [{ url: 'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?q=80&w=800', isPrimary: true, altText: 'Shimla Red Apples' }],
+        images: [{ url: '/uploads/red_apples.png', isPrimary: true, altText: 'Shimla Red Apples' }],
         description: 'Crisp and sweet red royal delicious apples harvested from high-altitude orchards in Shimla.',
         specifications: { origin: 'Shimla, Himachal Pradesh', grade: 'Royal A', storageCondition: 'Chilled' },
         retailPrice: 160,
@@ -488,7 +488,7 @@ const seedDatabase = async () => {
       {
         name: 'Basmati Rice',
         category: catGrains,
-        images: [{ url: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=800', isPrimary: true, altText: 'Basmati Rice' }],
+        images: [{ url: '/uploads/basmati_rice.png', isPrimary: true, altText: 'Basmati Rice' }],
         description: 'Extra-long slender grain basmati rice, aged 18 months for excellent cooking elongation and aroma.',
         specifications: { origin: 'Karnal, Haryana', age: '18 Months', grainLength: '8.4mm' },
         retailPrice: 145,
@@ -504,7 +504,7 @@ const seedDatabase = async () => {
       {
         name: 'Organic Wheat Seeds (Kalyansona)',
         category: catGrains,
-        images: [{ url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=800', isPrimary: true, altText: 'Organic Wheat Seeds' }],
+        images: [{ url: '/uploads/wheat_seeds.png', isPrimary: true, altText: 'Organic Wheat Seeds' }],
         description: 'High protein traditional wheat seeds cultivated without chemical enhancers.',
         specifications: { protein: '13.5%', origin: 'Madhya Pradesh', packageWeight: '25kg' },
         retailPrice: 38,
@@ -520,7 +520,7 @@ const seedDatabase = async () => {
       {
         name: 'Premium Organic Quinoa',
         category: catGrains,
-        images: [{ url: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=800', isPrimary: true, altText: 'Organic Quinoa' }],
+        images: [{ url: '/uploads/organic_quinoa.png', isPrimary: true, altText: 'Organic Quinoa' }],
         description: '100% organic white quinoa grains. Gluten-free grain alternative high in dietary fibers and all 9 amino acids.',
         specifications: { origin: 'Rajasthan, India', purity: '99.8%', packaging: 'Resealable pouch' },
         retailPrice: 199,
@@ -533,7 +533,7 @@ const seedDatabase = async () => {
       {
         name: 'Whole Grain Brown Lentils',
         category: catGrains,
-        images: [{ url: 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=800', isPrimary: true, altText: 'Brown Lentils' }],
+        images: [{ url: '/uploads/brown_lentils.png', isPrimary: true, altText: 'Brown Lentils' }],
         description: 'Traditional organic brown whole lentils (Sabut Masoor). Unpolished and high in plant-based proteins.',
         specifications: { origin: 'Uttar Pradesh', shelfLife: '12 months', polishStatus: 'Unpolished' },
         retailPrice: 110,
@@ -548,7 +548,7 @@ const seedDatabase = async () => {
       {
         name: 'A2 Desi Ghee',
         category: catDairy,
-        images: [{ url: 'https://images.unsplash.com/photo-1543362906-acfc16c67564?q=80&w=800', isPrimary: true, altText: 'Desi Ghee' }],
+        images: [{ url: '/uploads/desi_ghee.png', isPrimary: true, altText: 'Desi Ghee' }],
         description: 'Bilona-churned from A2 milk of indigenous Gir cows. Pure, aromatic, and granular texture.',
         specifications: { origin: 'Pune, Maharashtra', method: 'Bilona Traditional', type: 'A2 Cow Milk' },
         retailPrice: 780,
@@ -564,7 +564,7 @@ const seedDatabase = async () => {
       {
         name: 'Organic Free-Range Eggs',
         category: catDairy,
-        images: [{ url: 'https://images.unsplash.com/photo-1516448620398-c5f44bf9f441?q=80&w=800', isPrimary: true, altText: 'Free Range Eggs' }],
+        images: [{ url: '/uploads/free_range_eggs.png', isPrimary: true, altText: 'Free Range Eggs' }],
         description: 'Brown table eggs sourced from pastured hens fed organic grain feeds. Highly nutritious.',
         specifications: { type: 'Free-range brown', count: '12 eggs per carton', weightClass: 'Large' },
         retailPrice: 95,
@@ -577,7 +577,7 @@ const seedDatabase = async () => {
       {
         name: 'Fresh Organic Paneer',
         category: catDairy,
-        images: [{ url: 'https://images.unsplash.com/photo-1631451095765-2c91616fc9e6?q=80&w=800', isPrimary: true, altText: 'Organic Paneer' }],
+        images: [{ url: '/uploads/organic_paneer.png', isPrimary: true, altText: 'Organic Paneer' }],
         description: 'Fresh cottage cheese churned from organic whole cow milk. Extremely soft with no added starches.',
         specifications: { texture: 'Soft', fatContent: '22%', packaging: 'Vacuum packed' },
         retailPrice: 180,
@@ -590,7 +590,7 @@ const seedDatabase = async () => {
       {
         name: 'Pure Cow Milk Bottle (A2)',
         category: catDairy,
-        images: [{ url: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?q=80&w=800', isPrimary: true, altText: 'Cow Milk Bottle' }],
+        images: [{ url: '/uploads/cow_milk.png', isPrimary: true, altText: 'Cow Milk Bottle' }],
         description: 'Fresh pasteurized A2 cow milk delivered in sanitized glass bottles. Directly sourced from Gir cow dairies.',
         specifications: { processing: 'Pasteurized', milkType: 'A2 Gir Cow Milk', packaging: '1L Glass Bottle' },
         retailPrice: 80,
@@ -605,7 +605,7 @@ const seedDatabase = async () => {
       {
         name: 'Moringa Leaves',
         category: catHerbs,
-        images: [{ url: 'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?q=80&w=800', isPrimary: true, altText: 'Moringa Leaves' }],
+        images: [{ url: '/uploads/moringa_leaves.png', isPrimary: true, altText: 'Moringa Leaves' }],
         description: 'Freshly harvested nutrient-rich drumstick/moringa leaves. High in iron, calcium, and antioxidants.',
         specifications: { origin: 'Coimbatore, Tamil Nadu', state: 'Fresh Bunch', quality: 'Organic' },
         retailPrice: 35,
@@ -621,7 +621,7 @@ const seedDatabase = async () => {
       {
         name: 'Organic Raw Wildflower Honey',
         category: catHerbs,
-        images: [{ url: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?q=80&w=800', isPrimary: true, altText: 'Raw Organic Honey' }],
+        images: [{ url: '/uploads/wildflower_honey.png', isPrimary: true, altText: 'Raw Organic Honey' }],
         description: 'Unpasteurized and unfiltered raw honey harvested from wild forest flora. 100% pure with no added sugars.',
         specifications: { purity: '100% Raw', weight: '500g', certifications: 'FSSAI, USDA Organic' },
         retailPrice: 9,
@@ -637,7 +637,7 @@ const seedDatabase = async () => {
       {
         name: 'Cold-Pressed Mustard Oil',
         category: catHerbs,
-        images: [{ url: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?q=80&w=800', isPrimary: true, altText: 'Mustard Oil Bottle' }],
+        images: [{ url: '/uploads/mustard_oil.png', isPrimary: true, altText: 'Mustard Oil Bottle' }],
         description: 'Wood-pressed (Kachi Ghani) pure mustard seed oil. Rich in natural monounsaturated fats.',
         specifications: { extractionMethod: 'Wood pressed', volume: '1 Liter', shelfLife: '12 months' },
         retailPrice: 320,
@@ -653,7 +653,7 @@ const seedDatabase = async () => {
       {
         name: 'Pure Stevia Extract Powder',
         category: catHerbs,
-        images: [{ url: 'https://images.unsplash.com/photo-1543257580-7269da773bf5?q=80&w=800', isPrimary: true, altText: 'Stevia Powder' }],
+        images: [{ url: '/uploads/stevia_powder.png', isPrimary: true, altText: 'Stevia Powder' }],
         description: 'Zero-calorie natural sweetener extracted from stevia rebaudiana leaves. Sugar substitute suitable for keto.',
         specifications: { ingredients: '100% Stevia Extract', weight: '100g', calorieCount: '0 kcal' },
         retailPrice: 14,
@@ -666,7 +666,7 @@ const seedDatabase = async () => {
       {
         name: 'Green Cardamom (Elaichi)',
         category: catHerbs,
-        images: [{ url: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=800', isPrimary: true, altText: 'Green Cardamom Spices' }],
+        images: [{ url: '/uploads/green_cardamom.png', isPrimary: true, altText: 'Green Cardamom Spices' }],
         description: 'Premium bold green cardamom pods harvested from Western Ghats. Aromatic grade.',
         specifications: { size: '8mm bold', origin: 'Idukki, Kerala', grade: 'Grade Premium' },
         retailPrice: 950,
@@ -679,7 +679,7 @@ const seedDatabase = async () => {
       {
         name: 'Organic Turmeric Powder',
         category: catHerbs,
-        images: [{ url: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=800', isPrimary: true, altText: 'Turmeric Powder' }],
+        images: [{ url: '/uploads/turmeric_powder.png', isPrimary: true, altText: 'Turmeric Powder' }],
         description: 'Pure organic turmeric powder containing over 4.5% curcumin. Sourced from Salem growers.',
         specifications: { curcumin: '4.7%', origin: 'Salem, Tamil Nadu', packing: '500g pouch' },
         retailPrice: 180,
