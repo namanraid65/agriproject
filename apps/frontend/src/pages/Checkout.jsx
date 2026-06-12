@@ -134,6 +134,62 @@ export const Checkout = () => {
   const [country, setCountry] = useState('India');
   const [paymentMethod, setPaymentMethod] = useState('cod');
 
+  const [detectingAddress, setDetectingAddress] = useState(false);
+  const isInitialMount = React.useRef(true);
+
+  // Auto-detect State and City from Pincode
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    const pin = pincode.trim();
+    if (/^\d{6}$/.test(pin)) {
+      const fetchAddressDetails = async () => {
+        setDetectingAddress(true);
+        try {
+          const response = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+          const data = await response.json();
+          if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice) {
+            const postOffice = data[0].PostOffice[0];
+            const detectedState = postOffice.State;
+            const detectedDistrict = postOffice.District;
+
+            if (detectedState) {
+              const matchedState = INDIAN_STATES.find(
+                (s) => s.toLowerCase() === detectedState.trim().toLowerCase()
+              );
+              if (matchedState) {
+                setState(matchedState);
+
+                if (detectedDistrict) {
+                  const cities = CITIES_BY_STATE[matchedState] || [];
+                  const matchedCity = cities.find(
+                    (c) => c.toLowerCase() === detectedDistrict.trim().toLowerCase()
+                  );
+                  if (matchedCity) {
+                    setCity(matchedCity);
+                    setIsCustomCity(false);
+                  } else {
+                    setCity(detectedDistrict);
+                    setIsCustomCity(true);
+                  }
+                }
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Failed to fetch pincode details:', err);
+        } finally {
+          setDetectingAddress(false);
+        }
+      };
+
+      fetchAddressDetails();
+    }
+  }, [pincode]);
+
   // Request state
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -354,15 +410,22 @@ export const Checkout = () => {
                     <label className="block text-xs font-bold text-stone-500 uppercase tracking-wide mb-1.5">
                       Pincode
                     </label>
-                    <input
-                      type="text"
-                      required
-                      value={pincode}
-                      onChange={(e) => setPincode(e.target.value)}
-                      maxLength={6}
-                      className="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
-                      placeholder="6-digit Indian Pincode"
-                    />
+                    <div className="relative">
+                      <input
+                        type="text"
+                        required
+                        value={pincode}
+                        onChange={(e) => setPincode(e.target.value)}
+                        maxLength={6}
+                        className="w-full px-4 py-2.5 pr-16 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                        placeholder="6-digit Indian Pincode"
+                      />
+                      {detectingAddress && (
+                        <span className="absolute right-3 top-3 text-[10px] font-bold text-emerald-600 animate-pulse">
+                          Detecting...
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div className="sm:col-span-2">
