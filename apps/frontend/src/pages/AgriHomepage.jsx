@@ -31,12 +31,12 @@ async function fetchHero() {
 async function fetchCategories() {
   await delay(550);
   return [
-    { id: 1, name: "Fresh Vegetables", icon: "veg",   count: "240+", color: "#2d6a4f", bg: "#e8f5e9" },
-    { id: 2, name: "Seasonal Fruits",  icon: "fruit", count: "180+", color: "#e76f51", bg: "#fff3e0" },
-    { id: 3, name: "Organic Grains",   icon: "grain", count: "95+",  color: "#c8860a", bg: "#fff8e1" },
-    { id: 4, name: "Dairy & Eggs",     icon: "dairy", count: "60+",  color: "#457b9d", bg: "#e3f2fd" },
-    { id: 5, name: "Herbs & Spices",   icon: "herb",  count: "120+", color: "#52796f", bg: "#e8f5e9" },
-    { id: 6, name: "Farm Tools",       icon: "tool",  count: "300+", color: "#6d4c2a", bg: "#efebe9" },
+    { id: 1, name: "Fresh Vegetables", icon: "veg",   image: "https://images.unsplash.com/photo-1610348725531-843dff563e2c?q=80&w=800", count: "240+", color: "#2d6a4f", bg: "#e8f5e9" },
+    { id: 2, name: "Seasonal Fruits",  icon: "fruit", image: "https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?q=80&w=800", count: "180+", color: "#e76f51", bg: "#fff3e0" },
+    { id: 3, name: "Organic Grains",   icon: "grain", image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=800", count: "95+",  color: "#c8860a", bg: "#fff8e1" },
+    { id: 4, name: "Dairy & Eggs",     icon: "dairy", image: "https://images.unsplash.com/photo-1551462147-ff29053bfc14?q=80&w=800", count: "60+",  color: "#457b9d", bg: "#e3f2fd" },
+    { id: 5, name: "Herbs & Spices",   icon: "herb",  image: "https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=800", count: "120+", color: "#52796f", bg: "#e8f5e9" },
+    { id: 6, name: "Farm Tools",       icon: "tool",  image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=800", count: "300+", color: "#6d4c2a", bg: "#efebe9" },
   ];
 }
 
@@ -423,6 +423,7 @@ export default function AgriHomepage() {
             _id: cat._id,
             name: cat.name,
             icon: iconMap[cat.slug] || 'default',
+            image: cat.image?.url || '',
             count: cat.products !== undefined ? cat.products : (countMap[cat.slug] || '0'),
             color: colorMap[cat.slug] || '#2d6a4f',
             bg: bgMap[cat.slug] || '#e8f5e9'
@@ -1074,7 +1075,20 @@ export default function AgriHomepage() {
               cursor: "pointer", textAlign: "center",
               boxShadow: "0 2px 12px rgba(26,61,43,.06)",
             }}>
-              <CategoryIcon type={cat.icon} color={cat.color} />
+              {cat.image ? (
+                <div style={{
+                  width: 72, height: 72, borderRadius: '50%',
+                  overflow: 'hidden', margin: '0 auto 1.5rem',
+                  border: '3px solid #fff', boxShadow: '0 6px 16px rgba(0,0,0,0.08)',
+                  background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
+                  <img src={cat.image} alt={cat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    onError={e => { e.currentTarget.src = `https://placehold.co/120x120/e7f3e0/2d6a4f?text=${encodeURIComponent(cat.name.slice(0,6))}`; }}
+                  />
+                </div>
+              ) : (
+                <CategoryIcon type={cat.icon} color={cat.color} />
+              )}
               <div style={{ fontWeight: 800, fontSize: 15, color: C.text, marginBottom: 4 }}>{cat.name}</div>
               <div style={{ fontSize: 12, color: C.muted, marginBottom: 14 }}>{cat.count} products</div>
               <div style={{ height: 3, borderRadius: 2, background: cat.color, opacity: 0.7, margin: "0 auto", width: "60%" }} />
