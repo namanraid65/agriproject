@@ -37,7 +37,7 @@ function AppShell({ children }) {
       <footer className="bg-stone-900 border-t border-stone-800 py-10 text-stone-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
           <div className="space-y-3">
-            <h3 className="text-white font-bold text-sm">OpenAgri / KisanMart</h3>
+            <h3 className="text-white font-bold text-sm">OpenAgri Marketplace</h3>
             <p className="text-xs text-stone-500 leading-relaxed">
               Bridges Indian farmers, wholesale distributors, and retail consumers with an authenticated, zero-middleman agricultural supply marketplace.
             </p>
@@ -61,7 +61,7 @@ function AppShell({ children }) {
           </div>
         </div>
         <div className="mt-8 pt-6 border-t border-stone-850 text-center text-[11px] text-stone-500">
-          &copy; {new Date().getFullYear()} OpenAgri / KisanMart &middot; Built for Indian Farmers &middot; All Rights Reserved.
+          &copy; {new Date().getFullYear()} OpenAgri Marketplace &middot; Built for Indian Farmers &middot; All Rights Reserved.
         </div>
       </footer>
     </div>

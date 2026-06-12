@@ -130,7 +130,7 @@ async function fetchTestimonials() {
     },
     {
       id: 2, name: "Arjun Mehta", role: "Restaurant Owner, Mumbai", avatar: "AM",
-      text: "We source 80% of our kitchen from KisanMart now. The consistency, freshness, and transparent pricing work perfectly for a busy commercial kitchen.",
+      text: "We source 80% of our kitchen from OpenAgri now. The consistency, freshness, and transparent pricing work perfectly for a busy commercial kitchen.",
       rating: 5, avatarBg: "#c8860a",
     },
     {
@@ -1352,7 +1352,7 @@ export default function AgriHomepage() {
           <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
             <SectionLabel text="Our Promise" light />
             <h2 style={{ fontSize: "clamp(1.8rem,3vw,2.5rem)", fontWeight: 900, color: "#fff", margin: "0 0 14px", letterSpacing: "-1px" }}>
-              {isB2B ? "Why Sourced from OpenAgri?" : "Why Choose KisanMart?"}
+              {isB2B ? "Why Sourced from OpenAgri?" : "Why Choose OpenAgri Marketplace?"}
             </h2>
             <p style={{ color: isB2B ? "#e5c583" : "#9dc9a8", maxWidth: 520, margin: "0 auto", lineHeight: 1.75, fontSize: "1.05rem" }}>
               {isB2B
@@ -1491,7 +1491,7 @@ export default function AgriHomepage() {
               color: "#fff", fontWeight: 700, fontSize: 16, display: "flex",
               alignItems: "center", justifyContent: "center", gap: 10,
             }}>
-              You're subscribed! Welcome to the KisanMart family.
+              You're subscribed! Welcome to the OpenAgri Marketplace family.
             </div>
           ) : (
             <form onSubmit={handleSubscribe} className="ag-newsletter-form" style={{ display: "flex", gap: 10, maxWidth: 460, margin: "0 auto" }}>

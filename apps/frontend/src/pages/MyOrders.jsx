@@ -117,7 +117,7 @@ export const MyOrders = () => {
         </div>
         <h2 className="text-2xl font-black text-stone-850 tracking-tight">No Orders Placed Yet</h2>
         <p className="text-sm text-stone-500 max-w-sm text-center mt-2 leading-relaxed">
-          You haven't placed any orders on KisanMart yet. Browse our farm-fresh products and inputs to place your first order.
+          You haven't placed any orders on OpenAgri Marketplace yet. Browse our farm-fresh products and inputs to place your first order.
         </p>
         <Link
           to="/products"
@@ -453,8 +453,8 @@ export const MyOrders = () => {
                   For items that have already been processed, shipped, or delivered, returns are managed manually by our support team.
                 </p>
                 <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-1 text-xs text-stone-705">
-                  <p className="font-bold text-stone-800">KisanMart Returns & Support</p>
-                  <p>📧 Email: <span className="font-semibold">returns@kisanmart.com</span></p>
+                  <p className="font-bold text-stone-800">OpenAgri Returns & Support</p>
+                  <p>📧 Email: <span className="font-semibold">returns@openagri.com</span></p>
                   <p>📞 Toll-Free Support: <span className="font-semibold">1800-419-5050</span></p>
                   <p className="text-[10px] text-stone-400 mt-1.5 leading-normal">Please mention your order ID when contacting customer support.</p>
                 </div>

@@ -939,7 +939,7 @@ export default function ProductDetail() {
                           {reviews.map((rev) => (
                             <div key={rev._id} className="pt-4 first:pt-0 space-y-1.5 text-xs text-stone-605">
                               <div className="flex items-center justify-between">
-                                <span className="font-extrabold text-stone-800">{rev.user?.name || 'KisanMart Customer'}</span>
+                                <span className="font-extrabold text-stone-800">{rev.user?.name || 'OpenAgri Customer'}</span>
                                 <span className="text-[10px] text-stone-400">{new Date(rev.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                               </div>
                               <div className="flex items-center gap-2">
