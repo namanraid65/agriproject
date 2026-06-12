@@ -13,6 +13,7 @@ import ProductDetail from './pages/ProductDetail.jsx';
 import Auth          from './pages/Auth.jsx';
 import Cart          from './pages/Cart.jsx';
 import Wishlist      from './pages/Wishlist.jsx';
+import MyOrders      from './pages/MyOrders.jsx';
 import Checkout      from './pages/Checkout.jsx';
 import RFQ           from './pages/RFQ.jsx';
 import AdminEnquiries from './pages/AdminEnquiries.jsx';
@@ -147,6 +148,11 @@ function App() {
             {/* ── Wishlist ── */}
             <Route path="/wishlist" element={
               <UserRoute><AppShell><Wishlist /></AppShell></UserRoute>
+            } />
+
+            {/* ── Orders History ── */}
+            <Route path="/orders" element={
+              <UserRoute><AppShell><MyOrders /></AppShell></UserRoute>
             } />
 
             {/* ── Checkout ── */}

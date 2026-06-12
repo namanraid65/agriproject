@@ -4,7 +4,7 @@ import { useMarket } from '../../hooks/useMarket.js';
 import { useCart } from '../../hooks/useCart.js';
 import {
   Sprout, ShoppingCart, User as UserIcon, LogOut,
-  Tractor, Leaf, Menu, X as XIcon, ChevronDown, Heart
+  Tractor, Leaf, Menu, X as XIcon, ChevronDown, Heart, Package
 } from 'lucide-react';
 
 const NAV_LINKS = [
@@ -187,6 +187,13 @@ export const Navbar = () => {
                       </p>
                     </div>
                   </div>
+                  <Link
+                    to="/orders"
+                    className="p-2 rounded-lg text-stone-550 hover:text-stone-900 hover:bg-stone-100 transition-all duration-200"
+                    title="My Orders"
+                  >
+                    <Package className="h-4.5 w-4.5" />
+                  </Link>
                   <button
                     onClick={handleLogout}
                     id="logout-button"
@@ -284,6 +291,10 @@ export const Navbar = () => {
                     <p className={`text-xs font-medium ${styles.textHighlight}`}>{user.role}</p>
                   </div>
                 </div>
+                <Link to="/orders" className="flex items-center gap-3 px-4 py-3 rounded-xl text-stone-700 hover:bg-stone-50 font-semibold text-sm">
+                  <Package className="h-5 w-5" />
+                  My Orders
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 font-semibold text-sm"
