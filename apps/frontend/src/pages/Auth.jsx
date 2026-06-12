@@ -36,6 +36,39 @@ export const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    // Client-side validations
+    if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
+
+    if (!isLogin) {
+      if (!name.trim()) {
+        setError('Full Name is required.');
+        return;
+      }
+      if (name.trim().length < 2) {
+        setError('Name must be at least 2 characters.');
+        return;
+      }
+      if (isB2BRoleSelected) {
+        if (!companyName.trim()) {
+          setError('Company/Farm Name is required.');
+          return;
+        }
+        if (!taxId.trim()) {
+          setError('Tax ID / License Number is required.');
+          return;
+        }
+      }
+    }
+
     setLoading(true);
 
     try {
@@ -73,7 +106,16 @@ export const Auth = () => {
       
       navigate(redirect);
     } catch (err) {
-      setError(err);
+      let errMsg = typeof err === 'string' ? err : err.response?.data?.message || err.message || 'An unexpected error occurred.';
+      if (err.response?.data?.errors) {
+        const fieldErrors = Object.values(err.response.data.errors)
+          .map((e) => e.message || e)
+          .join(', ');
+        if (fieldErrors) {
+          errMsg = `${errMsg}: ${fieldErrors}`;
+        }
+      }
+      setError(errMsg);
     } finally {
       setLoading(false);
     }

@@ -246,7 +246,16 @@ export const Checkout = () => {
       setCreatedOrder(response.data?.data?.order);
     } catch (err) {
       console.error('Failed to create order:', err);
-      setError(err.response?.data?.message || 'Failed to place order. Please try again.');
+      let errMsg = err.response?.data?.message || 'Failed to place order. Please try again.';
+      if (err.response?.data?.errors) {
+        const fieldErrors = Object.values(err.response.data.errors)
+          .map((e) => e.message || e)
+          .join(', ');
+        if (fieldErrors) {
+          errMsg = `${errMsg}: ${fieldErrors}`;
+        }
+      }
+      setError(errMsg);
     } finally {
       setSubmitting(false);
     }
