@@ -235,7 +235,7 @@ export default function DataTable({
                         setActiveFilters({});
                         setPage(1);
                       }} 
-                      className="text-[10px] text-red-650 hover:underline font-bold"
+                      className="text-[10px] text-red-600 hover:underline font-bold"
                     >
                       Clear all
                     </button>

@@ -73,13 +73,13 @@ export const MyOrders = () => {
 
   const getStatusTheme = (status) => {
     const themes = {
-      pending: { bg: 'bg-red-50', text: 'text-red-750 border-red-200', dot: 'bg-red-500' },
-      confirmed: { bg: 'bg-blue-50', text: 'text-blue-750 border-blue-200', dot: 'bg-blue-500' },
+      pending: { bg: 'bg-red-50', text: 'text-red-700 border-red-200', dot: 'bg-red-500' },
+      confirmed: { bg: 'bg-blue-50', text: 'text-blue-700 border-blue-200', dot: 'bg-blue-500' },
       processing: { bg: 'bg-amber-50', text: 'text-amber-800 border-amber-200', dot: 'bg-amber-500' },
-      shipped: { bg: 'bg-indigo-50', text: 'text-indigo-750 border-indigo-200', dot: 'bg-indigo-500' },
+      shipped: { bg: 'bg-indigo-50', text: 'text-indigo-700 border-indigo-200', dot: 'bg-indigo-500' },
       delivered: { bg: 'bg-emerald-50', text: 'text-emerald-700 border-emerald-200', dot: 'bg-emerald-600' },
       cancelled: { bg: 'bg-stone-50', text: 'text-stone-500 border-stone-200', dot: 'bg-stone-400' },
-      refunded: { bg: 'bg-purple-50', text: 'text-purple-750 border-purple-200', dot: 'bg-purple-500' }
+      refunded: { bg: 'bg-purple-50', text: 'text-purple-700 border-purple-200', dot: 'bg-purple-500' }
     };
     return themes[status.toLowerCase()] || { bg: 'bg-stone-50', text: 'text-stone-600 border-stone-200', dot: 'bg-stone-500' };
   };
@@ -97,7 +97,7 @@ export const MyOrders = () => {
     return (
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center space-y-4">
-          <p className="text-red-750 font-bold text-sm">{error}</p>
+          <p className="text-red-700 font-bold text-sm">{error}</p>
           <button
             onClick={fetchMyOrders}
             className={`btn px-6 py-2.5 rounded-xl font-bold text-white shadow-md ${isB2B ? 'btn-primary-amber' : 'btn-primary-green'}`}
@@ -316,8 +316,8 @@ export const MyOrders = () => {
                         </div>
                         <span className={`inline-flex px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wide border ${
                           order.paymentStatus === 'paid'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-250'
-                            : 'bg-red-50 text-red-650 border-red-200'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : 'bg-red-50 text-red-600 border-red-200'
                         }`}>
                           {order.paymentStatus}
                         </span>
@@ -352,7 +352,7 @@ export const MyOrders = () => {
                         {(order.status === 'pending' || order.status === 'confirmed') ? (
                           <button
                             onClick={() => handleCancelClick(order._id)}
-                            className="w-full mt-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-650 font-bold border border-red-200 rounded-2xl text-xs transition-all tracking-wide text-center uppercase"
+                            className="w-full mt-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold border border-red-200 rounded-2xl text-xs transition-all tracking-wide text-center uppercase"
                           >
                             Cancel Order
                           </button>
@@ -425,7 +425,7 @@ export const MyOrders = () => {
                   <button
                     onClick={handleConfirmCancel}
                     disabled={submittingCancel}
-                    className="flex-1 py-2.5 bg-red-650 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition-colors disabled:opacity-60 flex items-center justify-center gap-1.5"
+                    className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition-colors disabled:opacity-60 flex items-center justify-center gap-1.5"
                   >
                     {submittingCancel ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -452,7 +452,7 @@ export const MyOrders = () => {
                 <p className="text-xs text-stone-500 leading-relaxed">
                   For items that have already been processed, shipped, or delivered, returns are managed manually by our support team.
                 </p>
-                <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-1 text-xs text-stone-750">
+                <div className="bg-stone-50 border border-stone-200 rounded-xl p-3.5 space-y-1 text-xs text-stone-705">
                   <p className="font-bold text-stone-800">KisanMart Returns & Support</p>
                   <p>📧 Email: <span className="font-semibold">returns@kisanmart.com</span></p>
                   <p>📞 Toll-Free Support: <span className="font-semibold">1800-419-5050</span></p>

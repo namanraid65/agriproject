@@ -103,13 +103,13 @@ export const AdminOrders = () => {
     { key: 'totalAmount', label: 'Total Amount', render: (val) => `₹${val?.toLocaleString()}` },
     { key: 'status', label: 'Order Status', render: (val, row) => {
       const statusMap = {
-        pending: "bg-red-50 text-red-650",
-        confirmed: "bg-blue-50 text-blue-650",
+        pending: "bg-red-50 text-red-600",
+        confirmed: "bg-blue-50 text-blue-600",
         processing: "bg-amber-50 text-amber-700",
         shipped: "bg-indigo-50 text-indigo-700",
         delivered: "bg-[#f2f7ee] text-[#3b6d11]",
         cancelled: "bg-stone-100 text-stone-500",
-        refunded: "bg-purple-50 text-purple-750"
+        refunded: "bg-purple-50 text-purple-700"
       };
       const cls = statusMap[val] ?? "bg-stone-150 text-stone-600";
       return (
@@ -120,7 +120,7 @@ export const AdminOrders = () => {
     }},
     { key: 'paymentStatus', label: 'Payment', render: (val) => {
       const payCls = val === 'paid' ? 'bg-[#f2f7ee] text-[#3b6d11]' :
-                     val === 'refunded' ? 'bg-purple-50 text-purple-750' :
+                     val === 'refunded' ? 'bg-purple-50 text-purple-700' :
                      'bg-red-50 text-red-600';
       return (
         <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold ${payCls}`}>
