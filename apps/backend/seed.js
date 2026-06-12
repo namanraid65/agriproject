@@ -160,7 +160,7 @@ const seedDatabase = async () => {
       {
         name: 'F1 Hybrid Tomato Seeds',
         category: catSeeds,
-        images: [{ url: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?q=80&w=800', isPrimary: true, altText: 'Hybrid Tomato Seeds' }],
+        images: [{ url: '/uploads/hybrid_tomato_seeds.png', isPrimary: true, altText: 'Hybrid Tomato Seeds' }],
         description: 'Premium disease-resistant high-yield hybrid tomato seeds. Ideal for greenhouse and open-field cultivation.',
         specifications: { purity: '99%', germinationRate: '92%', packageSize: '1000 seeds' },
         retailPrice: 15,
@@ -177,7 +177,7 @@ const seedDatabase = async () => {
       {
         name: 'Sweet Corn F1 Seeds',
         category: catSeeds,
-        images: [{ url: 'https://images.unsplash.com/photo-1471193945509-9ad0617afabf?q=80&w=800', isPrimary: true, altText: 'Sweet Corn Seeds' }],
+        images: [{ url: '/uploads/sweet_corn_seeds.png', isPrimary: true, altText: 'Sweet Corn Seeds' }],
         description: 'Very sweet yellow kernel variety with excellent seedling vigor and high disease tolerance.',
         specifications: { sugarContent: 'High', maturityPeriod: '75-80 days', weight: '500g' },
         retailPrice: 24,
