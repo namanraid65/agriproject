@@ -8,9 +8,9 @@ A full-stack agricultural marketplace built with MongoDB, Express, React, and No
 | --- | --- |
 | ![Storefront Homepage](./screenshoot/homepage.png) | ![Product Catalog](./screenshoot/products.png) |
 
-| Admin Panel Dashboard & Real-time Alerts |
-| --- |
-| ![Admin Panel Dashboard](./screenshoot/admin.png) |
+| Browse Categories Grid | Admin Panel Dashboard & Real-time Alerts |
+| --- | --- |
+| ![Browse Categories](./screenshoot/categories.png) | ![Admin Panel Dashboard](./screenshoot/admin.png) |
 
 ---
 
