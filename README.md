@@ -73,14 +73,14 @@ graph TD
 
 ---
 
-## 🤖 AI Integration & Usage
+## 🤖 AI-Assisted Development
 
-This project was built, debugged, and optimized in partnership with **Antigravity (Google DeepMind's Advanced Agentic Coding Assistant)**. AI was leveraged across the application lifecycle to deliver premium functionality:
+This project was engineered, debugged, and optimized in collaboration with advanced **AI Pair-Programming Assistants**. AI agents were leveraged throughout the software development lifecycle (SDLC) to accelerate development, improve code quality, and implement complex features:
 
-* **Feature Architecture**: Co-developed the B2B wholesale pricing tables, the Indian Post Pincode API integration, the fractional-fill vector SVG ratings engine, and the Amazon-style return tracking progress system.
-* **Intelligent Debugging**: Uncovered complex React rendering issues—such as Rules of Hooks violations and unclosed comment blocks in [FormModal.jsx](file:///c:/Users/HP/coding/python/intership/agriproject/open-agri-mern/apps/frontend/src/components/admin/FormModal.jsx)—by programmatically launching headless Puppeteer browser scripts in the workspace to trace browser runtime console exceptions.
-* **Responsive Layouts**: Designed and refined CSS styles on storefront pages and header navigation bars to adapt seamlessly to mobile viewports.
-* **Asset Pipeline Automation**: Created programmatically generated category circular product collages using custom Python scripts to build visual previews of active inventories.
+* **Feature Engineering**: Co-designed and implemented complex workflows such as the B2B wholesale tiered pricing tables, real-time India Post Pincode API validation, fractional-fill vector SVG ratings, and the Amazon-style returns tracking pipeline.
+* **Automated Debugging & QA**: Utilized AI-guided diagnostic workflows, including programmatically launching headless Puppeteer browser scripts in the workspace to capture console error logs and trace React Hook boundaries or component rendering crashes.
+* **Responsive Styling & UX**: Refined storefront layout grids, card configurations, and main navigation headers to ensure mobile responsiveness and cross-device compatibility.
+* **Scripting & Asset Automation**: Generated automated Python scripts to compile category product collage graphics and manage static inventories.
 
 ---
 
