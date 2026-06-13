@@ -2,6 +2,21 @@
 
 A full-stack B2B/B2C agricultural marketplace built with MongoDB, Express, React, and Node.js.
 
+## 🚀 Live Demo
+
+* **User / Customer Portal (Storefront):** [https://agriproject-frontend.vercel.app](https://agriproject-frontend.vercel.app)
+* **Admin Dashboard:** [https://agriproject-frontend.vercel.app/admin](https://agriproject-frontend.vercel.app/admin)
+* **Backend API Base URL:** [https://agriproject-37n7.onrender.com/api](https://agriproject-37n7.onrender.com/api)
+
+### 🔑 Administrator Credentials
+To access the Admin Dashboard:
+1. Navigate to the [Admin Dashboard](https://agriproject-frontend.vercel.app/admin) link above.
+2. Log in using the following pre-seeded credentials:
+   - **Email:** `admin@openagri.com`
+   - **Password:** `password123`
+
+---
+
 ## Features
 - B2C retail shopping + B2B wholesale portal
 - Product catalog with filters, search, pagination
