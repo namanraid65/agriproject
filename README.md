@@ -73,17 +73,6 @@ graph TD
 
 ---
 
-## 🤖 AI-Assisted Development
-
-This project was engineered, debugged, and optimized in collaboration with advanced **AI Pair-Programming Assistants**. AI agents were leveraged throughout the software development lifecycle (SDLC) to accelerate development, improve code quality, and implement complex features:
-
-* **Feature Engineering**: Co-designed and implemented complex workflows such as the B2B wholesale tiered pricing tables, real-time India Post Pincode API validation, fractional-fill vector SVG ratings, and the Amazon-style returns tracking pipeline.
-* **Automated Debugging & QA**: Utilized AI-guided diagnostic workflows, including programmatically launching headless Puppeteer browser scripts in the workspace to capture console error logs and trace React Hook boundaries or component rendering crashes.
-* **Responsive Styling & UX**: Refined storefront layout grids, card configurations, and main navigation headers to ensure mobile responsiveness and cross-device compatibility.
-* **Scripting & Asset Automation**: Generated automated Python scripts to compile category product collage graphics and manage static inventories.
-
----
-
 ## Tech Stack
 
 **Frontend**
