@@ -45,6 +45,45 @@ To access the Admin Dashboard:
 
 ---
 
+## Dataflow
+
+The diagram below details the architecture and data communication flows of the OpenAgri marketplace platform:
+
+```mermaid
+graph TD
+    User([User / Client Browser])
+    Vite[React Frontend - Vite Client]
+    Express[Express Backend API Server]
+    Mongo[(MongoDB Atlas Database)]
+    Pincode[India Post API - Pincode Verification]
+    Uploads[Local storage / uploads folder]
+    
+    User <--> |Interacts / UI actions| Vite
+    Vite <--> |HTTP Requests / JSON / JWT Header| Express
+    Express <--> |Mongoose Queries / Persistence| Mongo
+    Vite --> |Pincode Lookup| Pincode
+    Express --> |Saves images| Uploads
+```
+
+### Key Application Flows:
+1. **Authentication**: Client sends credentials (`email`/`password`) ➔ Express API checks against database ➔ Returns token ➔ Stored in browser `localStorage` and appended dynamically via Axios interceptors on subsequent operations.
+2. **Checkout & Verification**: Typing a valid 6-digit Indian Pincode triggers a background call to the India Post API ➔ City and State dropdowns auto-populate ➔ Submitting the order decrements stock counts in the `Product` schema inside MongoDB.
+3. **Product/Category Image Uploads**: Admin triggers file selection ➔ Form wrapper POSTs multipart form payload to `/api/upload` ➔ Backend saves image to static `uploads/` directory on disk ➔ Returns path URL to React form ➔ Saved to database document on form submit.
+4. **Order Returns & Refund Flow**: Customer requests return ➔ Status changes to `return_requested` ➔ Admin updates return stages in detail sidebar ➔ On transitions to `refunded`, backend triggers inventory restoration, safely incrementing stock back in database.
+
+---
+
+## 🤖 AI Integration & Usage
+
+This project was built, debugged, and optimized in partnership with **Antigravity (Google DeepMind's Advanced Agentic Coding Assistant)**. AI was leveraged across the application lifecycle to deliver premium functionality:
+
+* **Feature Architecture**: Co-developed the B2B wholesale pricing tables, the Indian Post Pincode API integration, the fractional-fill vector SVG ratings engine, and the Amazon-style return tracking progress system.
+* **Intelligent Debugging**: Uncovered complex React rendering issues—such as Rules of Hooks violations and unclosed comment blocks in [FormModal.jsx](file:///c:/Users/HP/coding/python/intership/agriproject/open-agri-mern/apps/frontend/src/components/admin/FormModal.jsx)—by programmatically launching headless Puppeteer browser scripts in the workspace to trace browser runtime console exceptions.
+* **Responsive Layouts**: Designed and refined CSS styles on storefront pages and header navigation bars to adapt seamlessly to mobile viewports.
+* **Asset Pipeline Automation**: Created programmatically generated category circular product collages using custom Python scripts to build visual previews of active inventories.
+
+---
+
 ## Tech Stack
 
 **Frontend**
