@@ -91,7 +91,7 @@ function FileField({ field, value, onChange, onFileUpload }) {
       {value && (
         <div className="w-16 h-16 rounded-lg border border-stone-200 bg-stone-50 overflow-hidden flex items-center justify-center shadow-inner">
           <img 
-            src={value.startsWith('/uploads/') ? 'http://localhost:5000' + value : value} 
+            src={value.startsWith('/uploads/') ? 'http://localhost:5002' + value : value} 
             alt="Preview" 
             className="w-full h-full object-cover" 
           />

@@ -38,8 +38,10 @@ app.use(
 // CORS configuration supporting credentials (cookies)
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://localhost:3002',
   'http://localhost:5173',
   'http://localhost:5000',
+  'http://localhost:5002',
   'https://agriproject-frontend.vercel.app'
 ];
 
